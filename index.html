@@ -4,129 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GL Analyzer — Other Expenses Audit</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
-    --ink:      #1a1f2e;
-    --mid:      #4a5568;
-    --muted:    #8896aa;
-    --border:   #dde3ec;
-    --surface:  #f5f7fa;
-    --white:    #ffffff;
-    --accent:   #1d4ed8;
+    --ink:     #1a1f2e;
+    --mid:     #4a5568;
+    --muted:   #8896aa;
+    --border:  #dde3ec;
+    --surface: #f5f7fa;
+    --white:   #ffffff;
+    --accent:  #1d4ed8;
     --accent-lt:#eff4ff;
-    --green:    #16a34a;
-    --green-lt: #f0fdf4;
-    --amber:    #d97706;
-    --amber-lt: #fffbeb;
-    --red:      #dc2626;
-    --bar1:     #1d4ed8;
-    --bar2:     #7c3aed;
-    --bar3:     #0891b2;
-    --bar4:     #16a34a;
-    --bar5:     #d97706;
-    --bar6:     #dc2626;
-    --bar7:     #db2777;
-    --bar8:     #059669;
+    --green:   #16a34a;
+    --green-lt:#f0fdf4;
+    --amber:   #d97706;
+    --amber-lt:#fffbeb;
+    --red:     #dc2626;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--surface); color: var(--ink); min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;}
 
   /* HEADER */
-  header { background: var(--ink); padding: 18px 32px; display: flex; align-items: center; gap: 14px; }
-  header .logo { width: 34px; height: 34px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-  header .logo svg { width: 18px; height: 18px; fill: none; stroke: white; stroke-width: 2; }
-  header h1 { font-size: 16px; font-weight: 600; color: white; letter-spacing: 0.01em; }
-  header span { font-size: 12px; color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+  header{background:var(--ink);padding:16px 28px;display:flex;align-items:center;gap:12px;}
+  .logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  .logo svg{width:16px;height:16px;fill:none;stroke:white;stroke-width:2;}
+  header h1{font-size:15px;font-weight:600;color:white;}
+  header span{font-size:11px;color:var(--muted);margin-left:auto;}
 
-  /* LAYOUT */
-  main { max-width: 1300px; margin: 0 auto; padding: 28px 24px 60px; }
+  main{max-width:1300px;margin:0 auto;padding:26px 20px 60px;}
 
-  /* INPUT PANEL */
-  .input-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-  .input-card h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 16px; }
+  /* UPLOAD CARD */
+  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:22px;}
+  .card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px;}
 
-  .col-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
-  .col-map label { font-size: 12px; color: var(--mid); font-weight: 500; display: block; margin-bottom: 4px; }
-  .col-map select { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 13px; color: var(--ink); background: var(--surface); }
-  .col-map select:focus { outline: none; border-color: var(--accent); }
+  /* DROP ZONE */
+  .drop-zone{border:2px dashed var(--border);border-radius:10px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .15s;position:relative;}
+  .drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:var(--accent-lt);}
+  .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .drop-zone svg{width:36px;height:36px;stroke:var(--muted);fill:none;stroke-width:1.5;margin:0 auto 10px;display:block;}
+  .drop-zone p{font-size:14px;color:var(--mid);}
+  .drop-zone p small{display:block;font-size:12px;color:var(--muted);margin-top:4px;}
+  .file-info{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-lt);border:1px solid #bbf7d0;border-radius:8px;margin-top:12px;font-size:13px;color:var(--green);}
+  .file-info svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:2;flex-shrink:0;}
 
-  textarea {
-    width: 100%; height: 180px; border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px; font-size: 13px; font-family: 'Consolas', monospace; color: var(--ink);
-    resize: vertical; background: var(--surface); line-height: 1.5;
-  }
-  textarea:focus { outline: none; border-color: var(--accent); background: white; }
-  textarea::placeholder { color: var(--muted); }
+  /* SHEET SELECTOR */
+  .sheet-row{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;}
+  .sheet-row label{font-size:12px;color:var(--mid);font-weight:500;}
+  .sheet-row select{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--ink);background:var(--surface);}
+  .sheet-row select:focus{outline:none;border-color:var(--accent);}
 
-  .actions { display: flex; gap: 10px; margin-top: 14px; align-items: center; }
-  .btn-primary { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-  .btn-primary:hover { background: #1e40af; }
-  .btn-ghost { background: none; color: var(--mid); border: 1px solid var(--border); border-radius: 8px; padding: 10px 18px; font-size: 13px; cursor: pointer; }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-  .status { font-size: 12px; color: var(--muted); margin-left: auto; }
+  /* COLUMN MAP */
+  .col-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-top:14px;}
+  .col-map label{font-size:12px;color:var(--mid);font-weight:500;display:block;margin-bottom:4px;}
+  .col-map select{width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--ink);background:var(--surface);}
+  .col-map select:focus{outline:none;border-color:var(--accent);}
 
-  /* TABS */
-  .tabs { display: flex; gap: 2px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
-  .tab { padding: 10px 20px; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
-  .tab:hover { color: var(--ink); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  /* PREVIEW */
+  .preview-wrap{overflow-x:auto;margin-top:14px;border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;}
+  .preview-wrap table{width:100%;border-collapse:collapse;font-size:12px;}
+  .preview-wrap th{background:var(--surface);padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;}
+  .preview-wrap td{padding:6px 12px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
+  .preview-wrap tr:last-child td{border-bottom:none;}
+
+  /* ACTIONS */
+  .actions{display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;}
+  .btn-primary{background:var(--accent);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;}
+  .btn-primary:hover{background:#1e40af;}
+  .btn-primary:disabled{background:var(--muted);cursor:not-allowed;}
+  .btn-ghost{background:none;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer;}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .status{font-size:12px;color:var(--muted);margin-left:auto;}
+
+  /* ERROR */
+  .error-box{background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:11px 14px;font-size:13px;color:var(--red);margin-top:12px;}
 
   /* SUMMARY CHIPS */
-  .summary-row { display: flex; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
-  .chip { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; flex: 1; min-width: 140px; }
-  .chip .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
-  .chip .val { font-size: 22px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .chip .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .summary-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .chip{background:white;border:1px solid var(--border);border-radius:10px;padding:14px 18px;flex:1;min-width:130px;}
+  .chip .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;}
+  .chip .val{font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .chip .sub{font-size:11px;color:var(--muted);margin-top:2px;}
 
-  /* TABLES */
-  .table-card { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
-  .table-card .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-  .table-card .card-header h3 { font-size: 14px; font-weight: 700; color: var(--ink); }
-  .table-card .card-header .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--accent-lt); color: var(--accent); font-weight: 600; }
-  .table-card .export-btn { margin-left: auto; font-size: 12px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: none; cursor: pointer; color: var(--mid); }
-  .table-card .export-btn:hover { border-color: var(--accent); color: var(--accent); }
+  /* TABS */
+  .tabs{display:flex;gap:2px;margin-bottom:18px;border-bottom:2px solid var(--border);}
+  .tab{padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
 
-  .tbl-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: var(--surface); }
-  th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; border-bottom: 1px solid var(--border); }
-  th.num, td.num { text-align: right; }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; color: var(--ink); }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--surface); }
-  .total-row td { font-weight: 700; background: var(--surface); border-top: 2px solid var(--border); }
+  /* TABLE CARD */
+  .table-card{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:22px;}
+  .table-card .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .table-card .card-header h3{font-size:14px;font-weight:700;color:var(--ink);}
+  .badge{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:600;}
+  .export-btn{margin-left:auto;font-size:12px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;color:var(--mid);}
+  .export-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  /* BAR INLINE */
-  .bar-cell { display: flex; align-items: center; gap: 8px; }
-  .bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; min-width: 60px; max-width: 120px; }
-  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .tbl-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead tr{background:var(--surface);}
+  th{padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border);}
+  th.num,td.num{text-align:right;}
+  td{padding:9px 13px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:var(--surface);}
+  .total-row td{font-weight:700;background:var(--surface);border-top:2px solid var(--border);}
 
-  /* VENDOR COLOR DOTS */
-  .vdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; flex-shrink: 0; }
+  .bar-cell{display:flex;align-items:center;gap:8px;}
+  .bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;min-width:60px;max-width:110px;}
+  .bar-fill{height:100%;border-radius:3px;}
+  .vdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;flex-shrink:0;}
+  .pct{font-variant-numeric:tabular-nums;font-size:12px;padding:2px 7px;border-radius:4px;}
+  .pct.hi{background:var(--green-lt);color:var(--green);}
+  .pct.mid{background:var(--amber-lt);color:var(--amber);}
+  .pct.lo{background:var(--surface);color:var(--muted);}
 
-  /* MONTH-ON-MONTH TABLE — sticky vendor col */
-  .mom-table th:first-child, .mom-table td:first-child { position: sticky; left: 0; background: white; z-index: 1; }
-  .mom-table thead tr th:first-child { background: var(--surface); }
+  .mom-table th:first-child,.mom-table td:first-child{position:sticky;left:0;background:white;z-index:1;}
+  .mom-table thead tr th:first-child{background:var(--surface);}
 
-  /* PERCENTAGE PILL */
-  .pct { font-variant-numeric: tabular-nums; font-size: 12px; padding: 2px 7px; border-radius: 4px; }
-  .pct.hi  { background: var(--green-lt);  color: var(--green); }
-  .pct.mid { background: var(--amber-lt); color: var(--amber); }
-  .pct.lo  { background: var(--surface);  color: var(--muted); }
+  .empty{text-align:center;padding:56px 20px;color:var(--muted);}
+  .empty svg{width:46px;height:46px;margin:0 auto 12px;display:block;stroke:var(--border);fill:none;stroke-width:1.5;}
+  .empty p{font-size:14px;}
+  .hidden{display:none!important;}
 
-  /* EMPTY STATE */
-  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .empty svg { width: 48px; height: 48px; margin: 0 auto 14px; display: block; stroke: var(--border); fill: none; stroke-width: 1.5; }
-  .empty p { font-size: 14px; }
-
-  /* ERRORS */
-  .error-box { background: #fff5f5; border: 1px solid #fecaca; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--red); margin-top: 12px; }
-
-  /* HIDDEN */
-  .hidden { display: none !important; }
-
-  /* PRINT */
-  @media print { header { background: var(--ink) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  /* PROGRESS */
+  .progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;}
 </style>
 </head>
 <body>
@@ -141,18 +143,40 @@
 
 <main>
 
-  <!-- INPUT CARD -->
-  <div class="input-card">
-    <h2>Step 1 — Paste GL Dump</h2>
-    <p style="font-size:13px;color:var(--mid);margin-bottom:14px;">Copy your GL data directly from Excel / SAP / Oracle and paste below. First row must be a header row. Tab-separated or comma-separated both work.</p>
-    <textarea id="glInput" placeholder="Paste GL data here…&#10;&#10;Example columns expected: Vendor Name, Posting Date, Amount, Document No., etc."></textarea>
+  <!-- UPLOAD CARD -->
+  <div class="card">
+    <div class="card-title">Step 1 — Upload GL Excel File</div>
 
-    <div id="colMapRow" class="col-map hidden" style="margin-top:16px;"></div>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFile(this.files[0])">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+      <p>Click to browse or drag &amp; drop your file here</p>
+      <p><small>Supports .xlsx, .xls, .csv — file never leaves your browser</small></p>
+    </div>
+
+    <div id="fileInfo" class="file-info hidden">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="fileName"></span>
+    </div>
+
+    <div id="sheetRow" class="sheet-row hidden">
+      <label>Sheet:</label>
+      <select id="sheetSelect" onchange="loadSheet()"></select>
+      <span id="rowCount" style="font-size:12px;color:var(--muted);"></span>
+    </div>
+
+    <div id="colMapRow" class="col-map hidden"></div>
+
+    <div id="previewSection" class="hidden">
+      <div style="font-size:12px;color:var(--muted);margin-top:14px;margin-bottom:6px;">Preview (first 5 rows)</div>
+      <div class="preview-wrap"><table id="previewTable"></table></div>
+    </div>
+
+    <div id="progressWrap" class="progress-bar hidden"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     <div id="errorBox" class="error-box hidden"></div>
 
     <div class="actions">
-      <button class="btn-primary" onclick="parseAndAnalyze()">Analyze</button>
-      <button class="btn-ghost" onclick="loadSample()">Load Sample Data</button>
+      <button class="btn-primary" id="analyzeBtn" onclick="runAnalysis()" disabled>Analyze</button>
       <button class="btn-ghost" onclick="clearAll()">Clear</button>
       <span class="status" id="statusMsg"></span>
     </div>
@@ -160,17 +184,13 @@
 
   <!-- RESULTS -->
   <div id="results" class="hidden">
-
-    <!-- SUMMARY CHIPS -->
     <div class="summary-row" id="summaryChips"></div>
-
-    <!-- TABS -->
     <div class="tabs">
-      <div class="tab active" onclick="switchTab('vendorTab', this)">Vendor-wise Analysis</div>
-      <div class="tab" onclick="switchTab('momTab', this)">Month-on-Month Analysis</div>
+      <div class="tab active" onclick="switchTab('vendorTab',this)">Vendor-wise Analysis</div>
+      <div class="tab" onclick="switchTab('momTab',this)">Month-on-Month Analysis</div>
     </div>
 
-    <!-- TAB 1: VENDOR WISE -->
+    <!-- TAB 1 -->
     <div id="vendorTab">
       <div class="table-card">
         <div class="card-header">
@@ -180,17 +200,11 @@
         </div>
         <div class="tbl-wrap">
           <table id="vendorTable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Vendor Name</th>
-                <th class="num">Total Amount</th>
-                <th class="num">Txn Count</th>
-                <th class="num">Avg per Txn</th>
-                <th>% Contribution</th>
-                <th>% of Grand Total</th>
-              </tr>
-            </thead>
+            <thead><tr>
+              <th>#</th><th>Vendor Name</th>
+              <th class="num">Total Amount</th><th class="num">Txn Count</th>
+              <th class="num">Avg per Txn</th><th>% Bar</th><th class="num">% of Grand Total</th>
+            </tr></thead>
             <tbody id="vendorBody"></tbody>
             <tfoot id="vendorFoot"></tfoot>
           </table>
@@ -198,13 +212,13 @@
       </div>
     </div>
 
-    <!-- TAB 2: MONTH ON MONTH -->
+    <!-- TAB 2 -->
     <div id="momTab" class="hidden">
       <div class="table-card">
         <div class="card-header">
-          <h3>Vendor × Month Matrix</h3>
+          <h3>Vendor × Month — Amount Matrix</h3>
           <span class="badge" id="momBadge"></span>
-          <button class="export-btn" onclick="exportCSV('momTable','mom_analysis')">⬇ Export CSV</button>
+          <button class="export-btn" onclick="exportCSV('momTable','mom_amount')">⬇ Export CSV</button>
         </div>
         <div class="tbl-wrap">
           <table id="momTable" class="mom-table">
@@ -215,11 +229,10 @@
         </div>
       </div>
 
-      <!-- Monthly % contribution per vendor -->
       <div class="table-card">
         <div class="card-header">
           <h3>Monthly % Contribution by Vendor</h3>
-          <span style="font-size:12px;color:var(--muted);margin-left:8px;">Each cell = vendor's % of that month's total</span>
+          <span style="font-size:12px;color:var(--muted);">Each cell = vendor's % of that month's total</span>
           <button class="export-btn" onclick="exportCSV('pctTable','monthly_pct')">⬇ Export CSV</button>
         </div>
         <div class="tbl-wrap">
@@ -231,242 +244,191 @@
         </div>
       </div>
     </div>
-
-  </div><!-- /results -->
-
-  <div id="emptyState" class="empty">
-    <svg viewBox="0 0 24 24"><path d="M9 17H7A5 5 0 017 7h1M15 7h1a5 5 0 010 10h-1M8 12h8"/></svg>
-    <p>Paste your GL dump above and click <strong>Analyze</strong> to see vendor-wise and month-on-month breakdowns.</p>
   </div>
 
+  <div id="emptyState" class="empty">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <p>Upload your GL Excel file above and click <strong>Analyze</strong>.</p>
+  </div>
 </main>
 
 <script>
-// ── GLOBALS ──────────────────────────────────────────────────────────────────
+// ── STATE ────────────────────────────────────────────────────────────────────
 const COLORS = ['#1d4ed8','#7c3aed','#0891b2','#16a34a','#d97706','#dc2626','#db2777','#059669','#9333ea','#0284c7','#ca8a04','#b91c1c'];
-let parsedData = [], colHeaders = [], colMap = {};
+let workbook = null, parsedData = [], colMap = {};
 
-// ── TIMESTAMP ─────────────────────────────────────────────────────────────────
 document.getElementById('ts').textContent = new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-// ── SAMPLE DATA ───────────────────────────────────────────────────────────────
-function loadSample() {
-  const rows = [
-    "Vendor Name\tPosting Date\tDocument No\tAmount\tCost Center\tNarration",
-    "SKS Associates\t01-Apr-2024\tDOC1001\t45000\tCC01\tConsultancy Charges",
-    "SKS Associates\t15-Apr-2024\tDOC1002\t30000\tCC01\tProfessional Fee",
-    "Raj Enterprises\t03-Apr-2024\tDOC1003\t22000\tCC02\tOffice Supplies",
-    "Raj Enterprises\t20-Apr-2024\tDOC1004\t18000\tCC02\tPrinting",
-    "Alpha Traders\t10-Apr-2024\tDOC1005\t55000\tCC03\tTravel Expenses",
-    "SKS Associates\t05-May-2024\tDOC1010\t40000\tCC01\tConsultancy",
-    "Raj Enterprises\t12-May-2024\tDOC1011\t25000\tCC02\tStationery",
-    "Alpha Traders\t18-May-2024\tDOC1012\t60000\tCC03\tHotel Bills",
-    "Beta Logistics\t22-May-2024\tDOC1013\t32000\tCC04\tCourier",
-    "Beta Logistics\t02-Jun-2024\tDOC1020\t28000\tCC04\tFreight",
-    "SKS Associates\t08-Jun-2024\tDOC1021\t50000\tCC01\tLegal Fee",
-    "Alpha Traders\t14-Jun-2024\tDOC1022\t45000\tCC03\tConference",
-    "Raj Enterprises\t25-Jun-2024\tDOC1023\t15000\tCC02\tMiscellaneous",
-    "Gamma Corp\t05-Jun-2024\tDOC1024\t70000\tCC05\tIT Services",
-    "Gamma Corp\t20-Jun-2024\tDOC1025\t65000\tCC05\tSoftware License",
-    "Beta Logistics\t10-Jul-2024\tDOC1030\t20000\tCC04\tDelivery Charges",
-    "SKS Associates\t15-Jul-2024\tDOC1031\t35000\tCC01\tRetainer",
-    "Alpha Traders\t22-Jul-2024\tDOC1032\t48000\tCC03\tAir Tickets",
-    "Gamma Corp\t28-Jul-2024\tDOC1033\t80000\tCC05\tAnnual Maintenance",
-  ];
-  document.getElementById('glInput').value = rows.join('\n');
-  setStatus('Sample data loaded — click Analyze');
+// ── DRAG & DROP ───────────────────────────────────────────────────────────────
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); const f = e.dataTransfer.files[0]; if(f) handleFile(f); });
+
+// ── FILE HANDLER ──────────────────────────────────────────────────────────────
+function handleFile(file) {
+  if (!file) return;
+  hideError();
+  setStatus('Reading file…');
+  progress(20);
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      progress(50);
+      const data = new Uint8Array(e.target.result);
+      workbook = XLSX.read(data, { type: 'array', cellDates: true });
+      progress(80);
+
+      document.getElementById('fileName').textContent = `${file.name}  (${(file.size/1024).toFixed(1)} KB)`;
+      document.getElementById('fileInfo').classList.remove('hidden');
+
+      // Populate sheet selector
+      const sel = document.getElementById('sheetSelect');
+      sel.innerHTML = workbook.SheetNames.map(n => `<option value="${n}">${n}</option>`).join('');
+      document.getElementById('sheetRow').classList.remove('hidden');
+
+      loadSheet();
+      progress(100);
+      setTimeout(() => document.getElementById('progressWrap').classList.add('hidden'), 600);
+    } catch(err) {
+      showError('Could not read file: ' + err.message);
+      progress(0);
+    }
+  };
+  reader.onerror = () => showError('Failed to read file.');
+  document.getElementById('progressWrap').classList.remove('hidden');
+  reader.readAsArrayBuffer(file);
 }
 
-// ── PARSE ─────────────────────────────────────────────────────────────────────
-function detectSeparator(line) {
-  const tabs = (line.match(/\t/g)||[]).length;
-  const commas = (line.match(/,/g)||[]).length;
-  return tabs >= commas ? '\t' : ',';
+function loadSheet() {
+  const sheetName = document.getElementById('sheetSelect').value;
+  const ws = workbook.Sheets[sheetName];
+  const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false });
+
+  if (!rows.length) { showError('Selected sheet appears empty.'); return; }
+  hideError();
+
+  const headers = Object.keys(rows[0]);
+  colMap = guessColMap(headers);
+  renderColMapper(headers);
+  renderPreview(headers, rows.slice(0,5));
+  document.getElementById('rowCount').textContent = `${rows.length} rows`;
+
+  // Store for analysis
+  parsedData = rows;
+  document.getElementById('analyzeBtn').disabled = false;
+  setStatus(`${rows.length} rows loaded from "${sheetName}"`);
 }
 
-function parseInput() {
-  const raw = document.getElementById('glInput').value.trim();
-  if (!raw) return showError('Nothing pasted yet.');
-  const lines = raw.split(/\r?\n/).filter(l => l.trim());
-  if (lines.length < 2) return showError('Need at least a header row and one data row.');
-  const sep = detectSeparator(lines[0]);
-  const headers = lines[0].split(sep).map(h => h.trim().replace(/^"|"$/g,''));
-  const rows = lines.slice(1).map(l => {
-    const cells = l.split(sep).map(c => c.trim().replace(/^"|"$/g,''));
-    const obj = {};
-    headers.forEach((h,i) => obj[h] = cells[i] || '');
-    return obj;
-  });
-  return { headers, rows };
-}
-
-function guessCol(headers, keywords) {
-  for (const kw of keywords) {
-    const idx = headers.findIndex(h => h.toLowerCase().includes(kw.toLowerCase()));
-    if (idx !== -1) return headers[idx];
-  }
-  return '';
-}
-
-function buildColMap(headers) {
+// ── COL MAPPING ───────────────────────────────────────────────────────────────
+function guessColMap(headers) {
+  const g = (keys) => headers.find(h => keys.some(k => h.toLowerCase().includes(k))) || '';
   return {
-    vendor: guessCol(headers, ['vendor','party','supplier','name','payee']),
-    date:   guessCol(headers, ['date','posting','period','month','doc date','value date']),
-    amount: guessCol(headers, ['amount','amt','value','debit','credit','lcamt','lc amount']),
+    vendor: g(['vendor','party','supplier','payee','name','creditor']),
+    date:   g(['date','posting','period','month','doc date','value date','entry date']),
+    amount: g(['amount','amt','value','debit','credit','lc amt','lc amount','txn amount']),
   };
 }
 
-function renderColMapper(headers, map) {
+function renderColMapper(headers) {
   const row = document.getElementById('colMapRow');
-  const opts = headers.map(h => `<option value="${h}" ${colMap.vendor===h||colMap.date===h||colMap.amount===h?'':''}>${h}</option>`).join('');
   const sel = (key, label) => `
     <div>
-      <label>${label}</label>
-      <select id="map_${key}" onchange="colMap['${key}']=this.value">
-        <option value="">— select —</option>
-        ${headers.map(h=>`<option value="${h}" ${map[key]===h?'selected':''}>${h}</option>`).join('')}
+      <label>${label} <span style="color:var(--red)">*</span></label>
+      <select id="map_${key}" onchange="colMap['${key}']=this.value;updatePreviewHighlight()">
+        <option value="">— select column —</option>
+        ${headers.map(h=>`<option value="${h}" ${colMap[key]===h?'selected':''}>${h}</option>`).join('')}
       </select>
     </div>`;
   row.innerHTML = `
-    <div style="grid-column:1/-1;font-size:12px;color:var(--mid);font-weight:600;padding-bottom:4px;">
-      Column Mapping (auto-detected — adjust if needed)
-    </div>
+    <div style="grid-column:1/-1;font-size:12px;color:var(--mid);font-weight:600;">Map Columns (auto-detected — adjust if needed)</div>
     ${sel('vendor','Vendor / Party Name')}
     ${sel('date','Posting / Transaction Date')}
     ${sel('amount','Amount')}
   `;
   row.classList.remove('hidden');
+  document.getElementById('previewSection').classList.remove('hidden');
 }
 
-// ── PARSE DATE ────────────────────────────────────────────────────────────────
-function parseDate(str) {
-  if (!str) return null;
-  // Try various formats: DD-MMM-YYYY, DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD, serial
-  str = str.toString().trim();
-  // Excel serial
-  if (/^\d{5}$/.test(str)) {
-    const d = new Date((parseInt(str) - 25569) * 86400 * 1000);
-    return isNaN(d) ? null : d;
-  }
-  // DD-MMM-YYYY or DD/MMM/YYYY
-  let m = str.match(/^(\d{1,2})[-\/]([A-Za-z]{3})[-\/](\d{2,4})$/);
-  if (m) {
-    const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-    const mo = months[m[2].toLowerCase()];
-    if (mo !== undefined) return new Date(parseInt(m[3].length===2?'20'+m[3]:m[3]), mo, parseInt(m[1]));
-  }
-  // DD/MM/YYYY
-  m = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-  if (m) return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
-  // YYYY-MM-DD
-  m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
-  // Fallback
-  const d = new Date(str);
-  return isNaN(d) ? null : d;
+function renderPreview(headers, rows) {
+  const tbl = document.getElementById('previewTable');
+  tbl.innerHTML = `
+    <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${r[h]??''}</td>`).join('')}</tr>`).join('')}</tbody>
+  `;
 }
 
-function monthKey(date) {
-  if (!date) return 'Unknown';
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${months[date.getMonth()]}-${date.getFullYear().toString().slice(-2)}`;
-}
-
-// Sort month keys chronologically
-function sortMonthKeys(keys) {
-  const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-  return keys.slice().sort((a,b) => {
-    if (a === 'Unknown') return 1;
-    if (b === 'Unknown') return -1;
-    const [am,ay] = a.split('-'); const [bm,by] = b.split('-');
-    const aYear = parseInt(ay) + (parseInt(ay) < 50 ? 2000 : 1900);
-    const bYear = parseInt(by) + (parseInt(by) < 50 ? 2000 : 1900);
-    return aYear !== bYear ? aYear - bYear : (months[am.toLowerCase()]||0) - (months[bm.toLowerCase()]||0);
+function updatePreviewHighlight() {
+  // re-sync colMap from selects
+  ['vendor','date','amount'].forEach(k => {
+    const el = document.getElementById('map_'+k);
+    if(el) colMap[k] = el.value;
   });
 }
 
-// ── MAIN ANALYZE ──────────────────────────────────────────────────────────────
-function parseAndAnalyze() {
+// ── RUN ANALYSIS ──────────────────────────────────────────────────────────────
+function runAnalysis() {
+  updatePreviewHighlight();
+  if (!colMap.vendor) return showError('Please select the Vendor column.');
+  if (!colMap.amount) return showError('Please select the Amount column.');
+
   hideError();
-  const result = parseInput();
-  if (!result) return;
-  const { headers, rows } = result;
-  colHeaders = headers;
-  colMap = buildColMap(headers);
-  renderColMapper(headers, colMap);
+  setStatus('Analyzing…');
 
-  if (!colMap.vendor || !colMap.amount) {
-    // Let user fix and re-run
-    setStatus('Please map columns and click Analyze again.');
-    return;
-  }
-  runAnalysis(rows);
-}
-
-function runAnalysis(rows) {
   const vc = colMap.vendor, ac = colMap.amount, dc = colMap.date;
 
-  // Sanitize amounts
-  const data = rows.map(r => {
-    const rawAmt = (r[ac]||'').replace(/[₹$,\s]/g,'');
+  const data = parsedData.map(r => {
+    const rawAmt = (r[ac]||'').toString().replace(/[₹$,\s]/g,'');
     const amt = parseFloat(rawAmt) || 0;
-    const date = dc ? parseDate(r[dc]) : null;
-    return { vendor: (r[vc]||'').trim() || '(Blank)', amount: amt, month: monthKey(date), raw: r };
-  }).filter(r => r.vendor);
+    const dateVal = dc ? r[dc] : '';
+    const date = parseDate(dateVal);
+    return { vendor: (r[vc]||'').toString().trim() || '(Blank)', amount: amt, month: monthKey(date) };
+  }).filter(r => r.vendor && r.vendor !== '(Blank)');
 
-  if (!data.length) return showError('No valid rows found after parsing. Check column mapping.');
+  if (!data.length) return showError('No valid rows found. Check column mapping.');
 
-  parsedData = data;
+  buildSummaryChips(data);
   buildVendorAnalysis(data);
   buildMoMAnalysis(data);
-  buildSummaryChips(data);
+
   document.getElementById('results').classList.remove('hidden');
   document.getElementById('emptyState').classList.add('hidden');
-  setStatus(`${data.length} rows analyzed`);
+  setStatus(`✓ ${data.length} transactions analyzed`);
 }
 
 // ── VENDOR ANALYSIS ───────────────────────────────────────────────────────────
 function buildVendorAnalysis(data) {
   const map = {};
-  data.forEach(r => {
-    if (!map[r.vendor]) map[r.vendor] = { total: 0, count: 0 };
-    map[r.vendor].total += r.amount;
-    map[r.vendor].count++;
-  });
-  const vendors = Object.entries(map).sort((a,b) => b[1].total - a[1].total);
-  const grandTotal = vendors.reduce((s,v) => s + v[1].total, 0);
+  data.forEach(r => { if(!map[r.vendor]) map[r.vendor]={total:0,count:0}; map[r.vendor].total+=r.amount; map[r.vendor].count++; });
+  const vendors = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
+  const grand = vendors.reduce((s,v)=>s+v[1].total,0);
   document.getElementById('vendorCount').textContent = `${vendors.length} vendors`;
 
   const tbody = document.getElementById('vendorBody');
   tbody.innerHTML = '';
-  vendors.forEach(([name, d], i) => {
-    const pct = grandTotal ? (d.total / grandTotal * 100) : 0;
-    const color = COLORS[i % COLORS.length];
-    const pctClass = pct >= 20 ? 'hi' : pct >= 5 ? 'mid' : 'lo';
+  vendors.forEach(([name,d],i) => {
+    const pct = grand ? d.total/grand*100 : 0;
+    const color = COLORS[i%COLORS.length];
+    const pctCls = pct>=20?'hi':pct>=5?'mid':'lo';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td style="color:var(--muted)">${i+1}</td>
-      <td><span class="vdot" style="background:${color}"></span>${name}</td>
+      <td><span class="vdot" style="background:${color}"></span>${esc(name)}</td>
       <td class="num">${fmt(d.total)}</td>
       <td class="num">${d.count}</td>
-      <td class="num">${fmt(d.total / d.count)}</td>
-      <td>
-        <div class="bar-cell">
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div></div>
-          <span style="font-size:12px;font-variant-numeric:tabular-nums;min-width:42px">${pct.toFixed(1)}%</span>
-        </div>
-      </td>
-      <td class="num"><span class="pct ${pctClass}">${pct.toFixed(2)}%</span></td>
+      <td class="num">${fmt(d.total/d.count)}</td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div></div><span style="font-size:12px;font-variant-numeric:tabular-nums;min-width:40px">${pct.toFixed(1)}%</span></div></td>
+      <td class="num"><span class="pct ${pctCls}">${pct.toFixed(2)}%</span></td>
     `;
     tbody.appendChild(tr);
   });
 
-  const tfoot = document.getElementById('vendorFoot');
-  tfoot.innerHTML = `<tr class="total-row">
+  document.getElementById('vendorFoot').innerHTML = `<tr class="total-row">
     <td colspan="2"><strong>Grand Total</strong></td>
-    <td class="num"><strong>${fmt(grandTotal)}</strong></td>
+    <td class="num"><strong>${fmt(grand)}</strong></td>
     <td class="num"><strong>${data.length}</strong></td>
-    <td class="num"><strong>${fmt(grandTotal / data.length)}</strong></td>
+    <td class="num"><strong>${fmt(grand/data.length)}</strong></td>
     <td></td>
     <td class="num"><strong>100.00%</strong></td>
   </tr>`;
@@ -474,155 +436,115 @@ function buildVendorAnalysis(data) {
 
 // ── MoM ANALYSIS ──────────────────────────────────────────────────────────────
 function buildMoMAnalysis(data) {
-  const vendors = [...new Set(data.map(r => r.vendor))];
-  const monthsRaw = [...new Set(data.map(r => r.month))];
-  const months = sortMonthKeys(monthsRaw);
+  const allVendors = [...new Set(data.map(r=>r.vendor))];
+  const months = sortMonthKeys([...new Set(data.map(r=>r.month))]);
 
-  // Build matrix: vendor → month → {total, count}
   const matrix = {};
-  vendors.forEach(v => { matrix[v] = {}; months.forEach(m => { matrix[v][m] = {total:0,count:0}; }); });
-  data.forEach(r => { matrix[r.vendor][r.month].total += r.amount; matrix[r.vendor][r.month].count++; });
+  allVendors.forEach(v=>{ matrix[v]={}; months.forEach(m=>{ matrix[v][m]={total:0,count:0}; }); });
+  data.forEach(r=>{ matrix[r.vendor][r.month].total+=r.amount; matrix[r.vendor][r.month].count++; });
 
-  // Sort vendors by grand total desc
-  const vendorTotals = vendors.map(v => ({ v, total: months.reduce((s,m)=>s+matrix[v][m].total,0) }));
-  vendorTotals.sort((a,b)=>b.total-a.total);
-  const sortedVendors = vendorTotals.map(x=>x.v);
+  const vTotals = allVendors.map(v=>({v,total:months.reduce((s,m)=>s+matrix[v][m].total,0)})).sort((a,b)=>b.total-a.total);
+  const sorted = vTotals.map(x=>x.v);
+  const mTotals = {}; months.forEach(m=>{ mTotals[m]=sorted.reduce((s,v)=>s+matrix[v][m].total,0); });
+  const grand = Object.values(mTotals).reduce((s,x)=>s+x,0);
 
-  // Month totals
-  const monthTotals = {};
-  months.forEach(m => { monthTotals[m] = sortedVendors.reduce((s,v)=>s+matrix[v][m].total,0); });
-  const grandTotal = Object.values(monthTotals).reduce((s,x)=>s+x,0);
+  document.getElementById('momBadge').textContent = `${sorted.length} vendors × ${months.length} months`;
 
-  document.getElementById('momBadge').textContent = `${sortedVendors.length} vendors × ${months.length} months`;
-
-  // ─ Amount Matrix ─
-  const thead = document.getElementById('momHead');
-  thead.innerHTML = `<tr>
-    <th>Vendor</th>
-    ${months.map(m=>`<th class="num">${m}</th>`).join('')}
-    <th class="num">Total</th>
-    <th class="num">% of Grand</th>
-  </tr>`;
-
-  const tbody = document.getElementById('momBody');
-  tbody.innerHTML = '';
-  sortedVendors.forEach((v, i) => {
-    const color = COLORS[i % COLORS.length];
-    const vTotal = vendorTotals.find(x=>x.v===v).total;
-    const vPct = grandTotal ? (vTotal/grandTotal*100) : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="min-width:160px"><span class="vdot" style="background:${color}"></span>${v}</td>
-      ${months.map(m => {
-        const val = matrix[v][m].total;
-        return `<td class="num">${val ? fmt(val) : '<span style="color:var(--border)">—</span>'}</td>`;
-      }).join('')}
-      <td class="num"><strong>${fmt(vTotal)}</strong></td>
-      <td class="num"><span class="pct ${vPct>=20?'hi':vPct>=5?'mid':'lo'}">${vPct.toFixed(2)}%</span></td>
-    `;
-    tbody.appendChild(tr);
+  // Amount table
+  document.getElementById('momHead').innerHTML = `<tr><th>Vendor</th>${months.map(m=>`<th class="num">${m}</th>`).join('')}<th class="num">Total</th><th class="num">% of Grand</th></tr>`;
+  const momBody = document.getElementById('momBody');
+  momBody.innerHTML = '';
+  sorted.forEach((v,i)=>{
+    const color=COLORS[i%COLORS.length];
+    const vt=vTotals.find(x=>x.v===v).total;
+    const vp=grand?vt/grand*100:0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="min-width:150px"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
+      ${months.map(m=>{const val=matrix[v][m].total;return`<td class="num">${val?fmt(val):'<span style="color:var(--border)">—</span>'}</td>`;}).join('')}
+      <td class="num"><strong>${fmt(vt)}</strong></td>
+      <td class="num"><span class="pct ${vp>=20?'hi':vp>=5?'mid':'lo'}">${vp.toFixed(2)}%</span></td>`;
+    momBody.appendChild(tr);
   });
+  document.getElementById('momFoot').innerHTML=`<tr class="total-row"><td><strong>Monthly Total</strong></td>${months.map(m=>`<td class="num"><strong>${fmt(mTotals[m])}</strong></td>`).join('')}<td class="num"><strong>${fmt(grand)}</strong></td><td class="num"><strong>100%</strong></td></tr>`;
 
-  const momFoot = document.getElementById('momFoot');
-  momFoot.innerHTML = `<tr class="total-row">
-    <td><strong>Monthly Total</strong></td>
-    ${months.map(m=>`<td class="num"><strong>${fmt(monthTotals[m])}</strong></td>`).join('')}
-    <td class="num"><strong>${fmt(grandTotal)}</strong></td>
-    <td class="num"><strong>100%</strong></td>
-  </tr>`;
-
-  // ─ % Matrix ─
-  const pctHead = document.getElementById('pctHead');
-  pctHead.innerHTML = `<tr>
-    <th>Vendor</th>
-    ${months.map(m=>`<th class="num">${m}</th>`).join('')}
-    <th class="num">Avg %</th>
-  </tr>`;
-
-  const pctBody = document.getElementById('pctBody');
-  pctBody.innerHTML = '';
-  sortedVendors.forEach((v,i) => {
-    const color = COLORS[i % COLORS.length];
-    const activePcts = months.map(m => monthTotals[m] ? (matrix[v][m].total / monthTotals[m] * 100) : 0).filter(p=>p>0);
-    const avgPct = activePcts.length ? activePcts.reduce((s,p)=>s+p,0)/activePcts.length : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="min-width:160px"><span class="vdot" style="background:${color}"></span>${v}</td>
-      ${months.map(m => {
-        const p = monthTotals[m] ? (matrix[v][m].total / monthTotals[m] * 100) : 0;
-        const vPct = p >= 30 ? 'hi' : p >= 10 ? 'mid' : 'lo';
-        return `<td class="num">${p > 0 ? `<span class="pct ${vPct}">${p.toFixed(1)}%</span>` : '<span style="color:var(--border)">—</span>'}</td>`;
-      }).join('')}
-      <td class="num"><span class="pct ${avgPct>=20?'hi':avgPct>=5?'mid':'lo'}">${avgPct.toFixed(1)}%</span></td>
-    `;
+  // % table
+  document.getElementById('pctHead').innerHTML=`<tr><th>Vendor</th>${months.map(m=>`<th class="num">${m}</th>`).join('')}<th class="num">Avg %</th></tr>`;
+  const pctBody=document.getElementById('pctBody');
+  pctBody.innerHTML='';
+  sorted.forEach((v,i)=>{
+    const color=COLORS[i%COLORS.length];
+    const pcts=months.map(m=>mTotals[m]?matrix[v][m].total/mTotals[m]*100:0);
+    const avg=pcts.filter(p=>p>0).reduce((s,p)=>s+p,0)/(pcts.filter(p=>p>0).length||1);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="min-width:150px"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
+      ${pcts.map(p=>p>0?`<td class="num"><span class="pct ${p>=30?'hi':p>=10?'mid':'lo'}">${p.toFixed(1)}%</span></td>`:`<td class="num"><span style="color:var(--border)">—</span></td>`).join('')}
+      <td class="num"><span class="pct ${avg>=20?'hi':avg>=5?'mid':'lo'}">${avg.toFixed(1)}%</span></td>`;
     pctBody.appendChild(tr);
   });
-
-  const pctFoot = document.getElementById('pctFoot');
-  pctFoot.innerHTML = `<tr class="total-row">
-    <td><strong>Month Total %</strong></td>
-    ${months.map(()=>`<td class="num"><strong>100%</strong></td>`).join('')}
-    <td></td>
-  </tr>`;
+  document.getElementById('pctFoot').innerHTML=`<tr class="total-row"><td><strong>Month Total %</strong></td>${months.map(()=>`<td class="num"><strong>100%</strong></td>`).join('')}<td></td></tr>`;
 }
 
 // ── SUMMARY CHIPS ─────────────────────────────────────────────────────────────
 function buildSummaryChips(data) {
-  const total = data.reduce((s,r)=>s+r.amount,0);
-  const vendors = new Set(data.map(r=>r.vendor)).size;
-  const months = new Set(data.map(r=>r.month)).size;
-  const top = Object.entries(data.reduce((m,r)=>{ m[r.vendor]=(m[r.vendor]||0)+r.amount; return m; },{})).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('summaryChips').innerHTML = `
+  const total=data.reduce((s,r)=>s+r.amount,0);
+  const vendors=new Set(data.map(r=>r.vendor)).size;
+  const months=new Set(data.map(r=>r.month)).size;
+  const vm=data.reduce((m,r)=>{m[r.vendor]=(m[r.vendor]||0)+r.amount;return m;},{});
+  const top=Object.entries(vm).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('summaryChips').innerHTML=`
     <div class="chip"><div class="lbl">Grand Total</div><div class="val">${fmtShort(total)}</div><div class="sub">${data.length} transactions</div></div>
     <div class="chip"><div class="lbl">Unique Vendors</div><div class="val">${vendors}</div><div class="sub">across ${months} month(s)</div></div>
-    <div class="chip"><div class="lbl">Top Vendor</div><div class="val" style="font-size:16px;word-break:break-word">${top[0]}</div><div class="sub">${fmtShort(top[1])} (${(top[1]/total*100).toFixed(1)}%)</div></div>
-    <div class="chip"><div class="lbl">Avg per Txn</div><div class="val">${fmtShort(total/data.length)}</div><div class="sub">across all vendors</div></div>
-  `;
+    <div class="chip"><div class="lbl">Top Vendor</div><div class="val" style="font-size:15px;word-break:break-word">${esc(top[0])}</div><div class="sub">${fmtShort(top[1])} · ${(top[1]/total*100).toFixed(1)}%</div></div>
+    <div class="chip"><div class="lbl">Avg per Txn</div><div class="val">${fmtShort(total/data.length)}</div><div class="sub">across all vendors</div></div>`;
 }
+
+// ── DATE PARSING ──────────────────────────────────────────────────────────────
+function parseDate(val) {
+  if (!val) return null;
+  if (val instanceof Date) return isNaN(val)?null:val;
+  const s=val.toString().trim();
+  if (/^\d{5}$/.test(s)) { const d=new Date((parseInt(s)-25569)*86400*1000); return isNaN(d)?null:d; }
+  let m=s.match(/^(\d{1,2})[-\/]([A-Za-z]{3})[-\/](\d{2,4})$/);
+  if(m){const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11}[m[2].toLowerCase()]; if(mo!==undefined) return new Date(parseInt(m[3].length===2?'20'+m[3]:m[3]),mo,parseInt(m[1]));}
+  m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m) return new Date(parseInt(m[3]),parseInt(m[2])-1,parseInt(m[1]));
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m) return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+function monthKey(d){if(!d)return'Unknown';const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${mo[d.getMonth()]}-${d.getFullYear().toString().slice(-2)}`;}
+function sortMonthKeys(keys){const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};return keys.slice().sort((a,b)=>{if(a==='Unknown')return 1;if(b==='Unknown')return-1;const[am,ay]=a.split('-');const[bm,by]=b.split('-');const aY=parseInt(ay)+(parseInt(ay)<50?2000:1900);const bY=parseInt(by)+(parseInt(by)<50?2000:1900);return aY!==bY?aY-bY:(mo[am.toLowerCase()]||0)-(mo[bm.toLowerCase()]||0);});}
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
-function switchTab(tabId, el) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  ['vendorTab','momTab'].forEach(id => document.getElementById(id).classList.add('hidden'));
-  document.getElementById(tabId).classList.remove('hidden');
-}
+function switchTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');['vendorTab','momTab'].forEach(t=>document.getElementById(t).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
 
 // ── EXPORT CSV ────────────────────────────────────────────────────────────────
-function exportCSV(tableId, filename) {
-  const tbl = document.getElementById(tableId);
-  if (!tbl) return;
-  let csv = '';
-  tbl.querySelectorAll('tr').forEach(row => {
-    const cells = [...row.querySelectorAll('th,td')].map(c => `"${c.innerText.replace(/"/g,'""')}"`);
-    csv += cells.join(',') + '\n';
-  });
-  const blob = new Blob([csv], {type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${filename}_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
+function exportCSV(tableId,filename){
+  const tbl=document.getElementById(tableId);if(!tbl)return;
+  let csv='';
+  tbl.querySelectorAll('tr').forEach(row=>{const cells=[...row.querySelectorAll('th,td')].map(c=>`"${c.innerText.replace(/"/g,'""')}"`);csv+=cells.join(',')+'\n';});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${filename}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
-function fmt(n) {
-  if (!n && n !== 0) return '—';
-  return new Intl.NumberFormat('en-IN', {maximumFractionDigits:0}).format(n);
-}
-function fmtShort(n) {
-  if (Math.abs(n) >= 1e7) return (n/1e7).toFixed(2) + ' Cr';
-  if (Math.abs(n) >= 1e5) return (n/1e5).toFixed(2) + ' L';
-  return fmt(n);
-}
-function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.remove('hidden'); }
-function hideError() { document.getElementById('errorBox').classList.add('hidden'); }
-function setStatus(msg) { document.getElementById('statusMsg').textContent = msg; }
-function clearAll() {
-  document.getElementById('glInput').value = '';
+function fmt(n){if(!n&&n!==0)return'—';return new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(n);}
+function fmtShort(n){if(Math.abs(n)>=1e7)return(n/1e7).toFixed(2)+' Cr';if(Math.abs(n)>=1e5)return(n/1e5).toFixed(2)+' L';return fmt(n);}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function showError(msg){const b=document.getElementById('errorBox');b.textContent=msg;b.classList.remove('hidden');}
+function hideError(){document.getElementById('errorBox').classList.add('hidden');}
+function setStatus(msg){document.getElementById('statusMsg').textContent=msg;}
+function progress(pct){const w=document.getElementById('progressWrap');const f=document.getElementById('progressFill');if(pct>0){w.classList.remove('hidden');f.style.width=pct+'%';}else{f.style.width='0%';}}
+function clearAll(){
+  workbook=null;parsedData=[];colMap={};
+  document.getElementById('fileInput').value='';
+  document.getElementById('fileInfo').classList.add('hidden');
+  document.getElementById('sheetRow').classList.add('hidden');
+  document.getElementById('colMapRow').classList.add('hidden');
+  document.getElementById('previewSection').classList.add('hidden');
   document.getElementById('results').classList.add('hidden');
   document.getElementById('emptyState').classList.remove('hidden');
-  document.getElementById('colMapRow').classList.add('hidden');
-  hideError(); setStatus('');
+  document.getElementById('analyzeBtn').disabled=true;
+  hideError();setStatus('');
 }
 </script>
 </body>
