@@ -6,129 +6,146 @@
 <title>GL Analyzer — Other Expenses Audit</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  :root {
-    --ink:     #1a1f2e;
-    --mid:     #4a5568;
-    --muted:   #8896aa;
-    --border:  #dde3ec;
-    --surface: #f5f7fa;
-    --white:   #ffffff;
-    --accent:  #1d4ed8;
-    --accent-lt:#eff4ff;
-    --green:   #16a34a;
-    --green-lt:#f0fdf4;
-    --amber:   #d97706;
-    --amber-lt:#fffbeb;
-    --red:     #dc2626;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;}
+:root {
+  --ink:#1a1f2e; --mid:#4a5568; --muted:#8896aa; --border:#dde3ec;
+  --surface:#f5f7fa; --white:#ffffff;
+  --accent:#1d4ed8; --accent-lt:#eff4ff;
+  --green:#16a34a; --green-lt:#f0fdf4;
+  --amber:#d97706; --amber-lt:#fffbeb;
+  --red:#dc2626; --red-lt:#fff5f5;
+  --purple:#7c3aed; --purple-lt:#f5f3ff;
+  --teal:#0891b2; --teal-lt:#ecfeff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;}
 
-  /* HEADER */
-  header{background:var(--ink);padding:16px 28px;display:flex;align-items:center;gap:12px;}
-  .logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;}
-  .logo svg{width:16px;height:16px;fill:none;stroke:white;stroke-width:2;}
-  header h1{font-size:15px;font-weight:600;color:white;}
-  header span{font-size:11px;color:var(--muted);margin-left:auto;}
+header{background:var(--ink);padding:14px 28px;display:flex;align-items:center;gap:12px;}
+.logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo svg{width:16px;height:16px;fill:none;stroke:white;stroke-width:2;}
+header h1{font-size:15px;font-weight:600;color:white;}
+.header-sub{font-size:11px;color:var(--muted);margin-left:auto;}
 
-  main{max-width:1300px;margin:0 auto;padding:26px 20px 60px;}
+main{max-width:1400px;margin:0 auto;padding:24px 20px 80px;}
 
-  /* UPLOAD CARD */
-  .card{background:white;border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:22px;}
-  .card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px;}
+.card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:18px;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px;}
 
-  /* DROP ZONE */
-  .drop-zone{border:2px dashed var(--border);border-radius:10px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .15s;position:relative;}
-  .drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:var(--accent-lt);}
-  .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-  .drop-zone svg{width:36px;height:36px;stroke:var(--muted);fill:none;stroke-width:1.5;margin:0 auto 10px;display:block;}
-  .drop-zone p{font-size:14px;color:var(--mid);}
-  .drop-zone p small{display:block;font-size:12px;color:var(--muted);margin-top:4px;}
-  .file-info{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-lt);border:1px solid #bbf7d0;border-radius:8px;margin-top:12px;font-size:13px;color:var(--green);}
-  .file-info svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:2;flex-shrink:0;}
+/* UPLOAD GRID */
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:700px){.upload-grid{grid-template-columns:1fr;}}
+.upload-slot{border:2px dashed var(--border);border-radius:10px;padding:28px 16px;text-align:center;cursor:pointer;position:relative;transition:all .15s;}
+.upload-slot:hover,.upload-slot.over{border-color:var(--accent);background:var(--accent-lt);}
+.upload-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-slot svg{width:30px;height:30px;stroke:var(--muted);fill:none;stroke-width:1.5;margin:0 auto 8px;display:block;}
+.upload-slot p{font-size:13px;color:var(--mid);}
+.upload-slot small{font-size:11px;color:var(--muted);display:block;margin-top:3px;}
+.upload-slot .slot-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;color:var(--accent);}
+.file-badge{display:flex;align-items:center;gap:8px;margin-top:10px;padding:7px 12px;background:var(--green-lt);border:1px solid #bbf7d0;border-radius:7px;font-size:12px;color:var(--green);}
+.file-badge svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2;flex-shrink:0;}
 
-  /* SHEET SELECTOR */
-  .sheet-row{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;}
-  .sheet-row label{font-size:12px;color:var(--mid);font-weight:500;}
-  .sheet-row select{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--ink);background:var(--surface);}
-  .sheet-row select:focus{outline:none;border-color:var(--accent);}
+/* SHEET + COL MAP */
+.sheet-row{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.sheet-row label{font-size:12px;color:var(--mid);font-weight:500;}
+select{border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:13px;color:var(--ink);background:white;}
+select:focus{outline:none;border-color:var(--accent);}
 
-  /* COLUMN MAP */
-  .col-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-top:14px;}
-  .col-map label{font-size:12px;color:var(--mid);font-weight:500;display:block;margin-bottom:4px;}
-  .col-map select{width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--ink);background:var(--surface);}
-  .col-map select:focus{outline:none;border-color:var(--accent);}
+.col-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
+.col-map label{font-size:11px;color:var(--mid);font-weight:600;display:block;margin-bottom:3px;}
+.col-map select{width:100%;}
 
-  /* PREVIEW */
-  .preview-wrap{overflow-x:auto;margin-top:14px;border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;}
-  .preview-wrap table{width:100%;border-collapse:collapse;font-size:12px;}
-  .preview-wrap th{background:var(--surface);padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;}
-  .preview-wrap td{padding:6px 12px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
-  .preview-wrap tr:last-child td{border-bottom:none;}
+/* PREVIEW */
+.preview-wrap{overflow:auto;max-height:160px;border:1px solid var(--border);border-radius:7px;margin-top:12px;}
+.preview-wrap table{width:100%;border-collapse:collapse;font-size:12px;}
+.preview-wrap th{background:var(--surface);padding:6px 10px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;}
+.preview-wrap td{padding:5px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
 
-  /* ACTIONS */
-  .actions{display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;}
-  .btn-primary{background:var(--accent);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;}
-  .btn-primary:hover{background:#1e40af;}
-  .btn-primary:disabled{background:var(--muted);cursor:not-allowed;}
-  .btn-ghost{background:none;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer;}
-  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-  .status{font-size:12px;color:var(--muted);margin-left:auto;}
+/* ACTIONS */
+.actions{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap;}
+.btn-primary{background:var(--accent);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-primary:hover:not(:disabled){background:#1e40af;}
+.btn-primary:disabled{background:var(--muted);cursor:not-allowed;}
+.btn-ghost{background:none;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-green{background:var(--green);color:white;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-green:hover{background:#15803d;}
+.status{font-size:12px;color:var(--muted);}
 
-  /* ERROR */
-  .error-box{background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:11px 14px;font-size:13px;color:var(--red);margin-top:12px;}
+/* PROGRESS */
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;}
 
-  /* SUMMARY CHIPS */
-  .summary-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
-  .chip{background:white;border:1px solid var(--border);border-radius:10px;padding:14px 18px;flex:1;min-width:130px;}
-  .chip .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;}
-  .chip .val{font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
-  .chip .sub{font-size:11px;color:var(--muted);margin-top:2px;}
+/* ERROR */
+.error-box{background:var(--red-lt);border:1px solid #fecaca;border-radius:7px;padding:10px 13px;font-size:13px;color:var(--red);margin-top:10px;}
+.hidden{display:none!important;}
 
-  /* TABS */
-  .tabs{display:flex;gap:2px;margin-bottom:18px;border-bottom:2px solid var(--border);}
-  .tab{padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;}
-  .tab:hover{color:var(--ink);}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+/* SUMMARY CHIPS */
+.summary-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.chip{background:white;border:1px solid var(--border);border-radius:10px;padding:13px 16px;flex:1;min-width:120px;}
+.chip .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:3px;}
+.chip .val{font-size:19px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+.chip .sub{font-size:11px;color:var(--muted);margin-top:2px;}
 
-  /* TABLE CARD */
-  .table-card{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:22px;}
-  .table-card .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .table-card .card-header h3{font-size:14px;font-weight:700;color:var(--ink);}
-  .badge{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:600;}
-  .export-btn{margin-left:auto;font-size:12px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;color:var(--mid);}
-  .export-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* TABS */
+.tabs{display:flex;gap:2px;margin-bottom:16px;border-bottom:2px solid var(--border);overflow-x:auto;}
+.tab{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;}
+.tab:hover{color:var(--ink);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;}
 
-  .tbl-wrap{overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  thead tr{background:var(--surface);}
-  th{padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border);}
-  th.num,td.num{text-align:right;}
-  td{padding:9px 13px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
-  tr:last-child td{border-bottom:none;}
-  tr:hover td{background:var(--surface);}
-  .total-row td{font-weight:700;background:var(--surface);border-top:2px solid var(--border);}
+/* TABLE CARD */
+.table-card{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;}
+.table-card .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.table-card .card-header h3{font-size:14px;font-weight:700;color:var(--ink);}
+.badge{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:600;}
+.badge-amber{background:var(--amber-lt);color:var(--amber);}
+.badge-red{background:var(--red-lt);color:var(--red);}
+.badge-green{background:var(--green-lt);color:var(--green);}
+.export-btn{margin-left:auto;font-size:12px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:none;cursor:pointer;color:var(--mid);}
+.export-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  .bar-cell{display:flex;align-items:center;gap:8px;}
-  .bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;min-width:60px;max-width:110px;}
-  .bar-fill{height:100%;border-radius:3px;}
-  .vdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;flex-shrink:0;}
-  .pct{font-variant-numeric:tabular-nums;font-size:12px;padding:2px 7px;border-radius:4px;}
-  .pct.hi{background:var(--green-lt);color:var(--green);}
-  .pct.mid{background:var(--amber-lt);color:var(--amber);}
-  .pct.lo{background:var(--surface);color:var(--muted);}
+.tbl-wrap{overflow-x:auto;}
+table.data-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.data-tbl thead tr{background:var(--surface);}
+table.data-tbl th{padding:8px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border);}
+table.data-tbl th.num,table.data-tbl td.num{text-align:right;}
+table.data-tbl td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--ink);}
+table.data-tbl tr:last-child td{border-bottom:none;}
+table.data-tbl tr:hover td{background:#fafbfd;}
+table.data-tbl .total-row td{font-weight:700;background:var(--surface);border-top:2px solid var(--border);}
+.mom-table th:first-child,.mom-table td:first-child{position:sticky;left:0;background:white;z-index:1;}
+.mom-table thead th:first-child{background:var(--surface);}
 
-  .mom-table th:first-child,.mom-table td:first-child{position:sticky;left:0;background:white;z-index:1;}
-  .mom-table thead tr th:first-child{background:var(--surface);}
+.bar-cell{display:flex;align-items:center;gap:7px;}
+.bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;min-width:50px;max-width:100px;}
+.bar-fill{height:100%;border-radius:3px;}
+.vdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;flex-shrink:0;}
+.pct{font-variant-numeric:tabular-nums;font-size:11px;padding:2px 6px;border-radius:4px;}
+.pct.hi{background:var(--green-lt);color:var(--green);}
+.pct.mid{background:var(--amber-lt);color:var(--amber);}
+.pct.lo{background:var(--surface);color:var(--muted);}
 
-  .empty{text-align:center;padding:56px 20px;color:var(--muted);}
-  .empty svg{width:46px;height:46px;margin:0 auto 12px;display:block;stroke:var(--border);fill:none;stroke-width:1.5;}
-  .empty p{font-size:14px;}
-  .hidden{display:none!important;}
+/* NATURE BADGE */
+.nature-tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600;white-space:nowrap;}
 
-  /* PROGRESS */
-  .progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
-  .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;}
+/* FINDINGS */
+.finding-card{border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:12px;background:white;}
+.finding-card.warn{border-left:4px solid var(--amber);background:var(--amber-lt);}
+.finding-card.flag{border-left:4px solid var(--red);background:var(--red-lt);}
+.finding-card.info{border-left:4px solid var(--teal);background:var(--teal-lt);}
+.finding-card h4{font-size:13px;font-weight:700;margin-bottom:5px;}
+.finding-card p{font-size:12px;color:var(--mid);line-height:1.5;}
+.finding-card .tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;margin-right:4px;margin-bottom:4px;}
+.tag-red{background:var(--red-lt);color:var(--red);}
+.tag-amber{background:var(--amber-lt);color:var(--amber);}
+.tag-teal{background:var(--teal-lt);color:var(--teal);}
+
+.empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty svg{width:44px;height:44px;margin:0 auto 10px;display:block;stroke:var(--border);fill:none;stroke-width:1.5;}
+.empty p{font-size:14px;}
+
+/* AI status */
+.ai-status{font-size:12px;padding:6px 12px;background:var(--purple-lt);border:1px solid #ddd6fe;border-radius:6px;color:var(--purple);display:inline-flex;align-items:center;gap:6px;}
+.spinner{width:12px;height:12px;border:2px solid #ddd6fe;border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
@@ -138,345 +155,506 @@
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
   </div>
   <h1>GL Analyzer — Other Expenses Audit</h1>
-  <span id="ts"></span>
+  <span class="header-sub" id="ts"></span>
 </header>
 
 <main>
 
-  <!-- UPLOAD CARD -->
-  <div class="card">
-    <div class="card-title">Step 1 — Upload GL Excel File</div>
+<!-- UPLOAD CARD -->
+<div class="card">
+  <div class="card-title">Step 1 — Upload Files</div>
+  <div class="upload-grid">
 
-    <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFile(this.files[0])">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
-      <p>Click to browse or drag &amp; drop your file here</p>
-      <p><small>Supports .xlsx, .xls, .csv — file never leaves your browser</small></p>
-    </div>
-
-    <div id="fileInfo" class="file-info hidden">
-      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      <span id="fileName"></span>
-    </div>
-
-    <div id="sheetRow" class="sheet-row hidden">
-      <label>Sheet:</label>
-      <select id="sheetSelect" onchange="loadSheet()"></select>
-      <span id="rowCount" style="font-size:12px;color:var(--muted);"></span>
-    </div>
-
-    <div id="colMapRow" class="col-map hidden"></div>
-
-    <div id="previewSection" class="hidden">
-      <div style="font-size:12px;color:var(--muted);margin-top:14px;margin-bottom:6px;">Preview (first 5 rows)</div>
-      <div class="preview-wrap"><table id="previewTable"></table></div>
-    </div>
-
-    <div id="progressWrap" class="progress-bar hidden"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div id="errorBox" class="error-box hidden"></div>
-
-    <div class="actions">
-      <button class="btn-primary" id="analyzeBtn" onclick="runAnalysis()" disabled>Analyze</button>
-      <button class="btn-ghost" onclick="clearAll()">Clear</button>
-      <span class="status" id="statusMsg"></span>
-    </div>
-  </div>
-
-  <!-- RESULTS -->
-  <div id="results" class="hidden">
-    <div class="summary-row" id="summaryChips"></div>
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('vendorTab',this)">Vendor-wise Analysis</div>
-      <div class="tab" onclick="switchTab('momTab',this)">Month-on-Month Analysis</div>
-    </div>
-
-    <!-- TAB 1 -->
-    <div id="vendorTab">
-      <div class="table-card">
-        <div class="card-header">
-          <h3>Vendor-wise Summary</h3>
-          <span class="badge" id="vendorCount"></span>
-          <button class="export-btn" onclick="exportCSV('vendorTable','vendor_analysis')">⬇ Export CSV</button>
-        </div>
-        <div class="tbl-wrap">
-          <table id="vendorTable">
-            <thead><tr>
-              <th>#</th><th>Vendor Name</th>
-              <th class="num">Total Amount</th><th class="num">Txn Count</th>
-              <th class="num">Avg per Txn</th><th>% Bar</th><th class="num">% of Grand Total</th>
-            </tr></thead>
-            <tbody id="vendorBody"></tbody>
-            <tfoot id="vendorFoot"></tfoot>
-          </table>
-        </div>
+    <!-- GL Dump -->
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">① GL Dump (Oracle Export)</div>
+      <div class="upload-slot" id="dz1">
+        <input type="file" id="glFile" accept=".xlsx,.xls,.csv" onchange="handleGL(this.files[0])">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+        <p>Drop GL dump here</p>
+        <small>.xlsx / .xls / .csv</small>
+      </div>
+      <div id="gl-badge" class="file-badge hidden">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="gl-name"></span>
+      </div>
+      <div id="gl-sheet-row" class="sheet-row hidden">
+        <label>Sheet:</label>
+        <select id="glSheet" onchange="loadGLSheet()"></select>
+        <span id="glRowCount" style="font-size:11px;color:var(--muted)"></span>
+      </div>
+      <div id="gl-col-map" class="col-map hidden"></div>
+      <div id="gl-preview" class="hidden">
+        <div style="font-size:11px;color:var(--muted);margin:10px 0 4px">Preview — first 5 rows</div>
+        <div class="preview-wrap"><table id="glPreviewTable"></table></div>
       </div>
     </div>
 
-    <!-- TAB 2 -->
-    <div id="momTab" class="hidden">
-      <div class="table-card">
-        <div class="card-header">
-          <h3>Vendor × Month — Amount Matrix</h3>
-          <span class="badge" id="momBadge"></span>
-          <button class="export-btn" onclick="exportCSV('momTable','mom_amount')">⬇ Export CSV</button>
-        </div>
-        <div class="tbl-wrap">
-          <table id="momTable" class="mom-table">
-            <thead id="momHead"></thead>
-            <tbody id="momBody"></tbody>
-            <tfoot id="momFoot"></tfoot>
-          </table>
-        </div>
+    <!-- Reference Working -->
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">② Reference Working (Partially Filled Template)</div>
+      <div class="upload-slot" id="dz2">
+        <input type="file" id="refFile" accept=".xlsx,.xls,.csv" onchange="handleRef(this.files[0])">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <p>Drop reference template here</p>
+        <small>Optional — .xlsx / .xls / .csv</small>
       </div>
-
-      <div class="table-card">
-        <div class="card-header">
-          <h3>Monthly % Contribution by Vendor</h3>
-          <span style="font-size:12px;color:var(--muted);">Each cell = vendor's % of that month's total</span>
-          <button class="export-btn" onclick="exportCSV('pctTable','monthly_pct')">⬇ Export CSV</button>
-        </div>
-        <div class="tbl-wrap">
-          <table id="pctTable" class="mom-table">
-            <thead id="pctHead"></thead>
-            <tbody id="pctBody"></tbody>
-            <tfoot id="pctFoot"></tfoot>
-          </table>
-        </div>
+      <div id="ref-badge" class="file-badge hidden">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="ref-name"></span>
+      </div>
+      <div id="ref-sheet-row" class="sheet-row hidden">
+        <label>Sheet:</label>
+        <select id="refSheet" onchange="loadRefSheet()"></select>
+        <span id="refRowCount" style="font-size:11px;color:var(--muted)"></span>
+      </div>
+      <div id="ref-info" style="font-size:12px;color:var(--mid);margin-top:10px;display:none;">
+        📋 Reference loaded — <span id="ref-summary"></span>
       </div>
     </div>
   </div>
 
-  <div id="emptyState" class="empty">
-    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-    <p>Upload your GL Excel file above and click <strong>Analyze</strong>.</p>
+  <div id="progressWrap" class="progress-bar hidden"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div id="errorBox" class="error-box hidden"></div>
+
+  <div class="actions">
+    <button class="btn-primary" id="analyzeBtn" onclick="runAnalysis()" disabled>🔍 Analyze</button>
+    <button class="btn-ghost" onclick="clearAll()">Clear</button>
+    <span id="aiStatusWrap"></span>
+    <span class="status" id="statusMsg"></span>
   </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results" class="hidden">
+  <div class="summary-row" id="summaryChips"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('vendorTab',this)">Vendor-wise</div>
+    <div class="tab" onclick="switchTab('momTab',this)">Month-on-Month</div>
+    <div class="tab" onclick="switchTab('natureTab',this)">Nature / Head Classification</div>
+    <div class="tab" onclick="switchTab('findingsTab',this)">⚠ Audit Findings</div>
+    <div class="tab" onclick="switchTab('rawTab',this)">Raw Data</div>
+  </div>
+
+  <!-- TAB: VENDOR -->
+  <div id="vendorTab">
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Vendor-wise Summary</h3>
+        <span class="badge" id="vendorCount"></span>
+        <button class="export-btn" onclick="exportCSV('vendorTable','vendor_analysis')">⬇ CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="data-tbl" id="vendorTable">
+          <thead><tr>
+            <th>#</th><th>Vendor Name</th>
+            <th class="num">Total (₹)</th><th class="num">Txns</th>
+            <th class="num">Avg/Txn</th><th>% Bar</th><th class="num">% Grand</th>
+          </tr></thead>
+          <tbody id="vendorBody"></tbody>
+          <tfoot id="vendorFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: MOM -->
+  <div id="momTab" class="hidden">
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Vendor × Month — Amount Matrix</h3>
+        <span class="badge" id="momBadge"></span>
+        <span style="font-size:11px;color:var(--amber);margin-left:4px;">ADJ period shown first</span>
+        <button class="export-btn" onclick="exportCSV('momTable','mom_amount')">⬇ CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="data-tbl mom-table" id="momTable">
+          <thead id="momHead"></thead>
+          <tbody id="momBody"></tbody>
+          <tfoot id="momFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Monthly % Contribution by Vendor</h3>
+        <span style="font-size:12px;color:var(--muted);">Each cell = vendor % of that month's total</span>
+        <button class="export-btn" onclick="exportCSV('pctTable','monthly_pct')">⬇ CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="data-tbl mom-table" id="pctTable">
+          <thead id="pctHead"></thead>
+          <tbody id="pctBody"></tbody>
+          <tfoot id="pctFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: NATURE -->
+  <div id="natureTab" class="hidden">
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Nature / Head Classification</h3>
+        <span class="badge" id="natureBadge"></span>
+        <span style="font-size:11px;color:var(--purple);margin-left:4px;">AI-classified from invoice description</span>
+        <button class="export-btn" onclick="exportCSV('natureTable','nature_classification')">⬇ CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="data-tbl" id="natureTable">
+          <thead><tr>
+            <th>#</th><th>Vendor</th><th>Invoice Description</th>
+            <th>Booked Head</th><th>Suggested Head</th><th>Summarised Nature</th>
+            <th class="num">Amount (₹)</th><th>Period</th><th>Remark</th>
+          </tr></thead>
+          <tbody id="natureBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Head-wise Totals</h3>
+        <button class="export-btn" onclick="exportCSV('headTable','head_totals')">⬇ CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="data-tbl" id="headTable">
+          <thead><tr>
+            <th>Suggested Head</th><th class="num">Total (₹)</th>
+            <th class="num">Txns</th><th class="num">% of Total</th><th>Vendors</th>
+          </tr></thead>
+          <tbody id="headBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: FINDINGS -->
+  <div id="findingsTab" class="hidden">
+    <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:13px;font-weight:600;color:var(--ink);">Audit Observations & Findings</span>
+      <span class="badge badge-red" id="critCount"></span>
+      <span class="badge badge-amber" id="warnCount"></span>
+      <span class="badge badge-green" id="infoCount"></span>
+      <button class="btn-green" style="margin-left:auto;" onclick="exportFindingsXLSX()">⬇ Export Full Workings (Excel)</button>
+    </div>
+    <div id="findingsContainer"></div>
+  </div>
+
+  <!-- TAB: RAW -->
+  <div id="rawTab" class="hidden">
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Raw GL Data (Parsed)</h3>
+        <span class="badge" id="rawBadge"></span>
+        <button class="export-btn" onclick="exportCSV('rawTable','raw_gl')">⬇ CSV</button>
+      </div>
+      <div class="tbl-wrap" style="max-height:500px;overflow-y:auto;">
+        <table class="data-tbl" id="rawTable">
+          <thead id="rawHead"></thead>
+          <tbody id="rawBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="emptyState" class="empty">
+  <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+  <p>Upload your GL dump and click <strong>Analyze</strong>.</p>
+</div>
 </main>
 
 <script>
+// ── CONSTANTS ────────────────────────────────────────────────────────────────
+const COLORS=['#1d4ed8','#7c3aed','#0891b2','#16a34a','#d97706','#dc2626','#db2777','#059669','#9333ea','#0284c7','#ca8a04','#b91c1c','#475569','#0f766e'];
+
+const NATURE_RULES = [
+  {keys:['salary','salaries','payroll','wages','staff pay','hrm'],head:'Employee Costs',color:'#1d4ed8'},
+  {keys:['rent','lease','premises','building hire','office rent'],head:'Rent & Premises',color:'#7c3aed'},
+  {keys:['travel','hotel','accommodation','flight','air ticket','cab','taxi','uber','ola','boarding','lodging','per diem','conveyance'],head:'Travel & Conveyance',color:'#0891b2'},
+  {keys:['electricity','power','utility','water','gas bill','maintenance'],head:'Utilities & Maintenance',color:'#059669'},
+  {keys:['insurance','premium','mediclaim','policy'],head:'Insurance',color:'#16a34a'},
+  {keys:['legal','advocate','court','arbitration','stamp duty','notary'],head:'Legal & Professional',color:'#ca8a04'},
+  {keys:['audit','ca fee','accounting','taxation','consultant','advisory','professional'],head:'Professional Fees',color:'#d97706'},
+  {keys:['bank charge','bank fee','processing fee','commission','forex','exchange loss','interest','finance charge'],head:'Finance Charges',color:'#dc2626'},
+  {keys:['advertisement','marketing','promotion','branding','digital','campaign','media'],head:'Advertisement & Marketing',color:'#db2777'},
+  {keys:['repair','maintenance','amc','service contract','annual maintenance'],head:'Repairs & Maintenance',color:'#0f766e'},
+  {keys:['printing','stationery','office supply','toner','cartridge','paper'],head:'Office Expenses',color:'#475569'},
+  {keys:['telephone','mobile','broadband','internet','landline','communication'],head:'Communication',color:'#9333ea'},
+  {keys:['donation','csr','charity'],head:'Donations / CSR',color:'#d97706'},
+  {keys:['subscription','membership','licence','software','saas','renewal'],head:'Software & Subscriptions',color:'#1d4ed8'},
+  {keys:['freight','courier','logistics','transport','cargo','delivery','dispatch'],head:'Freight & Logistics',color:'#0891b2'},
+  {keys:['security','guard','vigilance'],head:'Security Services',color:'#475569'},
+  {keys:['event','conference','seminar','training','workshop'],head:'Events & Training',color:'#7c3aed'},
+  {keys:['penalty','fine','late fee','default'],head:'Penalty / Fine',color:'#dc2626'},
+  {keys:['depreciation','amortisation','amortization'],head:'Depreciation',color:'#8896aa'},
+  {keys:['provision','write off','bad debt','impairment'],head:'Provisions / Write-offs',color:'#dc2626'},
+  {keys:['adjustment','adj','rectification','reversal','prior year','opening'],head:'Adjustments',color:'#d97706'},
+  {keys:['miscellaneous','misc','sundry','other'],head:'Miscellaneous',color:'#8896aa'},
+];
+
+function classifyNature(desc,vendor){
+  const text=(desc+' '+vendor).toLowerCase();
+  for(const r of NATURE_RULES){
+    if(r.keys.some(k=>text.includes(k))) return r;
+  }
+  return {head:'Unclassified',color:'#8896aa'};
+}
+
 // ── STATE ────────────────────────────────────────────────────────────────────
-const COLORS = ['#1d4ed8','#7c3aed','#0891b2','#16a34a','#d97706','#dc2626','#db2777','#059669','#9333ea','#0284c7','#ca8a04','#b91c1c'];
-let workbook = null, parsedData = [], colMap = {};
+let glWB=null, glRows=[], refWB=null, refRows=[];
+let parsedData=[], colMap={};
+let classifiedData=[];
+let findings=[];
 
-document.getElementById('ts').textContent = new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+document.getElementById('ts').textContent=new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-// ── DRAG & DROP ───────────────────────────────────────────────────────────────
-const dz = document.getElementById('dropZone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); const f = e.dataTransfer.files[0]; if(f) handleFile(f); });
+// ── DRAG/DROP ────────────────────────────────────────────────────────────────
+['dz1','dz2'].forEach(id=>{
+  const dz=document.getElementById(id);
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('over');
+    const f=e.dataTransfer.files[0];
+    if(!f)return;
+    if(id==='dz1')handleGL(f); else handleRef(f);
+  });
+});
 
-// ── FILE HANDLER ──────────────────────────────────────────────────────────────
-function handleFile(file) {
-  if (!file) return;
-  hideError();
-  setStatus('Reading file…');
-  progress(20);
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
+// ── GL FILE ───────────────────────────────────────────────────────────────────
+function handleGL(file){
+  if(!file)return;
+  hideError();setStatus('Reading GL file…');progress(20);
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
       progress(50);
-      const data = new Uint8Array(e.target.result);
-      workbook = XLSX.read(data, { type: 'array', cellDates: true });
+      glWB=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
       progress(80);
-
-      document.getElementById('fileName').textContent = `${file.name}  (${(file.size/1024).toFixed(1)} KB)`;
-      document.getElementById('fileInfo').classList.remove('hidden');
-
-      // Populate sheet selector
-      const sel = document.getElementById('sheetSelect');
-      sel.innerHTML = workbook.SheetNames.map(n => `<option value="${n}">${n}</option>`).join('');
-      document.getElementById('sheetRow').classList.remove('hidden');
-
-      loadSheet();
+      document.getElementById('gl-name').textContent=`${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+      document.getElementById('gl-badge').classList.remove('hidden');
+      const sel=document.getElementById('glSheet');
+      sel.innerHTML=glWB.SheetNames.map(n=>`<option>${n}</option>`).join('');
+      document.getElementById('gl-sheet-row').classList.remove('hidden');
+      loadGLSheet();
       progress(100);
-      setTimeout(() => document.getElementById('progressWrap').classList.add('hidden'), 600);
-    } catch(err) {
-      showError('Could not read file: ' + err.message);
-      progress(0);
-    }
+      setTimeout(()=>document.getElementById('progressWrap').classList.add('hidden'),500);
+    }catch(err){showError('GL file error: '+err.message);progress(0);}
   };
-  reader.onerror = () => showError('Failed to read file.');
   document.getElementById('progressWrap').classList.remove('hidden');
   reader.readAsArrayBuffer(file);
 }
 
-function loadSheet() {
-  const sheetName = document.getElementById('sheetSelect').value;
-  const ws = workbook.Sheets[sheetName];
-  const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false });
-
-  if (!rows.length) { showError('Selected sheet appears empty.'); return; }
+function loadGLSheet(){
+  const ws=glWB.Sheets[document.getElementById('glSheet').value];
+  glRows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+  if(!glRows.length){showError('Sheet is empty.');return;}
   hideError();
-
-  const headers = Object.keys(rows[0]);
-  colMap = guessColMap(headers);
+  const headers=Object.keys(glRows[0]);
+  colMap=guessColMap(headers);
   renderColMapper(headers);
-  renderPreview(headers, rows.slice(0,5));
-  document.getElementById('rowCount').textContent = `${rows.length} rows`;
-
-  // Store for analysis
-  parsedData = rows;
-  document.getElementById('analyzeBtn').disabled = false;
-  setStatus(`${rows.length} rows loaded from "${sheetName}"`);
+  renderPreview(headers,glRows.slice(0,5));
+  document.getElementById('glRowCount').textContent=`${glRows.length} rows`;
+  document.getElementById('analyzeBtn').disabled=false;
+  setStatus(`${glRows.length} rows loaded`);
 }
 
-// ── COL MAPPING ───────────────────────────────────────────────────────────────
-function guessColMap(headers) {
-  const g = (keys) => headers.find(h => keys.some(k => h.toLowerCase().includes(k))) || '';
-  return {
-    vendor: g(['vendor','party','supplier','payee','name','creditor']),
-    date:   g(['date','posting','period','month','doc date','value date','entry date']),
-    amount: g(['amount','amt','value','debit','credit','lc amt','lc amount','txn amount']),
+// ── REF FILE ──────────────────────────────────────────────────────────────────
+function handleRef(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      refWB=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+      document.getElementById('ref-name').textContent=`${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+      document.getElementById('ref-badge').classList.remove('hidden');
+      const sel=document.getElementById('refSheet');
+      sel.innerHTML=refWB.SheetNames.map(n=>`<option>${n}</option>`).join('');
+      document.getElementById('ref-sheet-row').classList.remove('hidden');
+      loadRefSheet();
+    }catch(err){showError('Ref file error: '+err.message);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function loadRefSheet(){
+  const ws=refWB.Sheets[document.getElementById('refSheet').value];
+  refRows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+  document.getElementById('ref-info').style.display='block';
+  document.getElementById('ref-summary').textContent=`${refRows.length} rows, ${Object.keys(refRows[0]||{}).length} columns`;
+}
+
+// ── COL MAP ───────────────────────────────────────────────────────────────────
+function guessColMap(h){
+  const g=keys=>h.find(x=>keys.some(k=>x.toLowerCase().includes(k)))||'';
+  return{
+    vendor:  g(['vendor','party','supplier','payee','name','creditor','trading']),
+    date:    g(['date','posting','period','month','doc date','gl date','entry date','value date','accounting date']),
+    amount:  g(['functional net','func net','net amount','functional amount','lc net','amount','amt','value','debit','credit']),
+    desc:    g(['description','narration','narr','invoice desc','line desc','remarks','particulars','memo','subject','detail']),
+    docno:   g(['doc no','document no','voucher','journal','invoice no','ref no','entry no']),
+    head:    g(['account','gl account','account name','head','expense head','cost head','natural account']),
+    period:  g(['period','fiscal period','accounting period','gl period']),
   };
 }
 
-function renderColMapper(headers) {
-  const row = document.getElementById('colMapRow');
-  const sel = (key, label) => `
+function renderColMapper(headers){
+  const row=document.getElementById('gl-col-map');
+  const sel=(key,label,req)=>`
     <div>
-      <label>${label} <span style="color:var(--red)">*</span></label>
-      <select id="map_${key}" onchange="colMap['${key}']=this.value;updatePreviewHighlight()">
-        <option value="">— select column —</option>
-        ${headers.map(h=>`<option value="${h}" ${colMap[key]===h?'selected':''}>${h}</option>`).join('')}
+      <label>${label}${req?' <span style="color:var(--red)">*</span>':' <span style="color:var(--muted);font-weight:400">(opt)</span>'}</label>
+      <select id="map_${key}" onchange="colMap['${key}']=this.value">
+        <option value="">— select —</option>
+        ${headers.map(h=>`<option value="${h}"${colMap[key]===h?' selected':''}>${h}</option>`).join('')}
       </select>
     </div>`;
-  row.innerHTML = `
-    <div style="grid-column:1/-1;font-size:12px;color:var(--mid);font-weight:600;">Map Columns (auto-detected — adjust if needed)</div>
-    ${sel('vendor','Vendor / Party Name')}
-    ${sel('date','Posting / Transaction Date')}
-    ${sel('amount','Amount')}
+  row.innerHTML=`
+    <div style="grid-column:1/-1;font-size:11px;color:var(--mid);font-weight:700;">Map GL Columns (auto-detected — adjust if needed)</div>
+    ${sel('vendor','Vendor / Party Name',true)}
+    ${sel('amount','Amount (Functional Net)',true)}
+    ${sel('date','Transaction Date',false)}
+    ${sel('period','GL Period',false)}
+    ${sel('desc','Invoice Description',false)}
+    ${sel('head','Booked GL Head',false)}
+    ${sel('docno','Doc / Voucher No.',false)}
   `;
   row.classList.remove('hidden');
-  document.getElementById('previewSection').classList.remove('hidden');
+  document.getElementById('gl-preview').classList.remove('hidden');
 }
 
-function renderPreview(headers, rows) {
-  const tbl = document.getElementById('previewTable');
-  tbl.innerHTML = `
+function renderPreview(headers,rows){
+  document.getElementById('glPreviewTable').innerHTML=`
     <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${r[h]??''}</td>`).join('')}</tr>`).join('')}</tbody>
-  `;
+    <tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${r[h]??''}</td>`).join('')}</tr>`).join('')}</tbody>`;
 }
 
-function updatePreviewHighlight() {
-  // re-sync colMap from selects
-  ['vendor','date','amount'].forEach(k => {
-    const el = document.getElementById('map_'+k);
-    if(el) colMap[k] = el.value;
+function syncColMap(){
+  ['vendor','date','amount','desc','head','docno','period'].forEach(k=>{
+    const el=document.getElementById('map_'+k);
+    if(el)colMap[k]=el.value;
   });
 }
 
-// ── RUN ANALYSIS ──────────────────────────────────────────────────────────────
-function runAnalysis() {
-  updatePreviewHighlight();
-  if (!colMap.vendor) return showError('Please select the Vendor column.');
-  if (!colMap.amount) return showError('Please select the Amount column.');
+// ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
+function runAnalysis(){
+  syncColMap();
+  if(!colMap.vendor)return showError('Select the Vendor column.');
+  if(!colMap.amount)return showError('Select the Amount column.');
+  hideError();setStatus('Parsing data…');
 
-  hideError();
-  setStatus('Analyzing…');
+  const vc=colMap.vendor,ac=colMap.amount,dc=colMap.date,pc=colMap.period,
+        dsc=colMap.desc,hc=colMap.head,dnc=colMap.docno;
 
-  const vc = colMap.vendor, ac = colMap.amount, dc = colMap.date;
+  parsedData=glRows.map(r=>{
+    const rawAmt=(r[ac]||'').toString().replace(/[₹$,\s]/g,'');
+    const amt=parseFloat(rawAmt)||0;
+    const vendor=(r[vc]||'').toString().trim()||'(Blank)';
+    const desc=(dsc&&r[dsc]?r[dsc]:'').toString().trim();
+    const bookedHead=(hc&&r[hc]?r[hc]:'').toString().trim();
+    const docno=(dnc&&r[dnc]?r[dnc]:'').toString().trim();
+    const periodRaw=(pc&&r[pc]?r[pc]:'').toString().trim();
+    const dateVal=dc?r[dc]:'';
+    const date=parseDate(dateVal);
+    const month=monthKey(date);
+    const periodLabel=periodRaw||month;
+    const nat=classifyNature(desc,vendor);
+    return{vendor:vendor.toLowerCase(),amount:amt,month,period:periodLabel,
+           desc,bookedHead,docno,raw:r,nature:nat.head,natureColor:nat.color,
+           mismatch:bookedHead&&!bookedHead.toLowerCase().includes(nat.head.toLowerCase().split(' ')[0])};
+  }).filter(r=>r.vendor&&r.vendor!=='(blank)'&&r.amount!==0);
 
-  const data = parsedData.map(r => {
-    const rawAmt = (r[ac]||'').toString().replace(/[₹$,\s]/g,'');
-    const amt = parseFloat(rawAmt) || 0;
-    const dateVal = dc ? r[dc] : '';
-    const date = parseDate(dateVal);
-    return { vendor: (r[vc]||'').toString().trim() || '(Blank)', amount: amt, month: monthKey(date) };
-  }).filter(r => r.vendor && r.vendor !== '(Blank)');
+  if(!parsedData.length)return showError('No valid rows. Check column mapping.');
 
-  if (!data.length) return showError('No valid rows found. Check column mapping.');
-
-  buildSummaryChips(data);
-  buildVendorAnalysis(data);
-  buildMoMAnalysis(data);
+  classifiedData=parsedData;
+  buildSummaryChips(parsedData);
+  buildVendorAnalysis(parsedData);
+  buildMoMAnalysis(parsedData);
+  buildNatureAnalysis(parsedData);
+  buildFindings(parsedData);
+  buildRawTable(parsedData);
 
   document.getElementById('results').classList.remove('hidden');
   document.getElementById('emptyState').classList.add('hidden');
-  setStatus(`✓ ${data.length} transactions analyzed`);
+  setStatus(`✓ ${parsedData.length} transactions analyzed`);
+}
+
+// ── SUMMARY CHIPS ─────────────────────────────────────────────────────────────
+function buildSummaryChips(data){
+  const total=data.reduce((s,r)=>s+r.amount,0);
+  const vendors=new Set(data.map(r=>r.vendor)).size;
+  const months=new Set(data.map(r=>r.month)).size;
+  const vm={};data.forEach(r=>{vm[r.vendor]=(vm[r.vendor]||0)+r.amount;});
+  const top=Object.entries(vm).sort((a,b)=>b[1]-a[1])[0]||['N/A',0];
+  const mismatches=data.filter(r=>r.mismatch).length;
+  document.getElementById('summaryChips').innerHTML=`
+    <div class="chip"><div class="lbl">Grand Total</div><div class="val">${fmtShort(total)}</div><div class="sub">${data.length} transactions</div></div>
+    <div class="chip"><div class="lbl">Unique Vendors</div><div class="val">${vendors}</div><div class="sub">across ${months} period(s)</div></div>
+    <div class="chip"><div class="lbl">Top Vendor</div><div class="val" style="font-size:14px;word-break:break-word">${esc(top[0])}</div><div class="sub">${fmtShort(top[1])} · ${total?(top[1]/total*100).toFixed(1):0}%</div></div>
+    <div class="chip"><div class="lbl">Avg per Txn</div><div class="val">${fmtShort(total/data.length)}</div><div class="sub">₹ per entry</div></div>
+    <div class="chip"><div class="lbl">Head Mismatches</div><div class="val" style="color:${mismatches?'var(--amber)':'var(--green)'}">${mismatches}</div><div class="sub">possible misclassified</div></div>`;
 }
 
 // ── VENDOR ANALYSIS ───────────────────────────────────────────────────────────
-function buildVendorAnalysis(data) {
-  const map = {};
-  data.forEach(r => { if(!map[r.vendor]) map[r.vendor]={total:0,count:0}; map[r.vendor].total+=r.amount; map[r.vendor].count++; });
-  const vendors = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
-  const grand = vendors.reduce((s,v)=>s+v[1].total,0);
-  document.getElementById('vendorCount').textContent = `${vendors.length} vendors`;
-
-  const tbody = document.getElementById('vendorBody');
-  tbody.innerHTML = '';
-  vendors.forEach(([name,d],i) => {
-    const pct = grand ? d.total/grand*100 : 0;
-    const color = COLORS[i%COLORS.length];
-    const pctCls = pct>=20?'hi':pct>=5?'mid':'lo';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="color:var(--muted)">${i+1}</td>
+function buildVendorAnalysis(data){
+  const map={};
+  data.forEach(r=>{if(!map[r.vendor])map[r.vendor]={total:0,count:0};map[r.vendor].total+=r.amount;map[r.vendor].count++;});
+  const vendors=Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
+  const grand=vendors.reduce((s,v)=>s+v[1].total,0);
+  document.getElementById('vendorCount').textContent=`${vendors.length} vendors`;
+  const tbody=document.getElementById('vendorBody');tbody.innerHTML='';
+  vendors.forEach(([name,d],i)=>{
+    const pct=grand?d.total/grand*100:0;
+    const color=COLORS[i%COLORS.length];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:var(--muted)">${i+1}</td>
       <td><span class="vdot" style="background:${color}"></span>${esc(name)}</td>
-      <td class="num">${fmt(d.total)}</td>
-      <td class="num">${d.count}</td>
+      <td class="num">${fmt(d.total)}</td><td class="num">${d.count}</td>
       <td class="num">${fmt(d.total/d.count)}</td>
-      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div></div><span style="font-size:12px;font-variant-numeric:tabular-nums;min-width:40px">${pct.toFixed(1)}%</span></div></td>
-      <td class="num"><span class="pct ${pctCls}">${pct.toFixed(2)}%</span></td>
-    `;
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div></div><span style="font-size:11px;min-width:36px">${pct.toFixed(1)}%</span></div></td>
+      <td class="num"><span class="pct ${pct>=20?'hi':pct>=5?'mid':'lo'}">${pct.toFixed(2)}%</span></td>`;
     tbody.appendChild(tr);
   });
-
-  document.getElementById('vendorFoot').innerHTML = `<tr class="total-row">
-    <td colspan="2"><strong>Grand Total</strong></td>
-    <td class="num"><strong>${fmt(grand)}</strong></td>
-    <td class="num"><strong>${data.length}</strong></td>
-    <td class="num"><strong>${fmt(grand/data.length)}</strong></td>
-    <td></td>
-    <td class="num"><strong>100.00%</strong></td>
-  </tr>`;
+  document.getElementById('vendorFoot').innerHTML=`<tr class="total-row"><td colspan="2"><strong>Grand Total</strong></td><td class="num"><strong>${fmt(grand)}</strong></td><td class="num"><strong>${data.length}</strong></td><td class="num"><strong>${fmt(grand/data.length)}</strong></td><td></td><td class="num"><strong>100%</strong></td></tr>`;
 }
 
-// ── MoM ANALYSIS ──────────────────────────────────────────────────────────────
-function buildMoMAnalysis(data) {
-  const allVendors = [...new Set(data.map(r=>r.vendor))];
-  const months = sortMonthKeys([...new Set(data.map(r=>r.month))]);
+// ── MOM ANALYSIS ──────────────────────────────────────────────────────────────
+function buildMoMAnalysis(data){
+  const allVendors=[...new Set(data.map(r=>r.vendor))];
+  const months=sortMonthKeys([...new Set(data.map(r=>r.month))]);
+  const matrix={};
+  allVendors.forEach(v=>{matrix[v]={};months.forEach(m=>{matrix[v][m]={total:0,count:0};});});
+  data.forEach(r=>{matrix[r.vendor][r.month].total+=r.amount;matrix[r.vendor][r.month].count++;});
+  const vTotals=allVendors.map(v=>({v,total:months.reduce((s,m)=>s+matrix[v][m].total,0)})).sort((a,b)=>b.total-a.total);
+  const sorted=vTotals.map(x=>x.v);
+  const mTotals={};months.forEach(m=>{mTotals[m]=sorted.reduce((s,v)=>s+matrix[v][m].total,0);});
+  const grand=Object.values(mTotals).reduce((s,x)=>s+x,0);
+  document.getElementById('momBadge').textContent=`${sorted.length} vendors × ${months.length} periods`;
 
-  const matrix = {};
-  allVendors.forEach(v=>{ matrix[v]={}; months.forEach(m=>{ matrix[v][m]={total:0,count:0}; }); });
-  data.forEach(r=>{ matrix[r.vendor][r.month].total+=r.amount; matrix[r.vendor][r.month].count++; });
-
-  const vTotals = allVendors.map(v=>({v,total:months.reduce((s,m)=>s+matrix[v][m].total,0)})).sort((a,b)=>b.total-a.total);
-  const sorted = vTotals.map(x=>x.v);
-  const mTotals = {}; months.forEach(m=>{ mTotals[m]=sorted.reduce((s,v)=>s+matrix[v][m].total,0); });
-  const grand = Object.values(mTotals).reduce((s,x)=>s+x,0);
-
-  document.getElementById('momBadge').textContent = `${sorted.length} vendors × ${months.length} months`;
-
-  // Amount table
-  document.getElementById('momHead').innerHTML = `<tr><th>Vendor</th>${months.map(m=>`<th class="num">${m}</th>`).join('')}<th class="num">Total</th><th class="num">% of Grand</th></tr>`;
-  const momBody = document.getElementById('momBody');
-  momBody.innerHTML = '';
+  document.getElementById('momHead').innerHTML=`<tr><th>Vendor</th>${months.map(m=>`<th class="num" style="${m.startsWith('ADJ')?'background:#fffbeb;color:var(--amber);':''}">${m}</th>`).join('')}<th class="num">Total</th><th class="num">%</th></tr>`;
+  const momBody=document.getElementById('momBody');momBody.innerHTML='';
   sorted.forEach((v,i)=>{
     const color=COLORS[i%COLORS.length];
     const vt=vTotals.find(x=>x.v===v).total;
     const vp=grand?vt/grand*100:0;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="min-width:150px"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
-      ${months.map(m=>{const val=matrix[v][m].total;return`<td class="num">${val?fmt(val):'<span style="color:var(--border)">—</span>'}</td>`;}).join('')}
+    tr.innerHTML=`<td style="min-width:140px"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
+      ${months.map(m=>{const val=matrix[v][m].total;return`<td class="num" style="${m.startsWith('ADJ')?'background:#fffbeb;':''}">${val?fmt(val):'<span style="color:var(--border)">—</span>'}</td>`;}).join('')}
       <td class="num"><strong>${fmt(vt)}</strong></td>
       <td class="num"><span class="pct ${vp>=20?'hi':vp>=5?'mid':'lo'}">${vp.toFixed(2)}%</span></td>`;
     momBody.appendChild(tr);
   });
-  document.getElementById('momFoot').innerHTML=`<tr class="total-row"><td><strong>Monthly Total</strong></td>${months.map(m=>`<td class="num"><strong>${fmt(mTotals[m])}</strong></td>`).join('')}<td class="num"><strong>${fmt(grand)}</strong></td><td class="num"><strong>100%</strong></td></tr>`;
+  document.getElementById('momFoot').innerHTML=`<tr class="total-row"><td><strong>Total</strong></td>${months.map(m=>`<td class="num" style="${m.startsWith('ADJ')?'background:#fffbeb;':''}"><strong>${fmt(mTotals[m])}</strong></td>`).join('')}<td class="num"><strong>${fmt(grand)}</strong></td><td class="num"><strong>100%</strong></td></tr>`;
 
-  // % table
-  document.getElementById('pctHead').innerHTML=`<tr><th>Vendor</th>${months.map(m=>`<th class="num">${m}</th>`).join('')}<th class="num">Avg %</th></tr>`;
-  const pctBody=document.getElementById('pctBody');
-  pctBody.innerHTML='';
+  document.getElementById('pctHead').innerHTML=`<tr><th>Vendor</th>${months.map(m=>`<th class="num">${m}</th>`).join('')}<th class="num">Avg%</th></tr>`;
+  const pctBody=document.getElementById('pctBody');pctBody.innerHTML='';
   sorted.forEach((v,i)=>{
     const color=COLORS[i%COLORS.length];
     const pcts=months.map(m=>mTotals[m]?matrix[v][m].total/mTotals[m]*100:0);
     const avg=pcts.filter(p=>p>0).reduce((s,p)=>s+p,0)/(pcts.filter(p=>p>0).length||1);
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="min-width:150px"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
+    tr.innerHTML=`<td style="min-width:140px"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
       ${pcts.map(p=>p>0?`<td class="num"><span class="pct ${p>=30?'hi':p>=10?'mid':'lo'}">${p.toFixed(1)}%</span></td>`:`<td class="num"><span style="color:var(--border)">—</span></td>`).join('')}
       <td class="num"><span class="pct ${avg>=20?'hi':avg>=5?'mid':'lo'}">${avg.toFixed(1)}%</span></td>`;
     pctBody.appendChild(tr);
@@ -484,41 +662,297 @@ function buildMoMAnalysis(data) {
   document.getElementById('pctFoot').innerHTML=`<tr class="total-row"><td><strong>Month Total %</strong></td>${months.map(()=>`<td class="num"><strong>100%</strong></td>`).join('')}<td></td></tr>`;
 }
 
-// ── SUMMARY CHIPS ─────────────────────────────────────────────────────────────
-function buildSummaryChips(data) {
-  const total=data.reduce((s,r)=>s+r.amount,0);
-  const vendors=new Set(data.map(r=>r.vendor)).size;
-  const months=new Set(data.map(r=>r.month)).size;
-  const vm=data.reduce((m,r)=>{m[r.vendor]=(m[r.vendor]||0)+r.amount;return m;},{});
-  const top=Object.entries(vm).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('summaryChips').innerHTML=`
-    <div class="chip"><div class="lbl">Grand Total</div><div class="val">${fmtShort(total)}</div><div class="sub">${data.length} transactions</div></div>
-    <div class="chip"><div class="lbl">Unique Vendors</div><div class="val">${vendors}</div><div class="sub">across ${months} month(s)</div></div>
-    <div class="chip"><div class="lbl">Top Vendor</div><div class="val" style="font-size:15px;word-break:break-word">${esc(top[0])}</div><div class="sub">${fmtShort(top[1])} · ${(top[1]/total*100).toFixed(1)}%</div></div>
-    <div class="chip"><div class="lbl">Avg per Txn</div><div class="val">${fmtShort(total/data.length)}</div><div class="sub">across all vendors</div></div>`;
+// ── NATURE ANALYSIS ───────────────────────────────────────────────────────────
+function buildNatureAnalysis(data){
+  document.getElementById('natureBadge').textContent=`${data.length} rows classified`;
+  const tbody=document.getElementById('natureBody');tbody.innerHTML='';
+  data.forEach((r,i)=>{
+    const remark=r.mismatch?'⚠ Possible misclassification':(r.nature==='Unclassified'?'Review needed':'');
+    const remarkColor=r.mismatch?'color:var(--amber);font-weight:600':r.nature==='Unclassified'?'color:var(--muted)':'color:var(--green)';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:var(--muted)">${i+1}</td>
+      <td>${esc(r.vendor)}</td>
+      <td style="max-width:220px;white-space:normal;font-size:11px">${esc(r.desc||'—')}</td>
+      <td style="font-size:11px;color:var(--mid)">${esc(r.bookedHead||'—')}</td>
+      <td><span class="nature-tag pct" style="background:${r.natureColor}22;color:${r.natureColor};border:1px solid ${r.natureColor}44">${esc(r.nature)}</span></td>
+      <td style="font-size:11px;max-width:180px;white-space:normal">${esc(summariseNature(r.desc,r.nature))}</td>
+      <td class="num">${fmt(r.amount)}</td>
+      <td style="font-size:11px">${esc(r.period)}</td>
+      <td style="font-size:11px;${remarkColor}">${esc(remark)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Head-wise totals
+  const headMap={};
+  data.forEach(r=>{
+    if(!headMap[r.nature])headMap[r.nature]={total:0,count:0,vendors:new Set(),color:r.natureColor};
+    headMap[r.nature].total+=r.amount;
+    headMap[r.nature].count++;
+    headMap[r.nature].vendors.add(r.vendor);
+  });
+  const grand=data.reduce((s,r)=>s+r.amount,0);
+  const headList=Object.entries(headMap).sort((a,b)=>b[1].total-a[1].total);
+  const hBody=document.getElementById('headBody');hBody.innerHTML='';
+  headList.forEach(([head,d])=>{
+    const pct=grand?d.total/grand*100:0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="nature-tag pct" style="background:${d.color}22;color:${d.color};border:1px solid ${d.color}44">${esc(head)}</span></td>
+      <td class="num"><strong>${fmt(d.total)}</strong></td>
+      <td class="num">${d.count}</td>
+      <td class="num"><span class="pct ${pct>=20?'hi':pct>=5?'mid':'lo'}">${pct.toFixed(2)}%</span></td>
+      <td style="font-size:11px;color:var(--mid)">${[...d.vendors].slice(0,4).join(', ')}${d.vendors.size>4?` +${d.vendors.size-4} more`:''}</td>`;
+    hBody.appendChild(tr);
+  });
 }
 
-// ── DATE PARSING ──────────────────────────────────────────────────────────────
-function parseDate(val) {
-  if (!val) return null;
-  if (val instanceof Date) return isNaN(val)?null:val;
-  const s=val.toString().trim();
-  if (/^\d{5}$/.test(s)) { const d=new Date((parseInt(s)-25569)*86400*1000); return isNaN(d)?null:d; }
-  let m=s.match(/^(\d{1,2})[-\/]([A-Za-z]{3})[-\/](\d{2,4})$/);
-  if(m){const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11}[m[2].toLowerCase()]; if(mo!==undefined) return new Date(parseInt(m[3].length===2?'20'+m[3]:m[3]),mo,parseInt(m[1]));}
-  m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-  if(m) return new Date(parseInt(m[3]),parseInt(m[2])-1,parseInt(m[1]));
-  m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if(m) return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
-  const d=new Date(s); return isNaN(d)?null:d;
+function summariseNature(desc,head){
+  if(!desc)return head;
+  const d=desc.toLowerCase();
+  if(d.includes('adj')||d.includes('adjustment')||d.includes('rectif'))return'Period-end adjustment entry — verify if correctly recorded';
+  if(d.includes('reversal')||d.includes('reverse'))return'Reversal entry — check original transaction';
+  if(d.includes('provision'))return'Provision booking — confirm basis and support';
+  if(head==='Penalty / Fine')return'Regulatory/contractual penalty — should not be in other expenses';
+  if(head==='Professional Fees')return'Professional service — verify TDS compliance';
+  if(head==='Travel & Conveyance')return'Travel cost — confirm policy compliance & approvals';
+  if(head==='Advertisement & Marketing')return'Marketing spend — verify campaign approval';
+  if(head==='Finance Charges')return'Financial cost — consider reclassification to finance head';
+  return`${head} expense — verify invoice & approvals`;
 }
-function monthKey(d){if(!d)return'Unknown';const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${mo[d.getMonth()]}-${d.getFullYear().toString().slice(-2)}`;}
-function sortMonthKeys(keys){const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};return keys.slice().sort((a,b)=>{if(a==='Unknown')return 1;if(b==='Unknown')return-1;const[am,ay]=a.split('-');const[bm,by]=b.split('-');const aY=parseInt(ay)+(parseInt(ay)<50?2000:1900);const bY=parseInt(by)+(parseInt(by)<50?2000:1900);return aY!==bY?aY-bY:(mo[am.toLowerCase()]||0)-(mo[bm.toLowerCase()]||0);});}
+
+// ── FINDINGS ──────────────────────────────────────────────────────────────────
+function buildFindings(data){
+  findings=[];
+  const grand=data.reduce((s,r)=>s+r.amount,0);
+  const vm={};data.forEach(r=>{if(!vm[r.vendor])vm[r.vendor]={total:0,count:0,months:new Set(),amounts:[]};vm[r.vendor].total+=r.amount;vm[r.vendor].count++;vm[r.vendor].months.add(r.month);vm[r.vendor].amounts.push(r.amount);});
+
+  // 1. Round-number transactions
+  const roundTxns=data.filter(r=>r.amount>0&&r.amount%100000===0);
+  if(roundTxns.length>0){
+    findings.push({type:'warn',title:`${roundTxns.length} round-number transactions (multiples of ₹1L)`,
+      body:`Entries of exactly ₹1L, ₹2L etc. may indicate estimates or provisions rather than actual invoices. Verify: ${roundTxns.slice(0,5).map(r=>`${r.vendor} ₹${fmt(r.amount)}`).join(', ')}${roundTxns.length>5?` and ${roundTxns.length-5} more.`:''}`,
+      tags:['round-number','provision risk']});
+  }
+
+  // 2. Misclassified heads
+  const mismatches=data.filter(r=>r.mismatch);
+  if(mismatches.length>0){
+    findings.push({type:'flag',title:`${mismatches.length} entries may be booked under wrong GL head`,
+      body:`Based on invoice description, the suggested head differs from the booked head. These should be reclassified. Examples: ${mismatches.slice(0,4).map(r=>`"${r.desc||r.vendor}" booked as "${r.bookedHead}" but appears to be "${r.nature}"`).join('; ')}.`,
+      tags:['misclassification','reclassification required']});
+  }
+
+  // 3. ADJ period concentration
+  const adjData=data.filter(r=>r.period.toUpperCase().includes('ADJ')||r.month.toUpperCase().includes('ADJ'));
+  if(adjData.length>0){
+    const adjTotal=adjData.reduce((s,r)=>s+r.amount,0);
+    const adjPct=grand?adjTotal/grand*100:0;
+    findings.push({type:'warn',title:`ADJ period entries: ${adjData.length} txns totalling ${fmtShort(adjTotal)} (${adjPct.toFixed(1)}% of total)`,
+      body:`Adjustment period entries require special scrutiny. High ADJ-period amounts may indicate prior-period expenses, year-end provisioning, or corrections. Vendors: ${[...new Set(adjData.map(r=>r.vendor))].join(', ')}.`,
+      tags:['adj period','year-end','prior period']});
+  }
+
+  // 4. Single-month vendors (one-off / non-recurring)
+  const oneOff=Object.entries(vm).filter(([,d])=>d.months.size===1&&d.total>100000);
+  if(oneOff.length>0){
+    findings.push({type:'info',title:`${oneOff.length} vendors appear only in 1 month with >₹1L`,
+      body:`Non-recurring vendors with large single transactions need invoice verification: ${oneOff.slice(0,6).map(([v,d])=>`${v} (${fmtShort(d.total)})`).join(', ')}.`,
+      tags:['non-recurring','one-off vendor']});
+  }
+
+  // 5. Concentration risk
+  const top3=Object.entries(vm).sort((a,b)=>b[1].total-a[1].total).slice(0,3);
+  const top3Total=top3.reduce((s,[,d])=>s+d.total,0);
+  const top3Pct=grand?top3Total/grand*100:0;
+  if(top3Pct>60){
+    findings.push({type:'warn',title:`Top 3 vendors represent ${top3Pct.toFixed(1)}% of total other expenses`,
+      body:`High concentration: ${top3.map(([v,d])=>`${v} (${fmtShort(d.total)}, ${(d.total/grand*100).toFixed(1)}%)`).join('; ')}. Review if these are genuine arm's-length transactions.`,
+      tags:['concentration risk','related party check']});
+  }
+
+  // 6. Negative amounts
+  const negatives=data.filter(r=>r.amount<0);
+  if(negatives.length>0){
+    findings.push({type:'flag',title:`${negatives.length} entries with negative amounts (credits/reversals)`,
+      body:`Negative entries: ${negatives.slice(0,5).map(r=>`${r.vendor} ₹${fmt(r.amount)} (${r.period})`).join(', ')}. Verify these are legitimate reversals and not duplicate entries being netted off.`,
+      tags:['reversal','credit entry','duplicate risk']});
+  }
+
+  // 7. Unclassified entries
+  const unclass=data.filter(r=>r.nature==='Unclassified');
+  if(unclass.length>0){
+    const unclassTotal=unclass.reduce((s,r)=>s+r.amount,0);
+    findings.push({type:'info',title:`${unclass.length} entries could not be auto-classified (${fmtShort(unclassTotal)})`,
+      body:`These entries lack sufficient description to determine the correct expense head. Manual review required: ${unclass.slice(0,5).map(r=>`${r.vendor} — "${r.desc||'no desc'}" (${fmt(r.amount)})`).join('; ')}.`,
+      tags:['unclassified','manual review']});
+  }
+
+  // 8. Finance charges in other expenses
+  const finCharges=data.filter(r=>r.nature==='Finance Charges');
+  if(finCharges.length>0){
+    const fcTotal=finCharges.reduce((s,r)=>s+r.amount,0);
+    findings.push({type:'flag',title:`Finance Charges of ${fmtShort(fcTotal)} booked in Other Expenses`,
+      body:`Bank charges, interest, forex losses should typically be shown under Finance Costs, not Other Expenses. Entries: ${finCharges.slice(0,4).map(r=>`${r.vendor} ₹${fmt(r.amount)}`).join(', ')}.`,
+      tags:['finance costs','misclassification','presentation']});
+  }
+
+  // 9. Penalties/fines
+  const penaltyTxns=data.filter(r=>r.nature==='Penalty / Fine');
+  if(penaltyTxns.length>0){
+    findings.push({type:'flag',title:`${penaltyTxns.length} possible penalty/fine entries`,
+      body:`Penalties and fines should be disclosed separately. Entries: ${penaltyTxns.map(r=>`${r.vendor} ₹${fmt(r.amount)} — "${r.desc}"`).join('; ')}.`,
+      tags:['penalty','disclosure','statutory compliance']});
+  }
+
+  // 10. High-value single transactions
+  const avgAmt=grand/data.length;
+  const highVal=data.filter(r=>r.amount>avgAmt*10&&r.amount>500000);
+  if(highVal.length>0){
+    findings.push({type:'warn',title:`${highVal.length} high-value transactions (>10× average & >₹5L)`,
+      body:`These are significantly above average transaction size and warrant additional scrutiny: ${highVal.slice(0,5).map(r=>`${r.vendor} ₹${fmt(r.amount)} (${r.period}) — "${r.desc||'no desc'}"`).join('; ')}.`,
+      tags:['high value','audit focus','management approval']});
+  }
+
+  // Render
+  const container=document.getElementById('findingsContainer');
+  container.innerHTML='';
+  let crits=0,warns=0,infos=0;
+  findings.forEach(f=>{
+    if(f.type==='flag')crits++;else if(f.type==='warn')warns++;else infos++;
+    const div=document.createElement('div');
+    div.className=`finding-card ${f.type==='flag'?'flag':f.type==='warn'?'warn':'info'}`;
+    div.innerHTML=`<h4>${f.title}</h4><p>${esc(f.body)}</p><div style="margin-top:8px">${f.tags.map(t=>`<span class="tag ${f.type==='flag'?'tag-red':f.type==='warn'?'tag-amber':'tag-teal'}">${esc(t)}</span>`).join('')}</div>`;
+    container.appendChild(div);
+  });
+  if(findings.length===0){container.innerHTML='<div class="empty"><p>No findings generated. Upload GL data and run analysis.</p></div>';}
+  document.getElementById('critCount').textContent=`${crits} critical`;
+  document.getElementById('warnCount').textContent=`${warns} warnings`;
+  document.getElementById('infoCount').textContent=`${infos} info`;
+}
+
+// ── RAW TABLE ─────────────────────────────────────────────────────────────────
+function buildRawTable(data){
+  document.getElementById('rawBadge').textContent=`${data.length} rows`;
+  const cols=['vendor','period','amount','nature','bookedHead','desc','docno'];
+  document.getElementById('rawHead').innerHTML=`<tr>${cols.map(c=>`<th${c==='amount'?' class="num"':''}>${c}</th>`).join('')}<th>Remark</th></tr>`;
+  const tbody=document.getElementById('rawBody');tbody.innerHTML='';
+  data.slice(0,500).forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=cols.map(c=>`<td${c==='amount'?' class="num"':''}>${c==='amount'?fmt(r[c]):esc((r[c]||'').toString())}</td>`).join('')
+      +`<td style="font-size:11px;color:${r.mismatch?'var(--amber)':'var(--muted)'}">${r.mismatch?'⚠ Head mismatch':''}</td>`;
+    tbody.appendChild(tr);
+  });
+  if(data.length>500){const tr=document.createElement('tr');tr.innerHTML=`<td colspan="${cols.length+1}" style="text-align:center;color:var(--muted);padding:12px">Showing first 500 of ${data.length} rows. Export CSV for full data.</td>`;tbody.appendChild(tr);}
+}
+
+// ── EXCEL EXPORT ──────────────────────────────────────────────────────────────
+function exportFindingsXLSX(){
+  if(!parsedData.length){alert('Run analysis first.');return;}
+  const wb=XLSX.utils.book_new();
+
+  // Sheet 1: Vendor Summary
+  const vendorMap={};
+  parsedData.forEach(r=>{if(!vendorMap[r.vendor])vendorMap[r.vendor]={total:0,count:0};vendorMap[r.vendor].total+=r.amount;vendorMap[r.vendor].count++;});
+  const grand=parsedData.reduce((s,r)=>s+r.amount,0);
+  const vSheet=[['#','Vendor Name','Total Amount','Txn Count','Avg per Txn','% of Grand Total']];
+  Object.entries(vendorMap).sort((a,b)=>b[1].total-a[1].total).forEach(([v,d],i)=>{
+    vSheet.push([i+1,v,d.total,d.count,Math.round(d.total/d.count),grand?(d.total/grand*100).toFixed(2)+'%':'']);
+  });
+  vSheet.push(['','Grand Total',grand,parsedData.length,Math.round(grand/parsedData.length),'100%']);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(vSheet),'Vendor Summary');
+
+  // Sheet 2: MoM Matrix
+  const months=sortMonthKeys([...new Set(parsedData.map(r=>r.month))]);
+  const vendors=[...new Set(parsedData.map(r=>r.vendor))];
+  const matrix={};
+  vendors.forEach(v=>{matrix[v]={};months.forEach(m=>{matrix[v][m]=0;});});
+  parsedData.forEach(r=>{matrix[r.vendor][r.month]+=r.amount;});
+  const mTotals={};months.forEach(m=>{mTotals[m]=vendors.reduce((s,v)=>s+matrix[v][m],0);});
+  const momRows=[['Vendor',...months,'Total','% Grand']];
+  vendors.sort((a,b)=>months.reduce((s,m)=>s+matrix[b][m],0)-months.reduce((s,m)=>s+matrix[a][m],0)).forEach(v=>{
+    const vt=months.reduce((s,m)=>s+matrix[v][m],0);
+    momRows.push([v,...months.map(m=>matrix[v][m]||0),vt,grand?(vt/grand*100).toFixed(2)+'%':'']);
+  });
+  momRows.push(['Monthly Total',...months.map(m=>mTotals[m]),grand,'100%']);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(momRows),'Month-on-Month');
+
+  // Sheet 3: Nature Classification
+  const natRows=[['#','Vendor','Invoice Description','Booked Head','Suggested Head','Summarised Nature','Amount','Period','Remark']];
+  parsedData.forEach((r,i)=>{
+    natRows.push([i+1,r.vendor,r.desc||'',r.bookedHead||'',r.nature,summariseNature(r.desc,r.nature),r.amount,r.period,r.mismatch?'POSSIBLE MISCLASSIFICATION':'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(natRows),'Nature Classification');
+
+  // Sheet 4: Audit Findings
+  const findRows=[['Finding Type','Title','Detail','Tags']];
+  findings.forEach(f=>{findRows.push([f.type.toUpperCase(),f.title,f.body,f.tags.join(', ')]);});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(findRows),'Audit Findings');
+
+  // Sheet 5: Head-wise Totals
+  const headMap={};
+  parsedData.forEach(r=>{if(!headMap[r.nature])headMap[r.nature]={total:0,count:0,vendors:new Set()};headMap[r.nature].total+=r.amount;headMap[r.nature].count++;headMap[r.nature].vendors.add(r.vendor);});
+  const headRows=[['Suggested Head','Total Amount','Txn Count','% of Total','Vendors']];
+  Object.entries(headMap).sort((a,b)=>b[1].total-a[1].total).forEach(([h,d])=>{
+    headRows.push([h,d.total,d.count,grand?(d.total/grand*100).toFixed(2)+'%':'',[...d.vendors].join(', ')]);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(headRows),'Head-wise Totals');
+
+  // Sheet 6: Raw Data
+  const rawCols=['vendor','period','month','amount','nature','bookedHead','desc','docno'];
+  const rawRows=[rawCols];
+  parsedData.forEach(r=>rawRows.push(rawCols.map(c=>r[c]||'')));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rawRows),'Raw GL Data');
+
+  XLSX.writeFile(wb,`GL_OtherExpenses_Audit_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// ── DATE/PERIOD HELPERS ───────────────────────────────────────────────────────
+function parseDate(val){
+  if(!val)return null;
+  if(val instanceof Date)return isNaN(val)?null:val;
+  const s=val.toString().trim();
+  if(/^\d{5}$/.test(s)){const d=new Date((parseInt(s)-25569)*86400*1000);return isNaN(d)?null:d;}
+  let m=s.match(/^(\d{1,2})[-\/]([A-Za-z]{3})[-\/](\d{2,4})$/);
+  if(m){const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11}[m[2].toLowerCase()];if(mo!==undefined)return new Date(parseInt(m[3].length===2?'20'+m[3]:m[3]),mo,parseInt(m[1]));}
+  m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m)return new Date(parseInt(m[3]),parseInt(m[2])-1,parseInt(m[1]));
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m)return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
+  const d=new Date(s);return isNaN(d)?null:d;
+}
+
+function monthKey(d){
+  if(!d)return'Unknown';
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return`${mo[d.getMonth()]}-${d.getFullYear().toString().slice(-2)}`;
+}
+
+function sortMonthKeys(keys){
+  // ADJ entries first, then Apr-Mar fiscal order
+  const mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const fiscalOrder={apr:0,may:1,jun:2,jul:3,aug:4,sep:5,oct:6,nov:7,dec:8,jan:9,feb:10,mar:11};
+  return keys.slice().sort((a,b)=>{
+    const aAdj=a.toUpperCase().startsWith('ADJ');
+    const bAdj=b.toUpperCase().startsWith('ADJ');
+    if(aAdj&&!bAdj)return-1;
+    if(!aAdj&&bAdj)return 1;
+    if(a==='Unknown')return 1;if(b==='Unknown')return-1;
+    const[am,ay]=a.split('-');const[bm,by]=b.split('-');
+    const aY=parseInt(ay)+(parseInt(ay)<50?2000:1900);
+    const bY=parseInt(by)+(parseInt(by)<50?2000:1900);
+    if(aY!==bY)return aY-bY;
+    return(fiscalOrder[am.toLowerCase()]??mo[am.toLowerCase()]??0)-(fiscalOrder[bm.toLowerCase()]??mo[bm.toLowerCase()]??0);
+  });
+}
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
-function switchTab(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');['vendorTab','momTab'].forEach(t=>document.getElementById(t).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['vendorTab','momTab','natureTab','findingsTab','rawTab'].forEach(t=>document.getElementById(t).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
 
-// ── EXPORT CSV ────────────────────────────────────────────────────────────────
+// ── CSV EXPORT ────────────────────────────────────────────────────────────────
 function exportCSV(tableId,filename){
   const tbl=document.getElementById(tableId);if(!tbl)return;
   let csv='';
@@ -526,21 +960,20 @@ function exportCSV(tableId,filename){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${filename}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
+// ── UTILS ─────────────────────────────────────────────────────────────────────
 function fmt(n){if(!n&&n!==0)return'—';return new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(n);}
 function fmtShort(n){if(Math.abs(n)>=1e7)return(n/1e7).toFixed(2)+' Cr';if(Math.abs(n)>=1e5)return(n/1e5).toFixed(2)+' L';return fmt(n);}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function esc(s){const d=document.createElement('div');d.textContent=String(s||'');return d.innerHTML;}
 function showError(msg){const b=document.getElementById('errorBox');b.textContent=msg;b.classList.remove('hidden');}
 function hideError(){document.getElementById('errorBox').classList.add('hidden');}
 function setStatus(msg){document.getElementById('statusMsg').textContent=msg;}
 function progress(pct){const w=document.getElementById('progressWrap');const f=document.getElementById('progressFill');if(pct>0){w.classList.remove('hidden');f.style.width=pct+'%';}else{f.style.width='0%';}}
+
 function clearAll(){
-  workbook=null;parsedData=[];colMap={};
-  document.getElementById('fileInput').value='';
-  document.getElementById('fileInfo').classList.add('hidden');
-  document.getElementById('sheetRow').classList.add('hidden');
-  document.getElementById('colMapRow').classList.add('hidden');
-  document.getElementById('previewSection').classList.add('hidden');
+  glWB=null;glRows=[];refWB=null;refRows=[];parsedData=[];colMap={};classifiedData=[];findings=[];
+  ['glFile','refFile'].forEach(id=>{document.getElementById(id).value='';});
+  ['gl-badge','gl-sheet-row','gl-col-map','gl-preview','ref-badge','ref-sheet-row','progressWrap','errorBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('ref-info').style.display='none';
   document.getElementById('results').classList.add('hidden');
   document.getElementById('emptyState').classList.remove('hidden');
   document.getElementById('analyzeBtn').disabled=true;
