@@ -5,137 +5,315 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GL Analyzer — Other Expenses Audit</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Styrene+A:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#1a1f2e;--mid:#4a5568;--muted:#8896aa;--border:#dde3ec;
-  --surface:#f5f7fa;--white:#fff;
-  --accent:#1d4ed8;--accent-lt:#eff4ff;
-  --green:#16a34a;--green-lt:#f0fdf4;
-  --amber:#d97706;--amber-lt:#fffbeb;
-  --red:#dc2626;--red-lt:#fff5f5;
-  --purple:#7c3aed;--purple-lt:#f5f3ff;
-  --teal:#0891b2;--teal-lt:#ecfeff;
+  /* Claude palette */
+  --bg:#f0ece3;          /* warm parchment page bg */
+  --surface:#faf8f4;     /* slightly lighter cream — cards */
+  --surface2:#f5f1e8;    /* deeper cream — table rows, inputs */
+  --ink:#1c1917;         /* near-black warm charcoal */
+  --mid:#57534e;         /* medium warm brown-grey */
+  --muted:#a8a29e;       /* soft stone */
+  --border:#e5ded4;      /* warm sand border */
+  --border2:#d6cfc4;     /* slightly darker for dividers */
+
+  /* Accent — Claude coral/terracotta */
+  --accent:#c96442;      /* Claude's signature warm coral */
+  --accent-lt:#fdf2ee;   /* very light coral tint */
+  --accent-mid:#e8845f;  /* lighter coral for hover */
+
+  /* Semantic */
+  --green:#3d7a5a;       --green-lt:#edf6f1;
+  --amber:#a16207;       --amber-lt:#fef9ec;
+  --red:#b91c1c;         --red-lt:#fef2f2;
+  --teal:#0f766e;        --teal-lt:#f0fdfa;
+
+  --radius:10px;
+  --shadow:0 1px 3px rgba(28,25,23,.07),0 1px 2px rgba(28,25,23,.04);
+  --shadow-md:0 4px 12px rgba(28,25,23,.08),0 2px 4px rgba(28,25,23,.05);
 }
+
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;}
-header{background:var(--ink);padding:14px 28px;display:flex;align-items:center;gap:12px;}
-.logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;}
-.logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;}
-header h1{font-size:15px;font-weight:600;color:#fff;}
-.header-sub{font-size:11px;color:var(--muted);margin-left:auto;}
-main{max-width:1400px;margin:0 auto;padding:24px 20px 80px;}
-.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:18px;}
-.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px;}
-.drop-zone{border:2px dashed var(--border);border-radius:10px;padding:32px 16px;text-align:center;cursor:pointer;position:relative;transition:all .15s;}
-.drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:var(--accent-lt);}
+body{
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--ink);
+  padding:13px 28px;
+  display:flex;align-items:center;gap:14px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  position:sticky;top:0;z-index:100;
+}
+.logo{
+  width:30px;height:30px;
+  background:var(--accent);
+  border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.logo svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.2;}
+header h1{font-size:14px;font-weight:600;color:#faf8f4;letter-spacing:-.01em;}
+.header-pill{
+  margin-left:auto;
+  font-size:10px;font-weight:600;
+  background:rgba(255,255,255,.1);
+  color:rgba(250,248,244,.7);
+  border-radius:99px;padding:3px 10px;
+  border:1px solid rgba(255,255,255,.08);
+  letter-spacing:.04em;text-transform:uppercase;
+}
+
+/* ── MAIN ── */
+main{max-width:1420px;margin:0 auto;padding:28px 24px 100px;}
+
+/* ── CARD ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+.card-title{
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);margin-bottom:16px;
+}
+
+/* ── DROP ZONE ── */
+.drop-zone{
+  border:2px dashed var(--border2);
+  border-radius:12px;padding:36px 16px;
+  text-align:center;cursor:pointer;
+  position:relative;transition:all .2s;
+  background:var(--surface2);
+}
+.drop-zone:hover,.drop-zone.over{
+  border-color:var(--accent);
+  background:var(--accent-lt);
+}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.drop-zone svg{width:30px;height:30px;stroke:var(--muted);fill:none;stroke-width:1.5;margin:0 auto 8px;display:block;}
-.drop-zone p{font-size:13px;color:var(--mid);}
-.drop-zone small{font-size:11px;color:var(--muted);}
-.file-badge{display:flex;align-items:center;gap:8px;margin-top:10px;padding:7px 12px;background:var(--green-lt);border:1px solid #bbf7d0;border-radius:7px;font-size:12px;color:var(--green);}
-.file-badge svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2;flex-shrink:0;}
-.sheet-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
-.sheet-row label{font-size:12px;color:var(--mid);font-weight:500;}
-select{border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:13px;color:var(--ink);background:#fff;}
-select:focus{outline:none;border-color:var(--accent);}
-.col-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
-.col-map-label{grid-column:1/-1;font-size:11px;color:var(--mid);font-weight:700;}
-.col-map>div label{font-size:11px;color:var(--mid);font-weight:600;display:block;margin-bottom:3px;}
+.drop-zone svg{width:28px;height:28px;stroke:var(--muted);fill:none;stroke-width:1.5;margin:0 auto 10px;display:block;}
+.drop-zone p{font-size:13px;color:var(--mid);font-weight:500;}
+.drop-zone small{font-size:11px;color:var(--muted);margin-top:3px;display:block;}
+
+.file-badge{
+  display:flex;align-items:center;gap:8px;margin-top:10px;
+  padding:8px 13px;
+  background:var(--green-lt);border:1px solid #b6dfc9;
+  border-radius:8px;font-size:12px;color:var(--green);font-weight:500;
+}
+.file-badge svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:2.5;flex-shrink:0;}
+
+/* ── FORM CONTROLS ── */
+.sheet-row{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.sheet-row label{font-size:12px;color:var(--mid);font-weight:600;}
+select{
+  border:1px solid var(--border2);border-radius:7px;
+  padding:6px 10px;font-size:13px;color:var(--ink);
+  background:var(--surface);font-family:inherit;
+  transition:border-color .15s;
+}
+select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,100,66,.12);}
+.col-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin-top:14px;}
+.col-map-label{grid-column:1/-1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+.col-map>div label{font-size:11px;color:var(--mid);font-weight:600;display:block;margin-bottom:4px;}
 .col-map>div select{width:100%;}
-.preview-wrap{overflow:auto;max-height:150px;border:1px solid var(--border);border-radius:7px;margin-top:10px;}
-.preview-wrap table{width:100%;border-collapse:collapse;font-size:12px;}
-.preview-wrap th{background:var(--surface);padding:5px 9px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;}
-.preview-wrap td{padding:5px 9px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
-.actions{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap;}
-.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;}
-.btn-primary:hover:not(:disabled){background:#1e40af;}
-.btn-primary:disabled{background:var(--muted);cursor:not-allowed;}
-.btn-ghost{background:none;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-.btn-green{background:var(--green);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;}
-.btn-green:hover{background:#15803d;}
+
+.preview-wrap{overflow:auto;max-height:150px;border:1px solid var(--border);border-radius:8px;margin-top:12px;}
+.preview-wrap table{width:100%;border-collapse:collapse;font-size:11.5px;}
+.preview-wrap th{background:var(--surface2);padding:5px 10px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
+.preview-wrap td{padding:5px 10px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
+
+/* ── BUTTONS ── */
+.actions{display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--accent);color:#fff;border:none;
+  border-radius:8px;padding:10px 22px;
+  font-size:13.5px;font-weight:600;cursor:pointer;
+  font-family:inherit;letter-spacing:-.01em;
+  transition:background .15s,transform .1s;
+  box-shadow:0 1px 2px rgba(201,100,66,.3);
+}
+.btn-primary:hover:not(:disabled){background:var(--accent-mid);}
+.btn-primary:active:not(:disabled){transform:scale(.98);}
+.btn-primary:disabled{background:var(--muted);cursor:not-allowed;box-shadow:none;}
+.btn-ghost{
+  background:var(--surface);color:var(--mid);
+  border:1px solid var(--border2);border-radius:8px;
+  padding:9px 16px;font-size:13px;cursor:pointer;font-family:inherit;
+  transition:all .15s;
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);}
+.btn-export{
+  background:var(--ink);color:var(--surface);
+  border:none;border-radius:8px;padding:9px 18px;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:background .15s;
+}
+.btn-export:hover{background:#2c2824;}
 .status{font-size:12px;color:var(--muted);}
-.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
+
+/* ── PROGRESS ── */
+.progress-bar{height:2px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;}
-.error-box{background:var(--red-lt);border:1px solid #fecaca;border-radius:7px;padding:10px 13px;font-size:13px;color:var(--red);margin-top:10px;}
+.error-box{background:var(--red-lt);border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-top:10px;}
 .hidden{display:none!important;}
-.summary-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
-.chip{background:#fff;border:1px solid var(--border);border-radius:10px;padding:13px 16px;flex:1;min-width:120px;}
-.chip .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:3px;}
-.chip .val{font-size:19px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
-.chip .sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.tabs{display:flex;gap:2px;margin-bottom:16px;border-bottom:2px solid var(--border);overflow-x:auto;}
-.tab{padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;}
+
+/* ── SUMMARY CHIPS ── */
+.summary-row{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.chip{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px 18px;flex:1;min-width:130px;
+  box-shadow:var(--shadow);
+}
+.chip .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:4px;}
+.chip .val{font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+.chip .sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;gap:0;margin-bottom:18px;
+  border-bottom:1.5px solid var(--border2);
+  overflow-x:auto;
+}
+.tab{
+  padding:10px 20px;font-size:13px;font-weight:500;
+  cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1.5px;
+  white-space:nowrap;transition:all .15s;
+  font-family:inherit;
+}
 .tab:hover{color:var(--ink);}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;}
-.table-card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;}
-.table-card .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.table-card .card-header h3{font-size:14px;font-weight:700;color:var(--ink);}
-.badge{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:600;}
-.badge-amber{background:var(--amber-lt);color:var(--amber);}
-.badge-red{background:var(--red-lt);color:var(--red);}
-.badge-green{background:var(--green-lt);color:var(--green);}
-.export-btn{margin-left:auto;font-size:12px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:none;cursor:pointer;color:var(--mid);}
-.export-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+/* ── TABLE CARD ── */
+.table-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+.table-card .card-header{
+  padding:13px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--surface2);
+}
+.table-card .card-header h3{font-size:13.5px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
+
+.badge{
+  font-size:10.5px;padding:2px 8px;border-radius:99px;
+  background:var(--accent-lt);color:var(--accent);font-weight:600;
+  border:1px solid rgba(201,100,66,.2);
+}
+.badge-amber{background:var(--amber-lt);color:var(--amber);border-color:rgba(161,98,7,.2);}
+.badge-red{background:var(--red-lt);color:var(--red);border-color:rgba(185,28,28,.2);}
+.badge-green{background:var(--green-lt);color:var(--green);border-color:rgba(61,122,90,.2);}
+
+.export-btn{
+  margin-left:auto;font-size:11.5px;padding:4px 11px;
+  border:1px solid var(--border2);border-radius:6px;
+  background:var(--surface);cursor:pointer;color:var(--mid);
+  font-family:inherit;transition:all .15s;
+}
+.export-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);}
+
+/* ── DATA TABLE ── */
 .tbl-wrap{overflow-x:auto;}
 table.dt{width:100%;border-collapse:collapse;font-size:12.5px;}
-table.dt thead tr{background:var(--surface);}
-table.dt th{padding:8px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border);}
+table.dt thead tr{background:var(--surface2);}
+table.dt th{
+  padding:9px 13px;text-align:left;
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+  color:var(--muted);white-space:nowrap;
+  border-bottom:1px solid var(--border2);
+}
 table.dt th.r,table.dt td.r{text-align:right;}
-table.dt td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--ink);}
+table.dt td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--ink);}
 table.dt tr:last-child td{border-bottom:none;}
-table.dt tr:hover td{background:#fafbfd;}
-table.dt .trow td{font-weight:700;background:var(--surface);border-top:2px solid var(--border);}
-.mom-tbl th:first-child,.mom-tbl td:first-child{position:sticky;left:0;background:#fff;z-index:1;}
-.mom-tbl thead th:first-child{background:var(--surface);}
-.bar-cell{display:flex;align-items:center;gap:7px;}
-.bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;min-width:50px;max-width:100px;}
-.bar-fill{height:100%;border-radius:3px;}
+table.dt tr:hover td{background:var(--surface2);}
+table.dt .trow td{font-weight:700;background:var(--surface2);border-top:2px solid var(--border2);}
+.mom-tbl th:first-child,.mom-tbl td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;}
+.mom-tbl thead th:first-child{background:var(--surface2);}
+.mom-tbl tr:hover td:first-child{background:var(--surface2);}
+
+/* ── BARS / DOTS ── */
+.bar-cell{display:flex;align-items:center;gap:8px;}
+.bar-track{flex:1;height:4px;background:var(--border2);border-radius:99px;min-width:50px;max-width:100px;}
+.bar-fill{height:100%;border-radius:99px;}
 .vdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;flex-shrink:0;}
-.pct{font-variant-numeric:tabular-nums;font-size:11px;padding:2px 6px;border-radius:4px;}
+.pct{font-variant-numeric:tabular-nums;font-size:11px;padding:2px 7px;border-radius:5px;font-weight:500;}
 .pct.hi{background:var(--green-lt);color:var(--green);}
 .pct.mid{background:var(--amber-lt);color:var(--amber);}
-.pct.lo{background:var(--surface);color:var(--muted);}
-/* Nature cards */
-.nature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding:16px;}
-.nature-card{border:1px solid var(--border);border-radius:10px;padding:14px 16px;background:#fff;}
-.nature-card .nc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
-.nature-card .nc-vendor{font-size:13px;font-weight:700;color:var(--ink);}
+.pct.lo{background:var(--surface2);color:var(--muted);}
+
+/* ── NATURE CARDS ── */
+.nature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding:18px;}
+.nature-card{
+  border:1px solid var(--border);border-radius:12px;
+  padding:16px 18px;background:var(--surface);
+  box-shadow:var(--shadow);transition:box-shadow .2s;
+}
+.nature-card:hover{box-shadow:var(--shadow-md);}
+.nature-card .nc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.nature-card .nc-vendor{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
 .nature-card .nc-amt{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;}
-.nature-card .nc-pct{font-size:11px;color:var(--muted);}
-.nature-card .nc-head{font-size:11px;margin-bottom:6px;}
-.nature-card .nc-summary{font-size:12px;color:var(--mid);line-height:1.55;}
-.nature-card .nc-keywords{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;}
-.kw{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:500;}
-.nature-card .nc-verdict{margin-top:8px;font-size:11px;padding:5px 9px;border-radius:6px;}
-.verdict-ok{background:var(--green-lt);color:var(--green);}
-.verdict-warn{background:var(--amber-lt);color:var(--amber);}
-.verdict-flag{background:var(--red-lt);color:var(--red);}
-.ai-loader{text-align:center;padding:40px 20px;color:var(--muted);}
-.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-/* Findings */
-.finding-card{border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:12px;background:#fff;}
-.finding-card.warn{border-left:4px solid var(--amber);background:var(--amber-lt);}
-.finding-card.flag{border-left:4px solid var(--red);background:var(--red-lt);}
-.finding-card.info{border-left:4px solid var(--teal);background:var(--teal-lt);}
-.finding-card h4{font-size:13px;font-weight:700;margin-bottom:5px;}
-.finding-card p{font-size:12px;color:var(--mid);line-height:1.5;}
-.finding-card .tags{margin-top:7px;display:flex;flex-wrap:wrap;gap:4px;}
-.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.nature-card .nc-pct{font-size:11px;color:var(--muted);margin-top:2px;}
+.nature-card .nc-head{font-size:11px;margin-bottom:8px;}
+.nature-card .nc-summary{font-size:12.5px;color:var(--mid);line-height:1.65;}
+.nature-card .nc-keywords{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;}
+.kw{
+  font-size:10px;padding:3px 8px;border-radius:99px;
+  background:var(--accent-lt);color:var(--accent);font-weight:600;
+  border:1px solid rgba(201,100,66,.18);
+}
+.nature-card details summary{
+  font-size:11px;color:var(--muted);cursor:pointer;
+  padding:6px 0;list-style:none;
+}
+.nature-card details summary::-webkit-details-marker{display:none;}
+.nature-card details summary::before{content:"▸ ";font-size:9px;}
+.nature-card details[open] summary::before{content:"▾ ";}
+
+/* ── FINDINGS ── */
+.finding-card{
+  border:1px solid var(--border);border-radius:10px;
+  padding:14px 18px;margin-bottom:12px;background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.finding-card.warn{border-left:3px solid var(--amber);background:var(--amber-lt);}
+.finding-card.flag{border-left:3px solid var(--red);background:var(--red-lt);}
+.finding-card.info{border-left:3px solid var(--teal);background:var(--teal-lt);}
+.finding-card h4{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--ink);}
+.finding-card p{font-size:12px;color:var(--mid);line-height:1.6;}
+.finding-card .tags{margin-top:9px;display:flex;flex-wrap:wrap;gap:5px;}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;}
 .tag-red{background:var(--red-lt);color:var(--red);}
 .tag-amber{background:var(--amber-lt);color:var(--amber);}
 .tag-teal{background:var(--teal-lt);color:var(--teal);}
-.empty{text-align:center;padding:48px 20px;color:var(--muted);}
-.empty svg{width:44px;height:44px;margin:0 auto 10px;display:block;stroke:var(--border);fill:none;stroke-width:1.5;}
-.sunday-row td{background:#fff8f0!important;}
+
+/* ── MISC ── */
+.empty{text-align:center;padding:56px 20px;color:var(--muted);}
+.empty svg{width:40px;height:40px;margin:0 auto 12px;display:block;stroke:var(--border2);fill:none;stroke-width:1.5;}
+.empty p{font-size:14px;}
+.sunday-row td{background:#fef6ee!important;}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-  <h1>GL Analyzer — Other Expenses Audit</h1>
-  <span class="header-sub" id="ts"></span>
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <h1>GL Analyzer &mdash; Other Expenses Audit</h1>
+  <span class="header-pill" id="ts"></span>
 </header>
 <main>
 
@@ -254,9 +432,7 @@ table.dt .trow td{font-weight:700;background:var(--surface);border-top:2px solid
       <button class="export-btn" onclick="exportNatureCSV()">⬇ CSV</button>
     </div>
     <div id="natureContent" style="background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;min-height:200px;">
-      <div class="ai-loader" id="aiLoader" style="display:none">
-        <span class="spinner"></span>Analysing vendor descriptions with AI… this may take 20–40 seconds
-      </div>
+
       <div id="natureGrid" class="nature-grid"></div>
     </div>
     <div id="natureTable" style="display:none"><!-- hidden, for CSV export --></div>
@@ -304,7 +480,7 @@ table.dt .trow td{font-weight:700;background:var(--surface);border-top:2px solid
       <span class="badge badge-red" id="critCount"></span>
       <span class="badge badge-amber" id="warnCount"></span>
       <span class="badge" id="infoCount"></span>
-      <button class="btn-green" style="margin-left:auto" onclick="exportFullXLSX()">⬇ Export Full Workings (Excel — all sheets)</button>
+      <button class="btn-export" style="margin-left:auto" onclick="exportFullXLSX()">⬇ Export Full Workings (Excel — all sheets)</button>
     </div>
     <div id="findingsContainer"></div>
   </div>
@@ -498,8 +674,7 @@ function runAnalysis(){
   document.getElementById('emptyState').classList.add('hidden');
   setStatus(`✓ ${parsedData.length} transactions parsed`);
 
-  // Auto-run AI nature on results shown
-  runAINature(parsedData);
+  buildNatureAnalysis(parsedData);
 }
 
 // ── SUMMARY CHIPS ─────────────────────────────────────────────────────────────
@@ -672,90 +847,118 @@ function buildSundayAnalysis(data){
   });
 }
 
-// ── AI NATURE ANALYSIS ────────────────────────────────────────────────────────
-async function runAINature(data){
-  document.getElementById('aiLoader').style.display='block';
+// ── NATURE ANALYSIS (no API — reads descriptions directly) ───────────────────
+function buildNatureAnalysis(data){
   document.getElementById('natureGrid').innerHTML='';
 
-  // Build vendor totals and pick top 20
+  // Build vendor map
   const vm={};
   data.forEach(r=>{
-    if(!vm[r.vendor])vm[r.vendor]={total:0,count:0,descs:[],heads:new Set()};
-    vm[r.vendor].total+=r.amount;vm[r.vendor].count++;
-    if(r.desc&&!vm[r.vendor].descs.includes(r.desc))vm[r.vendor].descs.push(r.desc);
-    if(r.head)vm[r.vendor].heads.add(r.head);
+    if(!vm[r.vendor])vm[r.vendor]={net:0,debits:0,count:0,descs:[],heads:new Set()};
+    vm[r.vendor].net+=r.amount;
+    if(r.amount>0)vm[r.vendor].debits+=r.amount;
+    vm[r.vendor].count++;
+    if(r.desc&&r.desc.trim()&&!vm[r.vendor].descs.includes(r.desc.trim()))
+      vm[r.vendor].descs.push(r.desc.trim());
+    if(r.head&&r.head.trim())vm[r.vendor].heads.add(r.head.trim());
   });
-  const grand=Object.values(vm).reduce((s,d)=>s+d.total,0);
-  const top20=Object.entries(vm).sort((a,b)=>b[1].total-a[1].total).slice(0,20);
+
+  const grandDebits=Object.values(vm).reduce((s,d)=>s+d.debits,0);
+  const sorted=Object.entries(vm).sort((a,b)=>b[1].debits-a[1].debits);
+
+  // Pick vendors that together cover top 50-60% of gross debits
+  let cum=0, topVendors=[];
+  for(const entry of sorted){
+    topVendors.push(entry);
+    cum+=entry[1].debits;
+    if(cum/grandDebits>=0.60) break;
+  }
+  // Always show at least 5, cap at 30
+  if(topVendors.length<5) topVendors=sorted.slice(0,Math.min(5,sorted.length));
+  if(topVendors.length>30) topVendors=topVendors.slice(0,30);
+
+  const cumPct=(topVendors.reduce((s,[,d])=>s+d.debits,0)/grandDebits*100).toFixed(1);
+  document.getElementById('natureBadge').textContent=`${topVendors.length} vendors · ${cumPct}% of total`;
 
   natureResults=[];
+  topVendors.forEach(([vendor,d],i)=>{
+    const pct=grandDebits?d.debits/grandDebits*100:0;
+    const headsBooked=[...d.heads].join(', ')||'—';
 
-  for(let i=0;i<top20.length;i++){
-    const [vendor,d]=top20[i];
-    setStatus(`AI analysing vendor ${i+1}/${top20.length}: ${vendor}…`);
+    // Build summary from descriptions — extract unique meaningful words/phrases
+    const allDescs=d.descs.filter(x=>x.length>2);
+    const summary=buildSummary(vendor, allDescs, headsBooked);
+    const keywords=extractKeywords(allDescs);
 
-    // Sample up to 60 descriptions
-    const sampleDescs=d.descs.slice(0,60).filter(x=>x.trim());
-    const headsBooked=[...d.heads].join(', ')||'Not mapped';
-    const pct=grand?d.total/grand*100:0;
+    const r={vendor,net:d.net,total:d.debits,pct,count:d.count,heads:headsBooked,summary,keywords,descs:allDescs};
+    natureResults.push(r);
+    renderNatureCard(r,i);
+  });
 
-    try{
-      const prompt=`You are a senior auditor reviewing an Oracle GL dump for "Other Expenses" head.
-
-Vendor: "${vendor}"
-Total Amount: ₹${fmt(d.total)} (${pct.toFixed(2)}% of total)
-GL Head(s) booked: ${headsBooked}
-Number of transactions: ${d.count}
-
-Invoice/Line Descriptions from GL:
-${sampleDescs.map((d,i)=>`${i+1}. ${d}`).join('\n')}
-
-Your task:
-1. Write a 2-3 sentence SUMMARY of what this vendor supplies / what services are procured from them based on the descriptions.
-2. List 5-8 KEYWORDS extracted directly from the invoice descriptions (actual words found in descriptions).
-3. Assess whether this expense BELONGS in "Other Expenses" head or should be reclassified. Be specific.
-4. Give a VERDICT: one of — "Correctly classified", "Review recommended", or "Should be reclassified".
-
-Respond in this exact JSON format with no other text:
-{
-  "summary": "...",
-  "keywords": ["kw1","kw2","kw3","kw4","kw5"],
-  "headAssessment": "...",
-  "verdict": "Correctly classified | Review recommended | Should be reclassified",
-  "suggestedHead": "..."
-}`;
-
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:1000,
-          messages:[{role:'user',content:prompt}]
-        })
-      });
-      const json=await resp.json();
-      const raw=json.content?.find(c=>c.type==='text')?.text||'{}';
-      const clean=raw.replace(/```json|```/g,'').trim();
-      let parsed={summary:'Could not parse AI response.',keywords:[],headAssessment:'',verdict:'Review recommended',suggestedHead:''};
-      try{parsed=JSON.parse(clean);}catch(e){/* use default */}
-      natureResults.push({vendor,total:d.total,pct,count:d.count,heads:headsBooked,...parsed});
-    }catch(e){
-      natureResults.push({vendor,total:d.total,pct,count:d.count,heads:headsBooked,
-        summary:'API error — check browser network.',keywords:[],headAssessment:'',verdict:'Review recommended',suggestedHead:''});
-    }
-
-    // Render incrementally
-    renderNatureCard(natureResults[natureResults.length-1], i);
-  }
-
-  document.getElementById('aiLoader').style.display='none';
-  setStatus(`✓ AI analysis complete for top ${top20.length} vendors`);
+  setStatus(`✓ Nature analysis done for ${topVendors.length} vendors (${cumPct}% of total)`);
 }
 
-function renderNatureCard(r, i){
-  const verdictClass=r.verdict==='Correctly classified'?'verdict-ok':r.verdict==='Should be reclassified'?'verdict-flag':'verdict-warn';
-  const verdictIcon=r.verdict==='Correctly classified'?'✅':r.verdict==='Should be reclassified'?'🔴':'⚠️';
+// Build a 2-3 line plain-English summary from descriptions
+function buildSummary(vendor, descs, head){
+  if(!descs.length) return `No invoice descriptions found in GL for this vendor. Review source invoices to determine nature of expense.`;
+
+  // Frequency-count words across all descriptions to find dominant themes
+  const stopWords=new Set(['the','and','for','from','to','of','in','on','at','by','as','is','with','a','an','per','no','ref','inv','invoice','bill','being','towards','against','account','payment','charges','services','service','expense','expenses','misc','miscellaneous','ltd','pvt','india','limited','&','the','this','that','vide','as','per']);
+  const wordFreq={};
+  descs.forEach(d=>{
+    d.toLowerCase().replace(/[^a-z0-9\s\/\-]/g,' ').split(/\s+/).forEach(w=>{
+      w=w.trim();
+      if(w.length>2&&!stopWords.has(w)){wordFreq[w]=(wordFreq[w]||0)+1;}
+    });
+  });
+  const topWords=Object.entries(wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([w])=>w);
+
+  // Sample a few real descriptions verbatim (the most distinct ones, short)
+  const samples=descs
+    .filter(d=>d.length>5&&d.length<120)
+    .slice(0,6)
+    .map(d=>d.trim());
+
+  // Compose summary
+  let line1=`Vendor has ${descs.length} unique description(s) across ${descs.length>1?'multiple':'one'} transaction type(s).`;
+  if(topWords.length>=3){
+    line1=`Expenses primarily relate to: ${topWords.slice(0,6).join(', ')}.`;
+  }
+
+  let line2='';
+  if(samples.length){
+    line2=`Sample descriptions — ${samples.slice(0,3).map(s=>'"'+s+'"').join('; ')}.`;
+  }
+
+  let line3=`Booked under: ${head}. `;
+  if(topWords.some(w=>['salary','salaries','wages','payroll'].includes(w)))
+    line3+='⚠ Descriptions suggest payroll — verify if correctly classified under Other Expenses.';
+  else if(topWords.some(w=>['interest','bank','finance','loan','npa','borrowing'].includes(w)))
+    line3+='⚠ Descriptions suggest finance charges — consider reclassification.';
+  else if(topWords.some(w=>['penalty','fine','late','default','demand'].includes(w)))
+    line3+='⚠ Possible penalty/fine — should be disclosed separately.';
+  else if(topWords.some(w=>['depreciation','amortisation','amortization'].includes(w)))
+    line3+='⚠ Depreciation entries found — should not be in Other Expenses.';
+  else
+    line3+='Nature appears consistent with Other Expenses head.';
+
+  return [line1,line2,line3].filter(Boolean).join(' ');
+}
+
+// Extract top keywords directly from descriptions
+function extractKeywords(descs){
+  const stop=new Set(['the','and','for','from','to','of','in','on','at','by','as','is','with','a','an','per','no','ref','inv','invoice','bill','being','towards','against','account','payment','charges','service','expense','expenses','misc','ltd','pvt','india','limited','vide','this','that']);
+  const freq={};
+  descs.forEach(d=>{
+    d.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).forEach(w=>{
+      w=w.trim();
+      if(w.length>3&&!stop.has(w))freq[w]=(freq[w]||0)+1;
+    });
+  });
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([w])=>w);
+}
+
+function renderNatureCard(r,i){
   const color=COLORS[i%COLORS.length];
   const div=document.createElement('div');
   div.className='nature-card';
@@ -767,11 +970,10 @@ function renderNatureCard(r, i){
       </div>
       <div class="nc-amt">${fmtShort(r.total)}</div>
     </div>
-    <div class="nc-head" style="color:var(--muted)">📒 Booked Head: <strong style="color:var(--ink)">${esc(r.heads)}</strong></div>
-    <div class="nc-summary">${esc(r.summary)}</div>
-    <div class="nc-keywords">${(r.keywords||[]).map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div>
-    ${r.headAssessment?`<div style="font-size:11px;color:var(--mid);margin-top:8px;padding:6px 8px;background:var(--surface);border-radius:5px">${esc(r.headAssessment)}</div>`:''}
-    <div class="nc-verdict ${verdictClass}">${verdictIcon} ${esc(r.verdict)}${r.suggestedHead&&r.verdict!=='Correctly classified'?' → Suggested: '+r.suggestedHead:''}</div>`;
+    <div class="nc-head" style="margin-bottom:8px;font-size:11px;color:var(--muted)">📒 Booked Head: <strong style="color:var(--ink)">${esc(r.heads)}</strong></div>
+    <div class="nc-summary" style="font-size:12.5px;color:var(--mid);line-height:1.6">${esc(r.summary)}</div>
+    ${r.keywords.length?`<div class="nc-keywords" style="margin-top:8px">${r.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div>`:''}
+    ${r.descs.length?`<details style="margin-top:10px"><summary style="font-size:11px;color:var(--muted);cursor:pointer">View all ${r.descs.length} unique descriptions</summary><div style="margin-top:6px;font-size:11px;color:var(--mid);max-height:140px;overflow-y:auto;line-height:1.7">${r.descs.map((d,j)=>`<div>${j+1}. ${esc(d)}</div>`).join('')}</div></details>`:''}`;
   document.getElementById('natureGrid').appendChild(div);
 }
 
@@ -900,10 +1102,10 @@ function exportFullXLSX(){
   momRows.push(['Period Total',...allPeriods.map(p=>pTot[p]),grandNet,'100%']);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(momRows),'Month-on-Month');
 
-  // Sheet 3: Nature AI
+  // Sheet 3: Nature of Expenses
   if(natureResults.length){
-    const nRows=[['#','Vendor','Total Amount','% of Total','Txn Count','Booked Head','AI Summary','Keywords','Head Assessment','Verdict','Suggested Head']];
-    natureResults.forEach((r,i)=>nRows.push([i+1,r.vendor,r.total,r.pct.toFixed(2)+'%',r.count,r.heads,r.summary,(r.keywords||[]).join(', '),r.headAssessment,r.verdict,r.suggestedHead]));
+    const nRows=[['#','Vendor','Net Amount','Gross Debits','% of Total','Txn Count','Booked Head','Summary (from GL descriptions)','Top Keywords']];
+    natureResults.forEach((r,i)=>nRows.push([i+1,r.vendor,r.net,r.total,r.pct.toFixed(2)+'%',r.count,r.heads,r.summary,(r.keywords||[]).join(', ')]));
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(nRows),'Nature of Expenses');
   }
 
