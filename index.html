@@ -5,247 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GL Analyzer — Other Expenses Audit</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Styrene+A:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* Claude palette */
-  --bg:#f0ece3;          /* warm parchment page bg */
-  --surface:#faf8f4;     /* slightly lighter cream — cards */
-  --surface2:#f5f1e8;    /* deeper cream — table rows, inputs */
-  --ink:#1c1917;         /* near-black warm charcoal */
-  --mid:#57534e;         /* medium warm brown-grey */
-  --muted:#a8a29e;       /* soft stone */
-  --border:#e5ded4;      /* warm sand border */
-  --border2:#d6cfc4;     /* slightly darker for dividers */
-
-  /* Accent — Claude coral/terracotta */
-  --accent:#c96442;      /* Claude's signature warm coral */
-  --accent-lt:#fdf2ee;   /* very light coral tint */
-  --accent-mid:#e8845f;  /* lighter coral for hover */
-
-  /* Semantic */
-  --green:#3d7a5a;       --green-lt:#edf6f1;
-  --amber:#a16207;       --amber-lt:#fef9ec;
-  --red:#b91c1c;         --red-lt:#fef2f2;
-  --teal:#0f766e;        --teal-lt:#f0fdfa;
-
-  --radius:10px;
+  --bg:#f0ece3;--surface:#faf8f4;--surface2:#f5f1e8;
+  --ink:#1c1917;--mid:#57534e;--muted:#a8a29e;
+  --border:#e5ded4;--border2:#d6cfc4;
+  --accent:#c96442;--accent-lt:#fdf2ee;--accent-mid:#e8845f;
+  --green:#3d7a5a;--green-lt:#edf6f1;
+  --amber:#a16207;--amber-lt:#fef9ec;
+  --red:#b91c1c;--red-lt:#fef2f2;
+  --teal:#0f766e;--teal-lt:#f0fdfa;
   --shadow:0 1px 3px rgba(28,25,23,.07),0 1px 2px rgba(28,25,23,.04);
-  --shadow-md:0 4px 12px rgba(28,25,23,.08),0 2px 4px rgba(28,25,23,.05);
+  --shadow-md:0 4px 12px rgba(28,25,23,.08);
 }
-
 *{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:'Inter','Segoe UI',system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-}
-
-/* ── HEADER ── */
-header{
-  background:var(--ink);
-  padding:13px 28px;
-  display:flex;align-items:center;gap:14px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  position:sticky;top:0;z-index:100;
-}
-.logo{
-  width:30px;height:30px;
-  background:var(--accent);
-  border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{background:var(--ink);padding:13px 28px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.logo{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .logo svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.2;}
 header h1{font-size:14px;font-weight:600;color:#faf8f4;letter-spacing:-.01em;}
-.header-pill{
-  margin-left:auto;
-  font-size:10px;font-weight:600;
-  background:rgba(255,255,255,.1);
-  color:rgba(250,248,244,.7);
-  border-radius:99px;padding:3px 10px;
-  border:1px solid rgba(255,255,255,.08);
-  letter-spacing:.04em;text-transform:uppercase;
-}
-
-/* ── MAIN ── */
-main{max-width:1420px;margin:0 auto;padding:28px 24px 100px;}
-
-/* ── CARD ── */
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:22px;
-  margin-bottom:18px;
-  box-shadow:var(--shadow);
-}
-.card-title{
-  font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.08em;
-  color:var(--muted);margin-bottom:16px;
-}
-
-/* ── DROP ZONE ── */
-.drop-zone{
-  border:2px dashed var(--border2);
-  border-radius:12px;padding:36px 16px;
-  text-align:center;cursor:pointer;
-  position:relative;transition:all .2s;
-  background:var(--surface2);
-}
-.drop-zone:hover,.drop-zone.over{
-  border-color:var(--accent);
-  background:var(--accent-lt);
-}
+.header-pill{margin-left:auto;font-size:10px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(250,248,244,.7);border-radius:99px;padding:3px 10px;border:1px solid rgba(255,255,255,.08);letter-spacing:.04em;text-transform:uppercase;}
+main{max-width:1440px;margin:0 auto;padding:28px 24px 100px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow);}
+.card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:16px;}
+.drop-zone{border:2px dashed var(--border2);border-radius:12px;padding:36px 16px;text-align:center;cursor:pointer;position:relative;transition:all .2s;background:var(--surface2);}
+.drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:var(--accent-lt);}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .drop-zone svg{width:28px;height:28px;stroke:var(--muted);fill:none;stroke-width:1.5;margin:0 auto 10px;display:block;}
 .drop-zone p{font-size:13px;color:var(--mid);font-weight:500;}
 .drop-zone small{font-size:11px;color:var(--muted);margin-top:3px;display:block;}
-
-.file-badge{
-  display:flex;align-items:center;gap:8px;margin-top:10px;
-  padding:8px 13px;
-  background:var(--green-lt);border:1px solid #b6dfc9;
-  border-radius:8px;font-size:12px;color:var(--green);font-weight:500;
-}
+.file-badge{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 13px;background:var(--green-lt);border:1px solid #b6dfc9;border-radius:8px;font-size:12px;color:var(--green);font-weight:500;}
 .file-badge svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:2.5;flex-shrink:0;}
-
-/* ── FORM CONTROLS ── */
 .sheet-row{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;}
 .sheet-row label{font-size:12px;color:var(--mid);font-weight:600;}
-select{
-  border:1px solid var(--border2);border-radius:7px;
-  padding:6px 10px;font-size:13px;color:var(--ink);
-  background:var(--surface);font-family:inherit;
-  transition:border-color .15s;
-}
+select{border:1px solid var(--border2);border-radius:7px;padding:6px 10px;font-size:13px;color:var(--ink);background:var(--surface);font-family:inherit;transition:border-color .15s;}
 select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,100,66,.12);}
 .col-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin-top:14px;}
 .col-map-label{grid-column:1/-1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
 .col-map>div label{font-size:11px;color:var(--mid);font-weight:600;display:block;margin-bottom:4px;}
 .col-map>div select{width:100%;}
-
 .preview-wrap{overflow:auto;max-height:150px;border:1px solid var(--border);border-radius:8px;margin-top:12px;}
 .preview-wrap table{width:100%;border-collapse:collapse;font-size:11.5px;}
 .preview-wrap th{background:var(--surface2);padding:5px 10px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
 .preview-wrap td{padding:5px 10px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--ink);}
-
-/* ── BUTTONS ── */
 .actions{display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap;}
-.btn-primary{
-  background:var(--accent);color:#fff;border:none;
-  border-radius:8px;padding:10px 22px;
-  font-size:13.5px;font-weight:600;cursor:pointer;
-  font-family:inherit;letter-spacing:-.01em;
-  transition:background .15s,transform .1s;
-  box-shadow:0 1px 2px rgba(201,100,66,.3);
-}
+.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;box-shadow:0 1px 2px rgba(201,100,66,.3);}
 .btn-primary:hover:not(:disabled){background:var(--accent-mid);}
-.btn-primary:active:not(:disabled){transform:scale(.98);}
 .btn-primary:disabled{background:var(--muted);cursor:not-allowed;box-shadow:none;}
-.btn-ghost{
-  background:var(--surface);color:var(--mid);
-  border:1px solid var(--border2);border-radius:8px;
-  padding:9px 16px;font-size:13px;cursor:pointer;font-family:inherit;
-  transition:all .15s;
-}
+.btn-ghost{background:var(--surface);color:var(--mid);border:1px solid var(--border2);border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);}
-.btn-export{
-  background:var(--ink);color:var(--surface);
-  border:none;border-radius:8px;padding:9px 18px;
-  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
-  transition:background .15s;
-}
+.btn-export{background:var(--ink);color:var(--surface);border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;}
 .btn-export:hover{background:#2c2824;}
 .status{font-size:12px;color:var(--muted);}
-
-/* ── PROGRESS ── */
 .progress-bar{height:2px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;}
 .error-box{background:var(--red-lt);border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-top:10px;}
 .hidden{display:none!important;}
-
-/* ── SUMMARY CHIPS ── */
 .summary-row{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
-.chip{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:14px 18px;flex:1;min-width:130px;
-  box-shadow:var(--shadow);
-}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;flex:1;min-width:130px;box-shadow:var(--shadow);}
 .chip .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:4px;}
 .chip .val{font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
 .chip .sub{font-size:11px;color:var(--muted);margin-top:3px;}
-
-/* ── TABS ── */
-.tabs{
-  display:flex;gap:0;margin-bottom:18px;
-  border-bottom:1.5px solid var(--border2);
-  overflow-x:auto;
-}
-.tab{
-  padding:10px 20px;font-size:13px;font-weight:500;
-  cursor:pointer;color:var(--muted);
-  border-bottom:2px solid transparent;margin-bottom:-1.5px;
-  white-space:nowrap;transition:all .15s;
-  font-family:inherit;
-}
+.tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:1.5px solid var(--border2);overflow-x:auto;}
+.tab{padding:10px 18px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1.5px;white-space:nowrap;transition:all .15s;font-family:inherit;}
 .tab:hover{color:var(--ink);}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
-
-/* ── TABLE CARD ── */
-.table-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;overflow:hidden;margin-bottom:18px;
-  box-shadow:var(--shadow);
-}
-.table-card .card-header{
-  padding:13px 18px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  background:var(--surface2);
-}
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow);}
+.table-card .card-header{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface2);}
 .table-card .card-header h3{font-size:13.5px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
-
-.badge{
-  font-size:10.5px;padding:2px 8px;border-radius:99px;
-  background:var(--accent-lt);color:var(--accent);font-weight:600;
-  border:1px solid rgba(201,100,66,.2);
-}
+.badge{font-size:10.5px;padding:2px 8px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:600;border:1px solid rgba(201,100,66,.2);}
 .badge-amber{background:var(--amber-lt);color:var(--amber);border-color:rgba(161,98,7,.2);}
 .badge-red{background:var(--red-lt);color:var(--red);border-color:rgba(185,28,28,.2);}
 .badge-green{background:var(--green-lt);color:var(--green);border-color:rgba(61,122,90,.2);}
-
-.export-btn{
-  margin-left:auto;font-size:11.5px;padding:4px 11px;
-  border:1px solid var(--border2);border-radius:6px;
-  background:var(--surface);cursor:pointer;color:var(--mid);
-  font-family:inherit;transition:all .15s;
-}
+.export-btn{margin-left:auto;font-size:11.5px;padding:4px 11px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);cursor:pointer;color:var(--mid);font-family:inherit;transition:all .15s;}
 .export-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);}
-
-/* ── DATA TABLE ── */
 .tbl-wrap{overflow-x:auto;}
 table.dt{width:100%;border-collapse:collapse;font-size:12.5px;}
 table.dt thead tr{background:var(--surface2);}
-table.dt th{
-  padding:9px 13px;text-align:left;
-  font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.05em;
-  color:var(--muted);white-space:nowrap;
-  border-bottom:1px solid var(--border2);
-}
+table.dt th{padding:9px 13px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border2);}
 table.dt th.r,table.dt td.r{text-align:right;}
 table.dt td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--ink);}
 table.dt tr:last-child td{border-bottom:none;}
 table.dt tr:hover td{background:var(--surface2);}
 table.dt .trow td{font-weight:700;background:var(--surface2);border-top:2px solid var(--border2);}
-.mom-tbl th:first-child,.mom-tbl td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;}
-.mom-tbl thead th:first-child{background:var(--surface2);}
-.mom-tbl tr:hover td:first-child{background:var(--surface2);}
-
-/* ── BARS / DOTS ── */
+.sticky-col{position:sticky;left:0;background:var(--surface);z-index:1;}
+thead .sticky-col{background:var(--surface2);}
+tr:hover .sticky-col{background:var(--surface2);}
 .bar-cell{display:flex;align-items:center;gap:8px;}
 .bar-track{flex:1;height:4px;background:var(--border2);border-radius:99px;min-width:50px;max-width:100px;}
 .bar-fill{height:100%;border-radius:99px;}
@@ -254,82 +100,62 @@ table.dt .trow td{font-weight:700;background:var(--surface2);border-top:2px soli
 .pct.hi{background:var(--green-lt);color:var(--green);}
 .pct.mid{background:var(--amber-lt);color:var(--amber);}
 .pct.lo{background:var(--surface2);color:var(--muted);}
-
-/* ── NATURE CARDS ── */
-.nature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding:18px;}
-.nature-card{
-  border:1px solid var(--border);border-radius:12px;
-  padding:16px 18px;background:var(--surface);
-  box-shadow:var(--shadow);transition:box-shadow .2s;
-}
+/* Nature */
+.nature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;padding:18px;}
+.nature-card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--surface);box-shadow:var(--shadow);transition:box-shadow .2s;}
 .nature-card:hover{box-shadow:var(--shadow-md);}
-.nature-card .nc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;}
-.nature-card .nc-vendor{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
-.nature-card .nc-amt{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;}
-.nature-card .nc-pct{font-size:11px;color:var(--muted);margin-top:2px;}
-.nature-card .nc-head{font-size:11px;margin-bottom:8px;}
-.nature-card .nc-summary{font-size:12.5px;color:var(--mid);line-height:1.65;}
-.nature-card .nc-keywords{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;}
-.kw{
-  font-size:10px;padding:3px 8px;border-radius:99px;
-  background:var(--accent-lt);color:var(--accent);font-weight:600;
-  border:1px solid rgba(201,100,66,.18);
-}
-.nature-card details summary{
-  font-size:11px;color:var(--muted);cursor:pointer;
-  padding:6px 0;list-style:none;
-}
-.nature-card details summary::-webkit-details-marker{display:none;}
-.nature-card details summary::before{content:"▸ ";font-size:9px;}
-.nature-card details[open] summary::before{content:"▾ ";}
-
-/* ── FINDINGS ── */
-.finding-card{
-  border:1px solid var(--border);border-radius:10px;
-  padding:14px 18px;margin-bottom:12px;background:var(--surface);
-  box-shadow:var(--shadow);
-}
+.nc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.nc-vendor{font-size:13px;font-weight:700;color:var(--ink);}
+.nc-amt{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;}
+.nc-pct{font-size:11px;color:var(--muted);margin-top:2px;}
+.nc-summary{font-size:13px;color:var(--ink);line-height:1.7;margin:10px 0;}
+.nc-keywords{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.kw{font-size:10px;padding:3px 8px;border-radius:99px;background:var(--accent-lt);color:var(--accent);font-weight:600;border:1px solid rgba(201,100,66,.18);}
+.nc-flag{font-size:11.5px;padding:6px 10px;border-radius:7px;margin-top:10px;font-weight:500;}
+.nc-flag.ok{background:var(--green-lt);color:var(--green);}
+.nc-flag.warn{background:var(--amber-lt);color:var(--amber);}
+.nc-flag.bad{background:var(--red-lt);color:var(--red);}
+details summary{font-size:11px;color:var(--muted);cursor:pointer;padding:6px 0;list-style:none;}
+details summary::-webkit-details-marker{display:none;}
+details summary::before{content:"▸  ";}
+details[open] summary::before{content:"▾  ";}
+/* Findings */
+.finding-card{border:1px solid var(--border);border-radius:10px;padding:15px 18px;margin-bottom:12px;background:var(--surface);box-shadow:var(--shadow);}
 .finding-card.warn{border-left:3px solid var(--amber);background:var(--amber-lt);}
 .finding-card.flag{border-left:3px solid var(--red);background:var(--red-lt);}
 .finding-card.info{border-left:3px solid var(--teal);background:var(--teal-lt);}
-.finding-card h4{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--ink);}
+.finding-card h4{font-size:13px;font-weight:700;margin-bottom:6px;}
 .finding-card p{font-size:12px;color:var(--mid);line-height:1.6;}
+.finding-card ul{font-size:12px;color:var(--mid);line-height:1.8;margin:6px 0 0 16px;}
 .finding-card .tags{margin-top:9px;display:flex;flex-wrap:wrap;gap:5px;}
 .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;}
 .tag-red{background:var(--red-lt);color:var(--red);}
 .tag-amber{background:var(--amber-lt);color:var(--amber);}
 .tag-teal{background:var(--teal-lt);color:var(--teal);}
-
-/* ── MISC ── */
 .empty{text-align:center;padding:56px 20px;color:var(--muted);}
 .empty svg{width:40px;height:40px;margin:0 auto 12px;display:block;stroke:var(--border2);fill:none;stroke-width:1.5;}
 .empty p{font-size:14px;}
 .sunday-row td{background:#fef6ee!important;}
+.section-note{font-size:11.5px;color:var(--mid);padding:10px 18px;border-bottom:1px solid var(--border);background:var(--surface);}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">
-    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-  </div>
-  <h1>GL Analyzer &mdash; Other Expenses Audit</h1>
+  <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+  <h1>GL Analyzer — Other Expenses Audit</h1>
   <span class="header-pill" id="ts"></span>
 </header>
 <main>
 
-<!-- UPLOAD -->
 <div class="card">
-  <div class="card-title">Step 1 — Upload Oracle GL Dump</div>
+  <div class="card-title">Upload Oracle GL Dump</div>
   <div class="drop-zone" id="dropZone">
     <input type="file" id="glFile" accept=".xlsx,.xls,.csv" onchange="handleGL(this.files[0])">
     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
     <p>Click to browse or drag &amp; drop Oracle GL Export</p>
-    <small>Supports .xlsx / .xls / .csv — file stays in your browser</small>
+    <small>Supports .xlsx / .xls / .csv</small>
   </div>
-  <div id="gl-badge" class="file-badge hidden">
-    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    <span id="gl-name"></span>
-  </div>
+  <div id="gl-badge" class="file-badge hidden"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="gl-name"></span></div>
   <div id="gl-sheet-row" class="sheet-row hidden">
     <label>Sheet:</label>
     <select id="glSheet" onchange="loadGLSheet()"></select>
@@ -349,40 +175,28 @@ table.dt .trow td{font-weight:700;background:var(--surface2);border-top:2px soli
   </div>
 </div>
 
-<!-- RESULTS -->
 <div id="results" class="hidden">
-  <div class="summary-row" id="summaryChips"></div>
   <div id="reconBanner" style="display:none"></div>
+  <div class="summary-row" id="summaryChips"></div>
   <div class="tabs">
     <div class="tab active" onclick="switchTab('vendorTab',this)">① Vendor Pivot</div>
     <div class="tab" onclick="switchTab('momTab',this)">② Month-on-Month</div>
-    <div class="tab" onclick="switchTab('natureTab',this)">③ Nature of Expenses (AI)</div>
-    <div class="tab" onclick="switchTab('sundayTab',this)">④ Sunday Transactions</div>
-    <div class="tab" onclick="switchTab('findingsTab',this)">⑤ Audit Findings</div>
+    <div class="tab" onclick="switchTab('natureTab',this)">③ Nature of Expenses</div>
+    <div class="tab" onclick="switchTab('sundayTab',this)">④ Sunday Txns</div>
+    <div class="tab" onclick="switchTab('findingsTab',this)">⑤ Audit Findings <span id="findingsBadge" style="background:var(--red-lt);color:var(--red);font-size:10px;padding:1px 6px;border-radius:99px;font-weight:700;margin-left:4px"></span></div>
   </div>
 
-  <!-- TAB 1: VENDOR PIVOT -->
+  <!-- TAB 1 VENDOR -->
   <div id="vendorTab">
     <div class="table-card">
       <div class="card-header">
-        <h3>Vendor-wise Pivot</h3>
-        <span class="badge" id="vendorCount"></span>
-        <span style="font-size:11px;color:var(--muted)">Sorted by % of total · Vendor name from GL (smallcase)</span>
+        <h3>Vendor-wise Pivot</h3><span class="badge" id="vendorCount"></span>
+        <span style="font-size:11px;color:var(--muted)">Sorted by % of total · exact vendor names from GL</span>
         <button class="export-btn" onclick="exportCSV('vendorTable','vendor_pivot')">⬇ CSV</button>
       </div>
       <div class="tbl-wrap">
         <table class="dt" id="vendorTable">
-          <thead><tr>
-            <th>#</th><th>Vendor Name</th>
-            <th class="r">Net Amount (₹)</th>
-            <th class="r">Gross Debits (₹)</th>
-            <th class="r">Gross Credits (₹)</th>
-            <th class="r">Txn Count</th>
-            <th class="r">Avg/Txn</th>
-            <th>% Bar (of debits)</th>
-            <th class="r">% of Net Total</th>
-            <th class="r">Cumul %</th>
-          </tr></thead>
+          <thead><tr><th>#</th><th>Vendor Name</th><th class="r">Net (₹)</th><th class="r">Gross Dr (₹)</th><th class="r">Gross Cr (₹)</th><th class="r">Txns</th><th class="r">Cr Entries</th><th class="r">Avg/Txn</th><th>% Bar</th><th class="r">% of Total</th><th class="r">Cumul %</th></tr></thead>
           <tbody id="vendorBody"></tbody>
           <tfoot id="vendorFoot"></tfoot>
         </table>
@@ -390,97 +204,61 @@ table.dt .trow td{font-weight:700;background:var(--surface2);border-top:2px soli
     </div>
   </div>
 
-  <!-- TAB 2: MOM -->
+  <!-- TAB 2 MOM -->
   <div id="momTab" class="hidden">
     <div class="table-card">
-      <div class="card-header">
-        <h3>Vendor × Period — Amount Matrix</h3>
-        <span class="badge" id="momBadge"></span>
-        <span style="font-size:11px;color:var(--amber);font-weight:600">ADJ period shown first → then Apr to Mar</span>
-        <button class="export-btn" onclick="exportCSV('momTable','mom_matrix')">⬇ CSV</button>
-      </div>
-      <div class="tbl-wrap">
-        <table class="dt mom-tbl" id="momTable">
-          <thead id="momHead"></thead>
-          <tbody id="momBody"></tbody>
-          <tfoot id="momFoot"></tfoot>
-        </table>
-      </div>
+      <div class="card-header"><h3>Vendor × Period Matrix (Amount)</h3><span class="badge" id="momBadge"></span><span style="font-size:11px;color:var(--amber);font-weight:600;margin-left:4px">ADJ first → Apr to Mar</span><button class="export-btn" onclick="exportCSV('momTable','mom_matrix')">⬇ CSV</button></div>
+      <div class="tbl-wrap"><table class="dt" id="momTable"><thead id="momHead"></thead><tbody id="momBody"></tbody><tfoot id="momFoot"></tfoot></table></div>
     </div>
     <div class="table-card">
-      <div class="card-header">
-        <h3>% Contribution by Period</h3>
-        <span style="font-size:12px;color:var(--muted)">Each cell = vendor % of that period's total</span>
-        <button class="export-btn" onclick="exportCSV('pctTable','mom_pct')">⬇ CSV</button>
-      </div>
-      <div class="tbl-wrap">
-        <table class="dt mom-tbl" id="pctTable">
-          <thead id="pctHead"></thead>
-          <tbody id="pctBody"></tbody>
-          <tfoot id="pctFoot"></tfoot>
-        </table>
-      </div>
+      <div class="card-header"><h3>% Contribution by Period</h3><button class="export-btn" onclick="exportCSV('pctTable','mom_pct')">⬇ CSV</button></div>
+      <div class="tbl-wrap"><table class="dt" id="pctTable"><thead id="pctHead"></thead><tbody id="pctBody"></tbody></table></div>
     </div>
   </div>
 
-  <!-- TAB 3: NATURE (AI) -->
+  <!-- TAB 3 NATURE -->
   <div id="natureTab" class="hidden">
-    <div class="card-header" style="padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:12px 12px 0 0;">
-      <h3 style="font-size:14px;font-weight:700;">Nature of Expenses — AI Analysis</h3>
-      <span class="badge" style="background:var(--purple-lt);color:var(--purple)">Top 20 vendors · AI-powered</span>
-      <span style="font-size:11px;color:var(--muted);margin-left:6px">Summarised from invoice descriptions · Head validation included</span>
-      <button class="export-btn" onclick="exportNatureCSV()">⬇ CSV</button>
-    </div>
-    <div id="natureContent" style="background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;min-height:200px;">
-
+    <div class="table-card">
+      <div class="card-header">
+        <h3>Nature of Expenses</h3>
+        <span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:rgba(15,118,110,.2)" id="natureBadge">—</span>
+        <span style="font-size:11px;color:var(--muted)">Summarised from invoice descriptions · covers top ~60% of spend</span>
+        <button class="export-btn" onclick="exportNatureCSV()">⬇ CSV</button>
+      </div>
       <div id="natureGrid" class="nature-grid"></div>
     </div>
-    <div id="natureTable" style="display:none"><!-- hidden, for CSV export --></div>
   </div>
 
-  <!-- TAB 4: SUNDAY -->
+  <!-- TAB 4 SUNDAY -->
   <div id="sundayTab" class="hidden">
     <div class="table-card">
-      <div class="card-header">
-        <h3>Sunday Transactions — Aggregate &gt; ₹5L</h3>
-        <span class="badge badge-amber" id="sundayCount"></span>
-        <span style="font-size:11px;color:var(--muted)">Based on GL Posted Date · Only vendors with Sunday aggregate ≥ ₹5,00,000 shown</span>
-        <button class="export-btn" onclick="exportCSV('sundayTable','sunday_txns')">⬇ CSV</button>
-      </div>
+      <div class="card-header"><h3>Sunday Transactions — Vendor Aggregate ≥ ₹5L</h3><span class="badge badge-amber" id="sundayCount"></span><button class="export-btn" onclick="exportCSV('sundayTable','sunday_txns')">⬇ CSV</button></div>
       <div class="tbl-wrap">
         <table class="dt" id="sundayTable">
-          <thead><tr>
-            <th>Vendor Name</th>
-            <th class="r">Sunday Aggregate (₹)</th>
-            <th class="r">Sunday Txn Count</th>
-            <th>Dates (Sundays)</th>
-            <th class="r">Largest Single Txn</th>
-            <th>Sample Description</th>
-          </tr></thead>
+          <thead><tr><th>Vendor</th><th class="r">Sunday Aggregate (₹)</th><th class="r">Sunday Txns</th><th>Dates</th><th class="r">Largest Single Txn</th><th>Sample Description</th></tr></thead>
           <tbody id="sundayBody"></tbody>
         </table>
       </div>
     </div>
-    <!-- Detail drilldown -->
     <div class="table-card" id="sundayDetailCard" style="display:none">
-      <div class="card-header"><h3 id="sundayDetailTitle">Sunday Transaction Details</h3></div>
+      <div class="card-header"><h3>All Sunday Transaction Details</h3></div>
       <div class="tbl-wrap">
         <table class="dt" id="sundayDetailTable">
-          <thead><tr><th>GL Posted Date</th><th>Day</th><th>Vendor</th><th>Doc No.</th><th class="r">Amount (₹)</th><th>Description</th><th>Period</th></tr></thead>
+          <thead><tr><th>Posted Date</th><th>Vendor</th><th>Doc No.</th><th class="r">Amount (₹)</th><th>Description</th><th>Period</th></tr></thead>
           <tbody id="sundayDetailBody"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- TAB 5: FINDINGS -->
+  <!-- TAB 5 FINDINGS -->
   <div id="findingsTab" class="hidden">
     <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-      <span style="font-size:13px;font-weight:700;color:var(--ink)">Audit Observations & Findings</span>
+      <span style="font-size:14px;font-weight:700;">Audit Observations &amp; Queries for Client</span>
       <span class="badge badge-red" id="critCount"></span>
       <span class="badge badge-amber" id="warnCount"></span>
       <span class="badge" id="infoCount"></span>
-      <button class="btn-export" style="margin-left:auto" onclick="exportFullXLSX()">⬇ Export Full Workings (Excel — all sheets)</button>
+      <button class="btn-export" style="margin-left:auto" onclick="exportFullXLSX()">⬇ Export Full Workings (Excel)</button>
     </div>
     <div id="findingsContainer"></div>
   </div>
@@ -491,27 +269,22 @@ table.dt .trow td{font-weight:700;background:var(--surface2);border-top:2px soli
   <p>Upload your Oracle GL dump and click <strong>Run Analysis</strong>.</p>
 </div>
 </main>
-
 <script>
-// ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const COLORS=['#1d4ed8','#7c3aed','#0891b2','#16a34a','#d97706','#dc2626','#db2777','#059669','#9333ea','#0284c7','#ca8a04','#b91c1c','#475569','#0f766e','#92400e','#1e3a5f','#4d7c0f','#9f1239','#065f46','#7e22ce'];
+const COLORS=['#c96442','#7c3aed','#0891b2','#3d7a5a','#a16207','#b91c1c','#db2777','#059669','#9333ea','#0284c7','#ca8a04','#0f766e','#92400e','#1e3a5f','#4d7c0f','#9f1239','#065f46','#7e22ce','#b45309','#1d4ed8'];
 const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const FISCAL_ORDER={apr:0,may:1,jun:2,jul:3,aug:4,sep:5,oct:6,nov:7,dec:8,jan:9,feb:10,mar:11};
 const MO_IDX={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let glWB=null, glRows=[], parsedData=[], colMap={};
-let natureResults=[], sundayData=[], findings=[];
+let glWB=null,glRows=[],parsedData=[],colMap={};
+let natureResults=[],sundayData=[],findings=[];
 
 document.getElementById('ts').textContent=new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-// ── DRAG/DROP ─────────────────────────────────────────────────────────────────
 const dz=document.getElementById('dropZone');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
 dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
 dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f)handleGL(f);});
 
-// ── FILE HANDLER ──────────────────────────────────────────────────────────────
 function handleGL(file){
   if(!file)return;
   hideError();setStatus('Reading file…');progress(20);
@@ -543,39 +316,39 @@ function loadGLSheet(){
   const headers=Object.keys(glRows[0]);
   colMap=guessColMap(headers);
   renderColMapper(headers);
-  renderPreview(headers,glRows.slice(0,5));
+  const displayRows=glRows.slice(0,5).map(r=>{const d={};headers.forEach(h=>{d[h]=(r[h]===null||r[h]===undefined)?'':r[h].toString();});return d;});
+  renderPreview(headers,displayRows);
   document.getElementById('glRowCount').textContent=`${glRows.length} rows`;
   document.getElementById('analyzeBtn').disabled=false;
   setStatus(`${glRows.length} rows loaded`);
 }
 
-// ── COL MAPPING ───────────────────────────────────────────────────────────────
 function guessColMap(h){
-  const g=keys=>h.find(x=>keys.some(k=>x.toLowerCase().replace(/[\s_]/g,'').includes(k.replace(/[\s_]/g,''))))||'';
+  const n=s=>s.toLowerCase().replace(/[\s_\-]/g,'');
+  const g=keys=>h.find(x=>keys.some(k=>n(x).includes(k)))||'';
   return{
-    vendor:  g(['vendorname','vendor name','vendor','party','suppliername','payee','trading partner','creditor']),
-    amount:  h.find(x=>x.toLowerCase().replace(/[\s _]/g,'')===('functionalnet'))||h.find(x=>x.toLowerCase().replace(/[\s _]/g,'').startsWith('functional')&&x.toLowerCase().replace(/[\s _]/g,'').includes('net'))||'',
-    period:  g(['periodname','period name','period','fiscalperiod','gl period','accounting period']),
-    postdate:g(['glposteddate','gl posted date','posted date','posting date','postdate','gl date','entry date']),
-    desc:    g(['description','linedesc','line description','narration','narr','invoice desc','particulars','memo','remarks']),
-    head:    g(['accountname','account name','natural account','account','gl account','expense head','cost head']),
-    docno:   g(['documentnumber','doc number','document no','voucher','journal','invoice no','ref no']),
-    journal: g(['journalname','journal name','journal source','source']),
+    vendor: g(['vendorname','vendor','party','suppliername','payee','tradingpartner','creditor']),
+    amount: h.find(x=>n(x)==='functionalnet')||h.find(x=>n(x).startsWith('functional')&&n(x).includes('net'))||'',
+    period: g(['periodname','period','fiscalperiod','glperiod']),
+    postdate:g(['glposteddate','posteddate','postingdate','gldate','entrydate']),
+    desc:   g(['linedescription','description','linedesc','narration','invoicedesc','particulars','memo','remarks']),
+    head:   g(['accountname','naturalaccount','glaccount','expensehead','account']),
+    docno:  g(['documentnumber','docnumber','documentno','voucherno','invoiceno','refno']),
+    journal:g(['journalname','journalsource','source','journalcategory']),
   };
 }
 
 function renderColMapper(headers){
   const row=document.getElementById('gl-col-map');
-  const sel=(key,label,req)=>`<div>
-    <label>${label}${req?'<span style="color:var(--red)"> *</span>':' <span style="font-weight:400;color:var(--muted)">(opt)</span>'}</label>
-    <select id="map_${key}" onchange="colMap['${key}']=this.value">
-      <option value="">— select —</option>
-      ${headers.map(h=>`<option value="${h}"${colMap[key]===h?' selected':''}>${h}</option>`).join('')}
-    </select></div>`;
-  const amtWarning=!colMap.amount?'<div style="color:var(--red);font-size:11px;margin-top:4px">⚠ Could not auto-detect Functional Net column — please select manually</div>':'<div style="color:var(--green);font-size:11px;margin-top:4px">✓ Functional Net column detected: <strong>'+colMap.amount+'</strong></div>';
-  row.innerHTML=`<div class="col-map-label">Map GL Columns (auto-detected — adjust if needed)</div>
+  const sel=(key,label,req)=>`<div><label>${label}${req?'<span style="color:var(--red)"> *</span>':' <span style="font-weight:400;color:var(--muted)">(opt)</span>'}</label>
+    <select id="map_${key}" onchange="colMap['${key}']=this.value"><option value="">— select —</option>
+    ${headers.map(h=>`<option value="${h}"${colMap[key]===h?' selected':''}>${h}</option>`).join('')}</select></div>`;
+  const amtNote=!colMap.amount
+    ?'<div style="color:var(--red);font-size:11px;margin-top:3px">⚠ Cannot auto-detect Functional Net — select manually</div>'
+    :'<div style="color:var(--green);font-size:11px;margin-top:3px">✓ Detected: <strong>'+colMap.amount+'</strong></div>';
+  row.innerHTML=`<div class="col-map-label">Map GL Columns</div>
     ${sel('vendor','Vendor Name (smallcase)',true)}
-    ${sel('amount','Functional Net Amount',true)}${amtWarning}
+    ${sel('amount','Functional Net Amount',true)}${amtNote}
     ${sel('period','Period Name',false)}
     ${sel('postdate','GL Posted Date',false)}
     ${sel('desc','Invoice / Line Description',false)}
@@ -587,8 +360,7 @@ function renderColMapper(headers){
 }
 
 function renderPreview(headers,rows){
-  document.getElementById('glPreviewTable').innerHTML=`
-    <thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+  document.getElementById('glPreviewTable').innerHTML=`<thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
     <tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc((r[h]||'').toString())}</td>`).join('')}</tr>`).join('')}</tbody>`;
 }
 
@@ -598,45 +370,31 @@ function syncColMap(){
   });
 }
 
-// ── PARSE ─────────────────────────────────────────────────────────────────────
+function parseAmt(raw){
+  if(raw===null||raw===undefined||raw==='')return null;
+  if(typeof raw==='number')return raw;
+  let s=raw.toString().trim();
+  if(s==='')return null;
+  const bracket=s.startsWith('(');
+  s=s.replace(/[()\s₹$]/g,'').replace(/,/g,'');
+  if(s==='-'||s==='')return null;
+  const n=parseFloat(s);
+  if(isNaN(n))return null;
+  return bracket&&n>0?-n:n;
+}
+
 function runAnalysis(){
   syncColMap();
-  if(!colMap.vendor)return showError('Please select the Vendor Name column.');
-  if(!colMap.amount)return showError('Please select the Functional Net Amount column.');
+  if(!colMap.vendor)return showError('Select the Vendor Name column.');
+  if(!colMap.amount)return showError('Select the Functional Net Amount column.');
   hideError();setStatus('Parsing…');
 
-  // ── ROBUST AMOUNT PARSER ──────────────────────────────────────────────────
-  // Handles: -1234.56 | -1,23,456.78 | (1,23,456.78) | "- 1234" | raw JS number
-  function parseAmt(raw){
-    if(raw===null||raw===undefined||raw==='')return null;
-    // Already a number (Excel numeric cell read by SheetJS)
-    if(typeof raw==='number')return raw;
-    let s=raw.toString().trim();
-    if(s==='')return null;
-    // Bracket notation for negatives: (1,23,456.78) → -123456.78
-    const neg=s.startsWith('(')||s.startsWith('- ')||s.startsWith('-');
-    s=s.replace(/[()\s₹$]/g,'').replace(/,/g,'');
-    // After stripping, a lone '-' means zero/blank
-    if(s==='-'||s==='')return null;
-    const n=parseFloat(s);
-    if(isNaN(n))return null;
-    // bracket notation makes it negative
-    if(raw.toString().trim().startsWith('(')&&n>0)return -n;
-    return n;
-  }
-
-  let skippedRows=0, skippedAmt=0;
-
+  let skipped=0;
   parsedData=glRows.map(r=>{
     const vendorRaw=(r[colMap.vendor]||'').toString().trim();
     const amt=parseAmt(r[colMap.amount]);
-
-    // If amount unparseable, count as skipped for reconciliation
-    if(amt===null){skippedRows++;return null;}
-
-    // If vendor blank, still count amount in skipped (Oracle subtotal/header rows)
-    if(!vendorRaw){skippedAmt+=amt;skippedRows++;return null;}
-
+    if(amt===null){skipped++;return null;}
+    if(!vendorRaw){skipped++;return null;}
     const period=(colMap.period&&r[colMap.period]?r[colMap.period]:'').toString().trim();
     const postDateRaw=(colMap.postdate&&r[colMap.postdate]?r[colMap.postdate]:'').toString().trim();
     const postDate=parseDate(postDateRaw);
@@ -645,39 +403,34 @@ function runAnalysis(){
     const docno=(colMap.docno&&r[colMap.docno]?r[colMap.docno]:'').toString().trim();
     const journal=(colMap.journal&&r[colMap.journal]?r[colMap.journal]:'').toString().trim();
     const dayOfWeek=postDate?DAYS[postDate.getDay()]:'';
-    return{vendor:vendorRaw,amount:amt,period,postDate,dayOfWeek,desc,head,docno,journal,raw:r};
+    return{vendor:vendorRaw,amount:amt,period,postDate,dayOfWeek,desc,head,docno,journal};
   }).filter(Boolean);
 
   if(!parsedData.length)return showError('No valid rows found. Check column mapping.');
 
-  // Reconciliation banner
   const parsedTotal=parsedData.reduce((s,r)=>s+r.amount,0);
-  const totalRows=glRows.length;
-  const usedRows=parsedData.length;
-  let reconHtml=`<div style="font-size:12px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-bottom:14px;display:flex;gap:20px;flex-wrap:wrap;">
-    <span>📊 <strong>Rows in file:</strong> ${totalRows}</span>
-    <span>✅ <strong>Parsed rows:</strong> ${usedRows}</span>
-    <span>⚠️ <strong>Skipped (blank vendor/unparseable):</strong> ${skippedRows}</span>
-    <span>🔢 <strong>Parsed total (Functional Net):</strong> <strong style="color:var(--accent)">${fmt(parsedTotal)}</strong></span>
-    ${skippedRows>0?`<span style="color:var(--amber)">⚠ ${skippedRows} rows skipped — likely Oracle subtotal/header rows. Verify against source total.</span>`:''}
+  document.getElementById('reconBanner').innerHTML=`<div style="font-size:12px;padding:9px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+    <span>📊 <strong>File rows:</strong> ${glRows.length}</span>
+    <span>✅ <strong>Parsed:</strong> ${parsedData.length}</span>
+    <span>⚠️ <strong>Skipped:</strong> ${skipped}</span>
+    <span>🔢 <strong>Functional Net Total:</strong> <strong style="color:var(--accent);font-size:13px">${fmt(parsedTotal)}</strong></span>
+    ${skipped?`<span style="color:var(--amber);font-size:11px">⚠ ${skipped} rows skipped (blank vendor / unparseable amount) — verify against source</span>`:''}
   </div>`;
-  document.getElementById('reconBanner').innerHTML=reconHtml;
   document.getElementById('reconBanner').style.display='block';
 
   buildSummaryChips(parsedData);
   buildVendorPivot(parsedData);
   buildMoM(parsedData);
   buildSundayAnalysis(parsedData);
+  buildNatureAnalysis(parsedData);
   buildFindings(parsedData);
-  // AI nature analysis triggered on tab click
+
   document.getElementById('results').classList.remove('hidden');
   document.getElementById('emptyState').classList.add('hidden');
-  setStatus(`✓ ${parsedData.length} transactions parsed`);
-
-  buildNatureAnalysis(parsedData);
+  setStatus(`✓ ${parsedData.length} transactions analysed`);
 }
 
-// ── SUMMARY CHIPS ─────────────────────────────────────────────────────────────
+// ── SUMMARY CHIPS ──────────────────────────────────────────────────────────────
 function buildSummaryChips(data){
   const grandNet=data.reduce((s,r)=>s+r.amount,0);
   const grossDr=data.filter(r=>r.amount>0).reduce((s,r)=>s+r.amount,0);
@@ -685,277 +438,213 @@ function buildSummaryChips(data){
   const vendors=new Set(data.map(r=>r.vendor)).size;
   const periods=new Set(data.map(r=>r.period).filter(Boolean)).size;
   const vm={};data.forEach(r=>{vm[r.vendor]=(vm[r.vendor]||0)+r.amount;});
-  const top=Object.entries(vm).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]))[0]||['—',0];
+  const top=Object.entries(vm).sort((a,b)=>b[1]-a[1])[0]||['—',0];
   const sundays=data.filter(r=>r.dayOfWeek==='Sunday');
+  const noDesc=data.filter(r=>!r.desc).length;
   document.getElementById('summaryChips').innerHTML=`
-    <div class="chip"><div class="lbl">Net Total (Functional Net)</div><div class="val">${fmtShort(grandNet)}</div><div class="sub">Dr ${fmtShort(grossDr)} | Cr ${fmtShort(grossCr)}</div></div>
-    <div class="chip"><div class="lbl">Unique Vendors</div><div class="val">${vendors}</div><div class="sub">${periods} period(s) · ${data.length} txns</div></div>
-    <div class="chip"><div class="lbl">Top Vendor (by net)</div><div class="val" style="font-size:13px;word-break:break-word">${esc(top[0])}</div><div class="sub">${fmtShort(top[1])} · ${grandNet?(top[1]/grandNet*100).toFixed(1):0}%</div></div>
-    <div class="chip"><div class="lbl">Sunday Txns</div><div class="val" style="color:${sundays.length?'var(--amber)':'var(--green)'}">${sundays.length}</div><div class="sub">${fmtShort(sundays.reduce((s,r)=>s+r.amount,0))} total</div></div>
-    <div class="chip"><div class="lbl">Credit Entries</div><div class="val" style="color:${grossCr<0?'var(--red)':'var(--muted)'}">${data.filter(r=>r.amount<0).length}</div><div class="sub">${fmtShort(grossCr)} gross credits</div></div>`;
+    <div class="chip"><div class="lbl">Net Total</div><div class="val">${fmtShort(grandNet)}</div><div class="sub">Dr ${fmtShort(grossDr)} · Cr ${fmtShort(Math.abs(grossCr))}</div></div>
+    <div class="chip"><div class="lbl">Vendors</div><div class="val">${vendors}</div><div class="sub">${periods} period(s) · ${data.length} txns</div></div>
+    <div class="chip"><div class="lbl">Top Vendor</div><div class="val" style="font-size:13px;word-break:break-word;line-height:1.3">${esc(top[0])}</div><div class="sub">${fmtShort(top[1])} · ${grandNet?(top[1]/grandNet*100).toFixed(1):0}%</div></div>
+    <div class="chip"><div class="lbl">Credit Entries</div><div class="val" style="color:${grossCr<0?'var(--red)':'var(--muted)'}">${data.filter(r=>r.amount<0).length}</div><div class="sub">${fmtShort(Math.abs(grossCr))} gross</div></div>
+    <div class="chip"><div class="lbl">Sunday Txns</div><div class="val" style="color:${sundays.length?'var(--amber)':'var(--muted)'}">${sundays.length}</div><div class="sub">${fmtShort(sundays.reduce((s,r)=>s+r.amount,0))}</div></div>
+    <div class="chip"><div class="lbl">No Description</div><div class="val" style="color:${noDesc?'var(--amber)':'var(--muted)'}">${noDesc}</div><div class="sub">${data.length?(noDesc/data.length*100).toFixed(1):0}% of txns</div></div>`;
 }
 
-// ── VENDOR PIVOT ──────────────────────────────────────────────────────────────
+// ── VENDOR PIVOT ───────────────────────────────────────────────────────────────
 function buildVendorPivot(data){
   const map={};
   data.forEach(r=>{
-    if(!map[r.vendor])map[r.vendor]={net:0,debits:0,credits:0,count:0,posCount:0,negCount:0};
-    map[r.vendor].net+=r.amount;
-    map[r.vendor].count++;
-    if(r.amount>=0){map[r.vendor].debits+=r.amount;map[r.vendor].posCount++;}
+    if(!map[r.vendor])map[r.vendor]={net:0,debits:0,credits:0,count:0,negCount:0};
+    map[r.vendor].net+=r.amount;map[r.vendor].count++;
+    if(r.amount>=0){map[r.vendor].debits+=r.amount;}
     else{map[r.vendor].credits+=r.amount;map[r.vendor].negCount++;}
   });
-
-  // Sort by absolute net descending
-  const vendors=Object.entries(map).sort((a,b)=>Math.abs(b[1].net)-Math.abs(a[1].net));
+  const vendors=Object.entries(map).sort((a,b)=>b[1].debits-a[1].debits);
   const grandNet=vendors.reduce((s,[,d])=>s+d.net,0);
-  const grandDebits=vendors.reduce((s,[,d])=>s+d.debits,0);
-  const grandCredits=vendors.reduce((s,[,d])=>s+d.credits,0);
-  const grandCount=vendors.reduce((s,[,d])=>s+d.count,0);
-
+  const grandDr=vendors.reduce((s,[,d])=>s+d.debits,0);
+  const grandCr=vendors.reduce((s,[,d])=>s+d.credits,0);
   document.getElementById('vendorCount').textContent=`${vendors.length} vendors`;
   const tbody=document.getElementById('vendorBody');tbody.innerHTML='';
   let cum=0;
   vendors.forEach(([name,d],i)=>{
-    const pct=grandNet?d.net/grandNet*100:0;
-    const absPct=grandDebits?d.debits/grandDebits*100:0;
-    cum+=absPct;
+    const pct=grandDr?d.debits/grandDr*100:0;
+    cum+=pct;
     const color=COLORS[i%COLORS.length];
-    const isNegNet=d.net<0;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td style="color:var(--muted);font-size:11px">${i+1}</td>
       <td><span class="vdot" style="background:${color}"></span>${esc(name)}</td>
-      <td class="r"><strong style="color:${isNegNet?'var(--red)':'inherit'}">${fmt(d.net)}</strong></td>
-      <td class="r" style="color:var(--mid);font-size:11px">${d.debits?fmt(d.debits):'—'}</td>
+      <td class="r" style="color:${d.net<0?'var(--red)':'inherit'};font-weight:600">${fmt(d.net)}</td>
+      <td class="r" style="font-size:11px">${d.debits?fmt(d.debits):'—'}</td>
       <td class="r" style="color:var(--red);font-size:11px">${d.credits?fmt(d.credits):'—'}</td>
-      <td class="r">${d.count}${d.negCount?` <span style="font-size:10px;color:var(--red)">(${d.negCount} cr)</span>`:''}</td>
+      <td class="r">${d.count}${d.negCount?` <span style="font-size:10px;color:var(--red)">(${d.negCount}cr)</span>`:''}</td>
+      <td class="r" style="font-size:11px">${d.negCount?`<span style="color:var(--amber)">${d.negCount}</span>`:'—'}</td>
       <td class="r" style="font-size:11px">${fmt(Math.round(d.net/d.count))}</td>
-      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(absPct*3,100)}%;background:${color}"></div></div><span style="font-size:11px;min-width:38px">${absPct.toFixed(2)}%</span></div></td>
-      <td class="r"><span class="pct ${absPct>=20?'hi':absPct>=5?'mid':'lo'}">${pct.toFixed(2)}%</span></td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct*3,100)}%;background:${color}"></div></div><span style="font-size:11px;min-width:36px">${pct.toFixed(1)}%</span></div></td>
+      <td class="r"><span class="pct ${pct>=20?'hi':pct>=5?'mid':'lo'}">${pct.toFixed(2)}%</span></td>
       <td class="r" style="color:var(--muted);font-size:11px">${cum.toFixed(1)}%</td>`;
     tbody.appendChild(tr);
   });
-  document.getElementById('vendorFoot').innerHTML=`<tr class="trow">
-    <td colspan="2"><strong>Grand Total</strong></td>
-    <td class="r"><strong>${fmt(grandNet)}</strong></td>
-    <td class="r" style="font-size:11px"><strong>${fmt(grandDebits)}</strong></td>
-    <td class="r" style="color:var(--red);font-size:11px"><strong>${fmt(grandCredits)}</strong></td>
-    <td class="r"><strong>${grandCount}</strong></td>
-    <td class="r"></td><td></td>
-    <td class="r"><strong>100%</strong></td><td></td></tr>`;
+  document.getElementById('vendorFoot').innerHTML=`<tr class="trow"><td colspan="2"><strong>Grand Total</strong></td><td class="r"><strong>${fmt(grandNet)}</strong></td><td class="r" style="font-size:11px"><strong>${fmt(grandDr)}</strong></td><td class="r" style="color:var(--red);font-size:11px"><strong>${fmt(grandCr)}</strong></td><td class="r"><strong>${data.length}</strong></td><td></td><td></td><td></td><td class="r"><strong>100%</strong></td><td></td></tr>`;
 }
 
-// ── MOM ───────────────────────────────────────────────────────────────────────
+// ── MOM ────────────────────────────────────────────────────────────────────────
 function buildMoM(data){
   const allVendors=[...new Set(data.map(r=>r.vendor))];
-  const rawPeriods=[...new Set(data.map(r=>r.period).filter(Boolean))];
-  const periods=sortPeriods(rawPeriods);
-
+  const periods=sortPeriods([...new Set(data.map(r=>r.period).filter(Boolean))]);
   const matrix={};
   allVendors.forEach(v=>{matrix[v]={};periods.forEach(p=>{matrix[v][p]=0;});});
-  data.forEach(r=>{if(r.period&&matrix[r.vendor])matrix[r.vendor][r.period]=(matrix[r.vendor][r.period]||0)+r.amount;});
-
-  const vTotals=allVendors.map(v=>({v,total:periods.reduce((s,p)=>s+(matrix[v][p]||0),0)})).sort((a,b)=>b.total-a.total);
+  data.forEach(r=>{if(r.period&&matrix[r.vendor])matrix[r.vendor][r.period]+=r.amount;});
+  const vTotals=allVendors.map(v=>({v,t:periods.reduce((s,p)=>s+(matrix[v][p]||0),0)})).sort((a,b)=>b.t-a.t);
   const sorted=vTotals.map(x=>x.v);
   const pTotals={};periods.forEach(p=>{pTotals[p]=sorted.reduce((s,v)=>s+(matrix[v][p]||0),0);});
   const grand=Object.values(pTotals).reduce((s,x)=>s+x,0);
-
   document.getElementById('momBadge').textContent=`${sorted.length} vendors × ${periods.length} periods`;
-
-  // Amount matrix
-  const adjStyle='background:#fffbeb;color:var(--amber);font-weight:600';
-  document.getElementById('momHead').innerHTML=`<tr><th>Vendor</th>${periods.map(p=>`<th class="r" style="${isAdj(p)?adjStyle:''}">${esc(p)}</th>`).join('')}<th class="r">Total</th><th class="r">%</th></tr>`;
+  const adjSt='background:#fef9ec;color:var(--amber);font-weight:600';
+  document.getElementById('momHead').innerHTML=`<tr><th class="sticky-col">Vendor</th>${periods.map(p=>`<th class="r" style="${isAdj(p)?adjSt:''}">${esc(p)}</th>`).join('')}<th class="r">Total</th><th class="r">%</th></tr>`;
   const momBody=document.getElementById('momBody');momBody.innerHTML='';
   sorted.forEach((v,i)=>{
     const color=COLORS[i%COLORS.length];
-    const vt=vTotals.find(x=>x.v===v).total;
+    const vt=vTotals.find(x=>x.v===v).t;
     const vp=grand?vt/grand*100:0;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="min-width:150px;white-space:nowrap"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
-      ${periods.map(p=>{const val=matrix[v][p]||0;return`<td class="r" style="${isAdj(p)?'background:#fffbeb;':''}${val<0?'color:var(--red);':''}">${val?fmt(val):'<span style="color:var(--border)">—</span>'}</td>`;}).join('')}
+    tr.innerHTML=`<td class="sticky-col" style="min-width:150px;white-space:nowrap"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
+      ${periods.map(p=>{const val=matrix[v][p]||0;return`<td class="r" style="${isAdj(p)?'background:#fef9ec;':''}${val<0?'color:var(--red);':''}">${val?fmt(val):'<span style="color:var(--border2)">—</span>'}</td>`;}).join('')}
       <td class="r"><strong>${fmt(vt)}</strong></td>
       <td class="r"><span class="pct ${vp>=20?'hi':vp>=5?'mid':'lo'}">${vp.toFixed(2)}%</span></td>`;
     momBody.appendChild(tr);
   });
-  document.getElementById('momFoot').innerHTML=`<tr class="trow"><td><strong>Period Total</strong></td>${periods.map(p=>`<td class="r" style="${isAdj(p)?'background:#fffbeb;':''}${pTotals[p]<0?'color:var(--red);':''}"><strong>${fmt(pTotals[p])}</strong></td>`).join('')}<td class="r"><strong>${fmt(grand)}</strong></td><td class="r"><strong>100%</strong></td></tr>`;
-
-  // % table
-  document.getElementById('pctHead').innerHTML=`<tr><th>Vendor</th>${periods.map(p=>`<th class="r">${esc(p)}</th>`).join('')}<th class="r">Avg%</th></tr>`;
+  document.getElementById('momFoot').innerHTML=`<tr class="trow"><td class="sticky-col"><strong>Total</strong></td>${periods.map(p=>`<td class="r" style="${isAdj(p)?'background:#fef9ec;':''}${pTotals[p]<0?'color:var(--red);':''}"><strong>${fmt(pTotals[p])}</strong></td>`).join('')}<td class="r"><strong>${fmt(grand)}</strong></td><td class="r"><strong>100%</strong></td></tr>`;
+  document.getElementById('pctHead').innerHTML=`<tr><th class="sticky-col">Vendor</th>${periods.map(p=>`<th class="r">${esc(p)}</th>`).join('')}<th class="r">Avg%</th></tr>`;
   const pctBody=document.getElementById('pctBody');pctBody.innerHTML='';
   sorted.forEach((v,i)=>{
     const color=COLORS[i%COLORS.length];
     const pcts=periods.map(p=>pTotals[p]?(matrix[v][p]||0)/pTotals[p]*100:0);
-    const nonZero=pcts.filter(p=>p>0);
-    const avg=nonZero.length?nonZero.reduce((s,p)=>s+p,0)/nonZero.length:0;
+    const nz=pcts.filter(p=>p>0);
+    const avg=nz.length?nz.reduce((s,p)=>s+p,0)/nz.length:0;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="min-width:150px;white-space:nowrap"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
-      ${pcts.map(p=>p>0?`<td class="r"><span class="pct ${p>=30?'hi':p>=10?'mid':'lo'}">${p.toFixed(1)}%</span></td>`:`<td class="r"><span style="color:var(--border)">—</span></td>`).join('')}
+    tr.innerHTML=`<td class="sticky-col" style="min-width:150px;white-space:nowrap"><span class="vdot" style="background:${color}"></span>${esc(v)}</td>
+      ${pcts.map(p=>p?`<td class="r"><span class="pct ${p>=30?'hi':p>=10?'mid':'lo'}">${p.toFixed(1)}%</span></td>`:`<td class="r"><span style="color:var(--border2)">—</span></td>`).join('')}
       <td class="r"><span class="pct ${avg>=20?'hi':avg>=5?'mid':'lo'}">${avg.toFixed(1)}%</span></td>`;
     pctBody.appendChild(tr);
   });
-  document.getElementById('pctFoot').innerHTML=`<tr class="trow"><td><strong>Period Total %</strong></td>${periods.map(()=>`<td class="r"><strong>100%</strong></td>`).join('')}<td></td></tr>`;
 }
 
-// ── SUNDAY ANALYSIS ───────────────────────────────────────────────────────────
-function buildSundayAnalysis(data){
-  const sunRows=data.filter(r=>r.dayOfWeek==='Sunday');
-  // Aggregate by vendor
-  const vm={};
-  sunRows.forEach(r=>{
-    if(!vm[r.vendor])vm[r.vendor]={total:0,count:0,dates:[],largest:0,descs:[]};
-    vm[r.vendor].total+=r.amount;vm[r.vendor].count++;
-    if(r.postDate){const ds=r.postDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});if(!vm[r.vendor].dates.includes(ds))vm[r.vendor].dates.push(ds);}
-    if(r.amount>vm[r.vendor].largest)vm[r.vendor].largest=r.amount;
-    if(r.desc&&!vm[r.vendor].descs.includes(r.desc))vm[r.vendor].descs.push(r.desc);
-  });
-
-  // Filter: only vendors with aggregate ≥ 5L
-  const flagged=Object.entries(vm).filter(([,d])=>d.total>=500000).sort((a,b)=>b[1].total-a[1].total);
-  sundayData=flagged;
-  document.getElementById('sundayCount').textContent=`${flagged.length} vendors flagged`;
-
-  const tbody=document.getElementById('sundayBody');tbody.innerHTML='';
-  if(!flagged.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No Sunday transactions with aggregate ≥ ₹5L found.</td></tr>';return;}
-
-  flagged.forEach(([vendor,d])=>{
-    const tr=document.createElement('tr');
-    tr.className='sunday-row';
-    tr.innerHTML=`<td><strong>${esc(vendor)}</strong></td>
-      <td class="r" style="color:var(--amber);font-weight:700">${fmt(d.total)}</td>
-      <td class="r">${d.count}</td>
-      <td style="font-size:11px;max-width:200px;white-space:normal">${d.dates.slice(0,5).join(', ')}${d.dates.length>5?` +${d.dates.length-5} more`:''}</td>
-      <td class="r">${fmt(d.largest)}</td>
-      <td style="font-size:11px;max-width:200px;white-space:normal;color:var(--mid)">${esc(d.descs.slice(0,2).join(' | '))}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  // Detail table — all Sunday transactions ≥ 5L vendors
-  const flaggedVendors=new Set(flagged.map(([v])=>v));
-  const detailRows=sunRows.filter(r=>flaggedVendors.has(r.vendor));
-  document.getElementById('sundayDetailCard').style.display='block';
-  const dBody=document.getElementById('sundayDetailBody');dBody.innerHTML='';
-  detailRows.sort((a,b)=>b.amount-a.amount).forEach(r=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.postDate?r.postDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):''}</td>
-      <td style="color:var(--amber);font-weight:600">Sunday</td>
-      <td>${esc(r.vendor)}</td>
-      <td style="font-size:11px">${esc(r.docno)}</td>
-      <td class="r" style="font-weight:600;color:var(--amber)">${fmt(r.amount)}</td>
-      <td style="font-size:11px;max-width:220px;white-space:normal">${esc(r.desc)}</td>
-      <td style="font-size:11px">${esc(r.period)}</td>`;
-    dBody.appendChild(tr);
-  });
-}
-
-// ── NATURE ANALYSIS (no API — reads descriptions directly) ───────────────────
+// ── NATURE OF EXPENSES ─────────────────────────────────────────────────────────
 function buildNatureAnalysis(data){
   document.getElementById('natureGrid').innerHTML='';
-
-  // Build vendor map
   const vm={};
   data.forEach(r=>{
-    if(!vm[r.vendor])vm[r.vendor]={net:0,debits:0,count:0,descs:[],heads:new Set()};
+    if(!vm[r.vendor])vm[r.vendor]={net:0,debits:0,count:0,descs:[],heads:new Set(),docnos:new Set()};
     vm[r.vendor].net+=r.amount;
     if(r.amount>0)vm[r.vendor].debits+=r.amount;
     vm[r.vendor].count++;
-    if(r.desc&&r.desc.trim()&&!vm[r.vendor].descs.includes(r.desc.trim()))
-      vm[r.vendor].descs.push(r.desc.trim());
+    if(r.desc&&r.desc.trim())vm[r.vendor].descs.push(r.desc.trim());
     if(r.head&&r.head.trim())vm[r.vendor].heads.add(r.head.trim());
+    if(r.docno)vm[r.vendor].docnos.add(r.docno);
   });
-
-  const grandDebits=Object.values(vm).reduce((s,d)=>s+d.debits,0);
+  const grandDr=Object.values(vm).reduce((s,d)=>s+d.debits,0);
   const sorted=Object.entries(vm).sort((a,b)=>b[1].debits-a[1].debits);
-
-  // Pick vendors that together cover top 50-60% of gross debits
-  let cum=0, topVendors=[];
+  let cum=0,topVendors=[];
   for(const entry of sorted){
-    topVendors.push(entry);
-    cum+=entry[1].debits;
-    if(cum/grandDebits>=0.60) break;
+    topVendors.push(entry);cum+=entry[1].debits;
+    if(cum/grandDr>=0.60)break;
   }
-  // Always show at least 5, cap at 30
-  if(topVendors.length<5) topVendors=sorted.slice(0,Math.min(5,sorted.length));
-  if(topVendors.length>30) topVendors=topVendors.slice(0,30);
-
-  const cumPct=(topVendors.reduce((s,[,d])=>s+d.debits,0)/grandDebits*100).toFixed(1);
-  document.getElementById('natureBadge').textContent=`${topVendors.length} vendors · ${cumPct}% of total`;
-
+  if(topVendors.length<5)topVendors=sorted.slice(0,Math.min(5,sorted.length));
+  if(topVendors.length>30)topVendors=topVendors.slice(0,30);
+  const cumPct=(topVendors.reduce((s,[,d])=>s+d.debits,0)/grandDr*100).toFixed(1);
+  document.getElementById('natureBadge').textContent=`${topVendors.length} vendors · ${cumPct}% of spend`;
   natureResults=[];
   topVendors.forEach(([vendor,d],i)=>{
-    const pct=grandDebits?d.debits/grandDebits*100:0;
-    const headsBooked=[...d.heads].join(', ')||'—';
-
-    // Build summary from descriptions — extract unique meaningful words/phrases
-    const allDescs=d.descs.filter(x=>x.length>2);
-    const summary=buildSummary(vendor, allDescs, headsBooked);
-    const keywords=extractKeywords(allDescs);
-
-    const r={vendor,net:d.net,total:d.debits,pct,count:d.count,heads:headsBooked,summary,keywords,descs:allDescs};
+    const pct=grandDr?d.debits/grandDr*100:0;
+    const heads=[...d.heads].join(', ')||'—';
+    // deduplicate descriptions but keep ALL of them for analysis
+    const uniqueDescs=[...new Set(d.descs.map(x=>x.trim().toLowerCase()))].map(x=>x);
+    const rawDescs=[...new Set(d.descs.map(x=>x.trim()))]; // original case
+    const {summary,keywords,flag,flagType}=summariseVendor(vendor,rawDescs,heads);
+    const r={vendor,net:d.net,total:d.debits,pct,count:d.count,heads,summary,keywords,flag,flagType,descs:rawDescs};
     natureResults.push(r);
     renderNatureCard(r,i);
   });
-
-  setStatus(`✓ Nature analysis done for ${topVendors.length} vendors (${cumPct}% of total)`);
+  setStatus(`✓ Analysis complete — ${topVendors.length} vendors, ${parsedData.length} transactions`);
 }
 
-// Build a 2-3 line plain-English summary from descriptions
-function buildSummary(vendor, descs, head){
-  if(!descs.length) return `No invoice descriptions found in GL for this vendor. Review source invoices to determine nature of expense.`;
+function summariseVendor(vendor,descs,head){
+  if(!descs.length)return{summary:'No invoice descriptions found in GL for this vendor.',keywords:[],flag:'No descriptions — cannot determine nature of purchases. Obtain invoices from client.',flagType:'warn'};
 
-  // Frequency-count words across all descriptions to find dominant themes
-  const stopWords=new Set(['the','and','for','from','to','of','in','on','at','by','as','is','with','a','an','per','no','ref','inv','invoice','bill','being','towards','against','account','payment','charges','services','service','expense','expenses','misc','miscellaneous','ltd','pvt','india','limited','&','the','this','that','vide','as','per']);
-  const wordFreq={};
-  descs.forEach(d=>{
-    d.toLowerCase().replace(/[^a-z0-9\s\/\-]/g,' ').split(/\s+/).forEach(w=>{
-      w=w.trim();
-      if(w.length>2&&!stopWords.has(w)){wordFreq[w]=(wordFreq[w]||0)+1;}
-    });
-  });
-  const topWords=Object.entries(wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([w])=>w);
-
-  // Sample a few real descriptions verbatim (the most distinct ones, short)
-  const samples=descs
-    .filter(d=>d.length>5&&d.length<120)
-    .slice(0,6)
-    .map(d=>d.trim());
-
-  // Compose summary
-  let line1=`Vendor has ${descs.length} unique description(s) across ${descs.length>1?'multiple':'one'} transaction type(s).`;
-  if(topWords.length>=3){
-    line1=`Expenses primarily relate to: ${topWords.slice(0,6).join(', ')}.`;
-  }
-
-  let line2='';
-  if(samples.length){
-    line2=`Sample descriptions — ${samples.slice(0,3).map(s=>'"'+s+'"').join('; ')}.`;
-  }
-
-  let line3=`Booked under: ${head}. `;
-  if(topWords.some(w=>['salary','salaries','wages','payroll'].includes(w)))
-    line3+='⚠ Descriptions suggest payroll — verify if correctly classified under Other Expenses.';
-  else if(topWords.some(w=>['interest','bank','finance','loan','npa','borrowing'].includes(w)))
-    line3+='⚠ Descriptions suggest finance charges — consider reclassification.';
-  else if(topWords.some(w=>['penalty','fine','late','default','demand'].includes(w)))
-    line3+='⚠ Possible penalty/fine — should be disclosed separately.';
-  else if(topWords.some(w=>['depreciation','amortisation','amortization'].includes(w)))
-    line3+='⚠ Depreciation entries found — should not be in Other Expenses.';
-  else
-    line3+='Nature appears consistent with Other Expenses head.';
-
-  return [line1,line2,line3].filter(Boolean).join(' ');
-}
-
-// Extract top keywords directly from descriptions
-function extractKeywords(descs){
-  const stop=new Set(['the','and','for','from','to','of','in','on','at','by','as','is','with','a','an','per','no','ref','inv','invoice','bill','being','towards','against','account','payment','charges','service','expense','expenses','misc','ltd','pvt','india','limited','vide','this','that']);
+  // Count how often each description appears (frequency = recurring charge type)
   const freq={};
-  descs.forEach(d=>{
-    d.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).forEach(w=>{
-      w=w.trim();
-      if(w.length>3&&!stop.has(w))freq[w]=(freq[w]||0)+1;
-    });
+  descs.forEach(d=>{const k=d.toLowerCase().trim();freq[k]=(freq[k]||0)+1;});
+  const byFreq=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+
+  // Get unique descriptions (original case) sorted by frequency
+  const uniqueByFreq=byFreq.map(([k,cnt])=>{
+    const orig=descs.find(d=>d.toLowerCase().trim()===k)||k;
+    return{text:orig,count:cnt};
   });
-  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([w])=>w);
+
+  // Extract meaningful noun phrases — look for patterns like "for X", "towards X", "being X"
+  const allText=descs.join(' ').toLowerCase();
+
+  // Pull out what comes after common GL narration prefixes
+  const phrases=[];
+  descs.forEach(d=>{
+    const clean=d.replace(/^(being|towards|for|on account of|payment of|payment towards|paid for|paid towards|as per|vide|ref|invoice no\.?|inv no\.?|bill no\.?)\s*/i,'').trim();
+    if(clean.length>4&&clean.length<100)phrases.push(clean);
+  });
+
+  // Extract top recurring meaningful terms (multi-word preferred)
+  const stopW=new Set(['the','and','for','from','to','of','in','on','at','by','as','is','with','a','an','per','no','ref','inv','being','towards','against','account','payment','charges','ltd','pvt','india','limited','vide','this','that','are','has','have','been','our','its','we','be','or','but','not','all','any']);
+  const wf={};
+  allText.replace(/[^a-z0-9\s&\/\-]/g,' ').split(/\s+/).forEach(w=>{
+    w=w.trim();
+    if(w.length>3&&!stopW.has(w)&&!/^\d+$/.test(w))wf[w]=(wf[w]||0)+1;
+  });
+  const topWords=Object.entries(wf).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([w])=>w);
+
+  // Build a READABLE summary: what is actually being purchased?
+  // Line 1: most common description(s) tell us what's being bought
+  const top3=uniqueByFreq.slice(0,3);
+  let line1='';
+  if(top3.length===1){
+    line1=`All ${descs.length} invoice(s) describe: "${top3[0].text}".`;
+  } else {
+    const dominant=top3.filter(x=>x.count>1);
+    if(dominant.length){
+      line1=`Recurring charges include: ${dominant.map(x=>`"${x.text}" (${x.count}×)`).join(', ')}.`;
+    } else {
+      line1=`Invoices describe: ${top3.map(x=>`"${x.text}"`).join('; ')}.`;
+    }
+  }
+
+  // Line 2: summarise what type of service/goods this is
+  let line2='';
+  const hasMore=uniqueByFreq.length>3;
+  if(hasMore){
+    const others=uniqueByFreq.slice(3,7).map(x=>`"${x.text}"`).join(', ');
+    line2=`Other entries include: ${others}${uniqueByFreq.length>7?` and ${uniqueByFreq.length-7} more unique description(s).`:'.'}`;
+  }
+
+  // Line 3: audit observation — does this belong here?
+  let flag='', flagType='ok';
+  if(/salary|salaries|wages|payroll|ctc|staff|employee cost|remuneration/.test(allText)){
+    flag='⚠ Employee cost indicators found — verify if correctly classified under Other Expenses vs. Employee Benefits head.';flagType='warn';
+  } else if(/interest|bank charge|processing fee|forex|exchange loss|finance charge|borrowing|loan/.test(allText)){
+    flag='⚠ Finance charge indicators — consider reclassifying to Finance Costs head.';flagType='warn';
+  } else if(/penalty|fine|late fee|default|demand notice|statutory demand/.test(allText)){
+    flag='⚠ Penalty/fine entries — should be separately disclosed. Confirm with client.';flagType='bad';
+  } else if(/depreciation|amortis/.test(allText)){
+    flag='⚠ Depreciation found — must not appear in Other Expenses.';flagType='bad';
+  } else if(/rent|lease|tenancy|premises/.test(allText)){
+    flag='Note: Rent/lease entries — confirm if separate disclosure required under Ind AS 116.';flagType='warn';
+  } else if(/capital|asset|equipment|machinery|purchase of/.test(allText)){
+    flag='⚠ Capital expenditure indicators — verify these are not revenue-classified items.';flagType='bad';
+  } else if(/advance|prepaid|deposit/.test(allText)){
+    flag='Note: Advance/prepaid indicators — confirm these are expense bookings not balance sheet items.';flagType='warn';
+  } else {
+    flag=`Nature appears consistent with Other Expenses. Booked under: ${head}.`;flagType='ok';
+  }
+
+  return{summary:[line1,line2].filter(Boolean).join(' '),keywords:topWords.slice(0,8),flag,flagType};
 }
 
 function renderNatureCard(r,i){
@@ -964,89 +653,291 @@ function renderNatureCard(r,i){
   div.className='nature-card';
   div.innerHTML=`
     <div class="nc-top">
-      <div>
-        <div class="nc-vendor"><span class="vdot" style="background:${color}"></span>${esc(r.vendor)}</div>
-        <div class="nc-pct" style="margin-top:3px">${r.count} txns · ${r.pct.toFixed(2)}% of total</div>
-      </div>
-      <div class="nc-amt">${fmtShort(r.total)}</div>
+      <div><div class="nc-vendor"><span class="vdot" style="background:${color}"></span>${esc(r.vendor)}</div>
+        <div class="nc-pct">${r.count} txns · ${r.pct.toFixed(2)}% of spend · ${fmtShort(r.total)}</div></div>
+      <div style="text-align:right"><div class="nc-amt">${fmtShort(r.total)}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Net: ${fmtShort(r.net)}</div></div>
     </div>
-    <div class="nc-head" style="margin-bottom:8px;font-size:11px;color:var(--muted)">📒 Booked Head: <strong style="color:var(--ink)">${esc(r.heads)}</strong></div>
-    <div class="nc-summary" style="font-size:12.5px;color:var(--mid);line-height:1.6">${esc(r.summary)}</div>
-    ${r.keywords.length?`<div class="nc-keywords" style="margin-top:8px">${r.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div>`:''}
-    ${r.descs.length?`<details style="margin-top:10px"><summary style="font-size:11px;color:var(--muted);cursor:pointer">View all ${r.descs.length} unique descriptions</summary><div style="margin-top:6px;font-size:11px;color:var(--mid);max-height:140px;overflow-y:auto;line-height:1.7">${r.descs.map((d,j)=>`<div>${j+1}. ${esc(d)}</div>`).join('')}</div></details>`:''}`;
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px">📒 Head: <strong style="color:var(--ink)">${esc(r.heads)}</strong></div>
+    <div class="nc-summary">${esc(r.summary)}</div>
+    ${r.keywords.length?`<div class="nc-keywords">${r.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div>`:''}
+    <div class="nc-flag ${r.flagType}">${r.flag}</div>
+    ${r.descs.length?`<details style="margin-top:10px"><summary>View all ${r.descs.length} descriptions (${[...new Set(r.descs)].length} unique)</summary>
+      <div style="margin-top:6px;font-size:11px;color:var(--mid);max-height:160px;overflow-y:auto;line-height:1.8;background:var(--surface2);padding:8px;border-radius:6px">
+        ${[...new Set(r.descs)].map((d,j)=>`<div>${j+1}. ${esc(d)}</div>`).join('')}</div></details>`:''}`;
   document.getElementById('natureGrid').appendChild(div);
 }
 
-// ── FINDINGS ──────────────────────────────────────────────────────────────────
+// ── SUNDAY ANALYSIS ────────────────────────────────────────────────────────────
+function buildSundayAnalysis(data){
+  const sunRows=data.filter(r=>r.dayOfWeek==='Sunday');
+  const vm={};
+  sunRows.forEach(r=>{
+    if(!vm[r.vendor])vm[r.vendor]={total:0,count:0,dates:[],largest:0,descs:[]};
+    vm[r.vendor].total+=r.amount;vm[r.vendor].count++;
+    if(r.postDate){const ds=r.postDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});if(!vm[r.vendor].dates.includes(ds))vm[r.vendor].dates.push(ds);}
+    if(r.amount>vm[r.vendor].largest)vm[r.vendor].largest=r.amount;
+    if(r.desc&&!vm[r.vendor].descs.includes(r.desc))vm[r.vendor].descs.push(r.desc);
+  });
+  const flagged=Object.entries(vm).filter(([,d])=>d.total>=500000).sort((a,b)=>b[1].total-a[1].total);
+  sundayData=flagged;
+  document.getElementById('sundayCount').textContent=`${flagged.length} vendors flagged`;
+  const tbody=document.getElementById('sundayBody');tbody.innerHTML='';
+  if(!flagged.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No vendors with Sunday aggregate ≥ ₹5L.</td></tr>';return;}
+  flagged.forEach(([vendor,d])=>{
+    const tr=document.createElement('tr');tr.className='sunday-row';
+    tr.innerHTML=`<td><strong>${esc(vendor)}</strong></td>
+      <td class="r" style="color:var(--amber);font-weight:700">${fmt(d.total)}</td>
+      <td class="r">${d.count}</td>
+      <td style="font-size:11px;max-width:200px;white-space:normal">${d.dates.slice(0,5).join(', ')}${d.dates.length>5?` +${d.dates.length-5} more`:''}</td>
+      <td class="r">${fmt(d.largest)}</td>
+      <td style="font-size:11px;max-width:180px;white-space:normal;color:var(--mid)">${esc(d.descs.slice(0,2).join(' | '))}</td>`;
+    tbody.appendChild(tr);
+  });
+  const flaggedV=new Set(flagged.map(([v])=>v));
+  const detail=sunRows.filter(r=>flaggedV.has(r.vendor));
+  document.getElementById('sundayDetailCard').style.display='block';
+  const dBody=document.getElementById('sundayDetailBody');dBody.innerHTML='';
+  detail.sort((a,b)=>b.amount-a.amount).forEach(r=>{
+    const tr=document.createElement('tr');tr.className='sunday-row';
+    tr.innerHTML=`<td>${r.postDate?r.postDate.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):''}</td>
+      <td>${esc(r.vendor)}</td><td style="font-size:11px">${esc(r.docno)}</td>
+      <td class="r" style="font-weight:600;color:var(--amber)">${fmt(r.amount)}</td>
+      <td style="font-size:11px;max-width:220px;white-space:normal">${esc(r.desc)}</td>
+      <td style="font-size:11px">${esc(r.period)}</td>`;
+    dBody.appendChild(tr);
+  });
+}
+
+// ── AUDIT FINDINGS ─────────────────────────────────────────────────────────────
 function buildFindings(data){
   findings=[];
   const grand=data.reduce((s,r)=>s+r.amount,0);
+  const grandDr=data.filter(r=>r.amount>0).reduce((s,r)=>s+r.amount,0);
+
+  // Build vendor map with rich stats
   const vm={};
   data.forEach(r=>{
-    if(!vm[r.vendor])vm[r.vendor]={total:0,count:0,periods:new Set(),amounts:[],sunAmts:[]};
-    vm[r.vendor].total+=r.amount;vm[r.vendor].count++;
+    if(!vm[r.vendor])vm[r.vendor]={total:0,debits:0,count:0,periods:new Set(),amounts:[],descs:[],docnos:[],heads:new Set(),dates:[]};
+    vm[r.vendor].total+=r.amount;
+    if(r.amount>0)vm[r.vendor].debits+=r.amount;
+    vm[r.vendor].count++;
     vm[r.vendor].periods.add(r.period);
     vm[r.vendor].amounts.push(r.amount);
-    if(r.dayOfWeek==='Sunday')vm[r.vendor].sunAmts.push(r.amount);
+    if(r.desc)vm[r.vendor].descs.push(r.desc);
+    if(r.docno)vm[r.vendor].docnos.push(r.docno);
+    if(r.head)vm[r.vendor].heads.add(r.head);
+    if(r.postDate)vm[r.vendor].dates.push(r.postDate);
   });
 
-  // 1. Sunday large aggregate
+  // ① Sunday postings ≥ ₹5L
   const sunFlagged=sundayData.filter(([,d])=>d.total>=500000);
   if(sunFlagged.length){
-    findings.push({type:'flag',title:`${sunFlagged.length} vendor(s) with Sunday postings ≥ ₹5L`,
-      body:`Transactions posted on Sundays with large aggregate amounts — unusual for operational expenses. These may indicate backdated entries, system/batch postings, or irregular approvals. Vendors: ${sunFlagged.map(([v,d])=>`${v} (₹${fmtShort(d.total)}, ${d.count} txns)`).join('; ')}.`,
-      tags:['sunday posting','weekend transaction','backdating risk']});
+    findings.push({type:'flag',
+      title:`${sunFlagged.length} vendor(s) with Sunday postings totalling ≥ ₹5L`,
+      body:`Transactions posted on Sundays are unusual for normal business operations and may indicate backdated entries, manual journal adjustments, or irregular approvals. Raise with client: obtain approvals/support for each Sunday posting.`,
+      bullets:sunFlagged.map(([v,d])=>`${v}: ₹${fmtShort(d.total)} across ${d.count} txn(s) on dates ${d.dates.slice(0,3).join(', ')}`),
+      tags:['weekend posting','backdating risk','manual journal']});
   }
 
-  // 2. Round numbers
+  // ② Duplicate document numbers (same docno, same vendor, different amount — or same everything)
+  const docMap={};
+  data.filter(r=>r.docno).forEach(r=>{
+    const k=`${r.vendor}||${r.docno}`;
+    if(!docMap[k])docMap[k]=[];
+    docMap[k].push(r);
+  });
+  const dupDocs=Object.entries(docMap).filter(([,rows])=>rows.length>1);
+  if(dupDocs.length){
+    findings.push({type:'flag',
+      title:`${dupDocs.length} duplicate document number(s) for same vendor`,
+      body:`Multiple GL entries with the same vendor + document number may indicate duplicate invoice booking or split entries. Verify each occurrence.`,
+      bullets:dupDocs.slice(0,8).map(([k,rows])=>{const[v,d]=k.split('||');return`${v} — Doc ${d}: ${rows.length} entries, amounts ${rows.map(r=>fmt(r.amount)).join(', ')}`;}).concat(dupDocs.length>8?[`...and ${dupDocs.length-8} more`]:[]),
+      tags:['duplicate invoice','double booking','doc number check']});
+  }
+
+  // ③ Same vendor, same amount, different doc — possible duplicate payments
+  const amtMap={};
+  data.filter(r=>r.amount>0).forEach(r=>{
+    const k=`${r.vendor}||${r.amount}`;
+    if(!amtMap[k])amtMap[k]=[];
+    amtMap[k].push(r);
+  });
+  const dupAmts=Object.entries(amtMap).filter(([,rows])=>rows.length>=2&&rows[0].amount>=50000);
+  if(dupAmts.length){
+    findings.push({type:'warn',
+      title:`${dupAmts.length} instances of same vendor + same amount appearing multiple times (≥₹50K)`,
+      body:`Identical amounts for the same vendor on separate transactions could indicate duplicate payments. High priority for amounts ≥ ₹1L.`,
+      bullets:dupAmts.slice(0,8).map(([k,rows])=>{const[v,a]=k.split('||');return`${v}: ₹${fmt(parseFloat(a))} appears ${rows.length}× (periods: ${[...new Set(rows.map(r=>r.period))].join(', ')})`;}).concat(dupAmts.length>8?[`...and ${dupAmts.length-8} more`]:[]),
+      tags:['duplicate payment','same amount','verification required']});
+  }
+
+  // ④ Round figure transactions ≥ ₹1L
   const roundTxns=data.filter(r=>r.amount>0&&r.amount%100000===0);
   if(roundTxns.length){
-    findings.push({type:'warn',title:`${roundTxns.length} round-figure transactions (multiples of ₹1L)`,
-      body:`Entries of exactly ₹1L, ₹2L etc. may be estimates/provisions rather than invoice-backed. Examples: ${roundTxns.slice(0,5).map(r=>`${r.vendor} ₹${fmt(r.amount)} (${r.period})`).join(', ')}.`,
-      tags:['round number','provision risk','invoice verification']});
+    const roundTotal=roundTxns.reduce((s,r)=>s+r.amount,0);
+    findings.push({type:'warn',
+      title:`${roundTxns.length} round-figure transactions (exact multiples of ₹1L) — total ₹${fmtShort(roundTotal)}`,
+      body:`Round-number entries often indicate estimates, provisions, or accruals rather than actual invoice-backed expenditure. Obtain invoices/support for these entries.`,
+      bullets:roundTxns.slice(0,8).map(r=>`${r.vendor}: ₹${fmt(r.amount)} (${r.period}) — "${r.desc||'no desc'}"`).concat(roundTxns.length>8?[`...and ${roundTxns.length-8} more`]:[]),
+      tags:['round number','provision estimate','invoice needed']});
   }
 
-  // 3. Concentration
-  const topV=Object.entries(vm).sort((a,b)=>b[1].total-a[1].total).slice(0,3);
-  const top3Pct=topV.reduce((s,[,d])=>s+d.total,0)/grand*100;
-  if(top3Pct>60){
-    findings.push({type:'warn',title:`Top 3 vendors = ${top3Pct.toFixed(1)}% of total other expenses`,
-      body:`High concentration: ${topV.map(([v,d])=>`${v} — ₹${fmtShort(d.total)} (${(d.total/grand*100).toFixed(1)}%)`).join('; ')}. Verify arm's-length nature and review for related-party concerns.`,
-      tags:['concentration','related party','management scrutiny']});
+  // ⑤ Entries with no description
+  const noDesc=data.filter(r=>!r.desc||r.desc.trim()==='');
+  if(noDesc.length){
+    const noDescTotal=noDesc.reduce((s,r)=>s+Math.abs(r.amount),0);
+    findings.push({type:'flag',
+      title:`${noDesc.length} entries with no invoice description — ₹${fmtShort(noDescTotal)} at risk`,
+      body:`Entries without narration cannot be verified for nature, legitimacy, or proper classification. Client should be asked to provide invoice details and supporting documentation.`,
+      bullets:noDesc.slice(0,8).map(r=>`${r.vendor}: ₹${fmt(r.amount)} (${r.period}, Doc: ${r.docno||'N/A'})`).concat(noDesc.length>8?[`...and ${noDesc.length-8} more`]:[]),
+      tags:['missing narration','verification required','GL hygiene']});
   }
 
-  // 4. One-off vendors
-  const oneOff=Object.entries(vm).filter(([,d])=>d.periods.size===1&&d.total>=500000);
-  if(oneOff.length){
-    findings.push({type:'info',title:`${oneOff.length} vendor(s) appear in only 1 period with ≥ ₹5L`,
-      body:`Non-recurring vendors: ${oneOff.slice(0,6).map(([v,d])=>`${v} (₹${fmtShort(d.total)})`).join(', ')}. Verify invoices and whether these should recur.`,
-      tags:['one-off vendor','non-recurring','invoice check']});
+  // ⑥ Vendors appearing in only ADJ period
+  const adjOnlyVendors=Object.entries(vm).filter(([,d])=>{
+    const ps=[...d.periods].filter(Boolean);
+    return ps.length>0&&ps.every(p=>isAdj(p))&&d.debits>=200000;
+  });
+  if(adjOnlyVendors.length){
+    findings.push({type:'flag',
+      title:`${adjOnlyVendors.length} vendor(s) with entries ONLY in ADJ/adjustment period`,
+      body:`Vendors appearing exclusively in the adjustment period may represent year-end provisions, accruals, or last-minute bookings without adequate documentation. High audit risk — obtain approval memos and invoices.`,
+      bullets:adjOnlyVendors.map(([v,d])=>`${v}: ₹${fmtShort(d.debits)} (${d.count} entries)`),
+      tags:['adj period only','year-end accrual','provision risk']});
   }
 
-  // 5. Negative amounts
-  const negs=data.filter(r=>r.amount<0);
-  if(negs.length){
-    findings.push({type:'flag',title:`${negs.length} credit/negative entries (₹${fmtShort(Math.abs(negs.reduce((s,r)=>s+r.amount,0)))})`,
-      body:`Negative amounts may be reversals, credit notes, or duplicate netting. Verify: ${negs.slice(0,5).map(r=>`${r.vendor} ₹${fmt(r.amount)} (${r.period})`).join(', ')}.`,
-      tags:['reversal','credit note','duplicate risk']});
-  }
-
-  // 6. High-value outliers
-  const avg=grand/data.length;
-  const outliers=data.filter(r=>r.amount>Math.max(avg*10,500000));
-  if(outliers.length){
-    findings.push({type:'warn',title:`${outliers.length} high-value transactions (>10× avg or >₹5L)`,
-      body:`${outliers.slice(0,5).map(r=>`${r.vendor} ₹${fmt(r.amount)} (${r.period}) — "${r.desc||'no desc'}"`).join('; ')}.`,
-      tags:['high value','management approval','audit focus']});
-  }
-
-  // 7. ADJ period
+  // ⑦ General ADJ period concentration
   const adjRows=data.filter(r=>isAdj(r.period));
   if(adjRows.length){
     const adjTotal=adjRows.reduce((s,r)=>s+r.amount,0);
-    findings.push({type:'warn',title:`ADJ period: ${adjRows.length} entries = ₹${fmtShort(adjTotal)} (${(adjTotal/grand*100).toFixed(1)}% of total)`,
-      body:`Year-end/adjustment period entries need scrutiny for prior-period expenses, unrecorded provisions, or year-end accruals. Vendors: ${[...new Set(adjRows.map(r=>r.vendor))].slice(0,8).join(', ')}.`,
-      tags:['adj period','year-end','prior period','provisions']});
+    const adjPct=grand?adjTotal/grand*100:0;
+    findings.push({type:'warn',
+      title:`ADJ period: ${adjRows.length} entries = ₹${fmtShort(adjTotal)} (${adjPct.toFixed(1)}% of total)`,
+      body:`Year-end adjustment period entries warrant scrutiny for prior-period expenses, unrecorded provisions, or year-end accruals. Review each entry for adequate documentation.`,
+      bullets:[...new Set(adjRows.map(r=>r.vendor))].map(v=>{const vr=adjRows.filter(r=>r.vendor===v);return`${v}: ₹${fmtShort(vr.reduce((s,r)=>s+r.amount,0))} (${vr.length} entries)`;}),
+      tags:['adj period','year-end','prior period','accruals']});
+  }
+
+  // ⑧ Vendors with gap months (active for many months but silent in between)
+  const allPeriods=sortPeriods([...new Set(data.map(r=>r.period).filter(Boolean).filter(p=>!isAdj(p)))]);
+  if(allPeriods.length>=3){
+    const gapVendors=[];
+    Object.entries(vm).forEach(([v,d])=>{
+      const vPeriods=new Set([...d.periods].filter(p=>p&&!isAdj(p)));
+      if(vPeriods.size<2)return;
+      const first=allPeriods.findIndex(p=>vPeriods.has(p));
+      const last=allPeriods.slice().reverse().findIndex(p=>vPeriods.has(p));
+      const lastIdx=allPeriods.length-1-last;
+      const expectedCount=lastIdx-first+1;
+      if(expectedCount>vPeriods.size+1&&d.debits>=200000){
+        const gap=expectedCount-vPeriods.size;
+        gapVendors.push({v,gap,debits:d.debits,first:allPeriods[first],last:allPeriods[lastIdx]});
+      }
+    });
+    if(gapVendors.length){
+      findings.push({type:'info',
+        title:`${gapVendors.length} vendor(s) have gap month(s) — active but missing in between`,
+        body:`Vendors present in some months but absent in others (despite being active in the year) may indicate irregular services, missed invoices, or lump-sum bookings. Enquire about the nature of engagement — is it a regular service?`,
+        bullets:gapVendors.slice(0,8).map(x=>`${x.v}: ${x.gap} gap month(s) between ${x.first} and ${x.last}, total ₹${fmtShort(x.debits)}`).concat(gapVendors.length>8?[`...and ${gapVendors.length-8} more`]:[]),
+        tags:['irregular payments','gap months','recurring service check']});
+    }
+  }
+
+  // ⑨ Month-on-month spike (any vendor where one month > 3× their own average)
+  const vendorPeriodAmts={};
+  data.filter(r=>r.period&&!isAdj(r.period)).forEach(r=>{
+    if(!vendorPeriodAmts[r.vendor])vendorPeriodAmts[r.vendor]={};
+    vendorPeriodAmts[r.vendor][r.period]=(vendorPeriodAmts[r.vendor][r.period]||0)+r.amount;
+  });
+  const spikes=[];
+  Object.entries(vendorPeriodAmts).forEach(([v,pm])=>{
+    const vals=Object.values(pm).filter(x=>x>0);
+    if(vals.length<3)return;
+    const avg=vals.reduce((s,x)=>s+x,0)/vals.length;
+    Object.entries(pm).forEach(([p,amt])=>{
+      if(amt>avg*3&&amt>200000)spikes.push({v,p,amt,avg});
+    });
+  });
+  if(spikes.length){
+    findings.push({type:'warn',
+      title:`${spikes.length} month-on-month spike(s) — vendor amount >3× their own monthly average`,
+      body:`Sudden spikes in a vendor's billing vs their own average pattern are unusual and require explanation. Could indicate lumped invoices, one-time large services, or error.`,
+      bullets:spikes.slice(0,8).map(x=>`${x.v} in ${x.p}: ₹${fmtShort(x.amt)} vs avg ₹${fmtShort(Math.round(x.avg))} (${(x.amt/x.avg).toFixed(1)}× average)`).concat(spikes.length>8?[`...and ${spikes.length-8} more`]:[]),
+      tags:['mom spike','unusual pattern','billing anomaly']});
+  }
+
+  // ⑩ Single-entry vendors ≥ ₹5L (one transaction, high value)
+  const singleBig=Object.entries(vm).filter(([,d])=>d.count===1&&d.debits>=500000);
+  if(singleBig.length){
+    findings.push({type:'warn',
+      title:`${singleBig.length} vendor(s) with a single transaction ≥ ₹5L and no other activity`,
+      body:`One-time large payments to vendors with no recurring engagement are higher risk. Verify: is this a related party? Was there a formal agreement? Was the service actually rendered?`,
+      bullets:singleBig.slice(0,8).map(([v,d])=>{const r=data.find(x=>x.vendor===v);return`${v}: ₹${fmtShort(d.debits)} — "${r?r.desc||'no desc':''}"`;}),
+      tags:['one-time payment','single entry','related party risk']});
+  }
+
+  // ⑪ High-value outliers within a vendor (one txn >> their own avg)
+  const outliers=[];
+  Object.entries(vm).forEach(([v,d])=>{
+    if(d.count<3)return;
+    const avg=d.debits/d.count;
+    d.amounts.forEach((a,idx)=>{
+      if(a>avg*5&&a>500000){
+        const row=data.filter(r=>r.vendor===v)[idx];
+        outliers.push({v,a,avg,desc:row?row.desc:'',period:row?row.period:''});
+      }
+    });
+  });
+  if(outliers.length){
+    findings.push({type:'warn',
+      title:`${outliers.length} outlier transaction(s) — >5× that vendor's own average`,
+      body:`These entries are unusually large relative to what the same vendor normally charges. Could indicate errors, renegotiated rates, or non-standard services.`,
+      bullets:outliers.slice(0,8).map(x=>`${x.v}: ₹${fmtShort(x.a)} in ${x.period} vs avg ₹${fmtShort(Math.round(x.avg))} — "${x.desc||'no desc'}"`).concat(outliers.length>8?[`...and ${outliers.length-8} more`]:[]),
+      tags:['outlier','large txn','rate verification']});
+  }
+
+  // ⑫ Vendor concentration top 3
+  const topV=Object.entries(vm).sort((a,b)=>b[1].debits-a[1].debits).slice(0,3);
+  const top3Pct=grandDr?topV.reduce((s,[,d])=>s+d.debits,0)/grandDr*100:0;
+  if(top3Pct>60){
+    findings.push({type:'info',
+      title:`Top 3 vendors = ${top3Pct.toFixed(1)}% of gross Other Expenses`,
+      body:`High concentration in 3 vendors. Verify arm's-length nature, confirm these are not related parties, and check if there are formal agreements/contracts in place.`,
+      bullets:topV.map(([v,d])=>`${v}: ₹${fmtShort(d.debits)} (${(d.debits/grandDr*100).toFixed(1)}%)`),
+      tags:['concentration','related party','contract verification']});
+  }
+
+  // ⑬ Reversal/credit entries — verify legitimacy
+  const negs=data.filter(r=>r.amount<0);
+  if(negs.length){
+    const negTotal=Math.abs(negs.reduce((s,r)=>s+r.amount,0));
+    findings.push({type:'flag',
+      title:`${negs.length} credit/reversal entries totalling ₹${fmtShort(negTotal)}`,
+      body:`Negative entries in Other Expenses may be reversals, credit notes, or netting. Each should be traced to its original entry to confirm it is a legitimate reversal and not masking an overspend.`,
+      bullets:negs.slice(0,8).map(r=>`${r.vendor}: ₹${fmt(r.amount)} (${r.period}) — "${r.desc||'no desc'}"`).concat(negs.length>8?[`...and ${negs.length-8} more`]:[]),
+      tags:['reversal','credit note','netting risk']});
+  }
+
+  // ⑭ Multiple GL heads for same vendor (possible inconsistency)
+  const multiHead=Object.entries(vm).filter(([,d])=>d.heads.size>1&&d.debits>100000);
+  if(multiHead.length){
+    findings.push({type:'info',
+      title:`${multiHead.length} vendor(s) booked under multiple GL heads`,
+      body:`Same vendor appearing under different account heads may indicate inconsistent classification. Confirm the correct head and consider standardising.`,
+      bullets:multiHead.slice(0,8).map(([v,d])=>`${v}: booked under ${[...d.heads].join(' / ')}`),
+      tags:['multiple heads','inconsistent classification','GL hygiene']});
+  }
+
+  // ⑮ Entries with journal source = manual/manual entry (higher risk)
+  const manualJournals=data.filter(r=>r.journal&&/manual|man jnl|adj|adjustment|je |journal entry/i.test(r.journal));
+  if(manualJournals.length){
+    const manTotal=manualJournals.reduce((s,r)=>s+Math.abs(r.amount),0);
+    findings.push({type:'warn',
+      title:`${manualJournals.length} manual journal entries — ₹${fmtShort(manTotal)} total`,
+      body:`Manual journal entries in expense accounts carry higher fraud risk as they bypass system controls. Verify each has proper preparer/approver, supporting documentation, and business justification.`,
+      bullets:[...new Set(manualJournals.map(r=>r.journal))].map(j=>{const rows=manualJournals.filter(r=>r.journal===j);return`Source "${j}": ${rows.length} entries, ₹${fmtShort(rows.reduce((s,r)=>s+Math.abs(r.amount),0))}`;}),
+      tags:['manual journal','journal entry risk','approval required']});
   }
 
   // Render
@@ -1056,91 +947,77 @@ function buildFindings(data){
     if(f.type==='flag')crits++;else if(f.type==='warn')warns++;else infos++;
     const div=document.createElement('div');
     div.className=`finding-card ${f.type==='flag'?'flag':f.type==='warn'?'warn':'info'}`;
-    div.innerHTML=`<h4>${esc(f.title)}</h4><p>${esc(f.body)}</p><div class="tags">${f.tags.map(t=>`<span class="tag ${f.type==='flag'?'tag-red':f.type==='warn'?'tag-amber':'tag-teal'}">${esc(t)}</span>`).join('')}</div>`;
+    const bulletHtml=f.bullets&&f.bullets.length?`<ul>${f.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:'';
+    div.innerHTML=`<h4>${f.type==='flag'?'🔴':'⚠️'} ${esc(f.title)}</h4><p>${esc(f.body)}</p>${bulletHtml}<div class="tags">${f.tags.map(t=>`<span class="tag ${f.type==='flag'?'tag-red':f.type==='warn'?'tag-amber':'tag-teal'}">${esc(t)}</span>`).join('')}</div>`;
     c.appendChild(div);
   });
-  if(!findings.length)c.innerHTML='<div class="empty"><p>No findings. Run analysis first.</p></div>';
+  if(!findings.length)c.innerHTML='<div class="empty"><p>No findings generated. Run analysis first.</p></div>';
   document.getElementById('critCount').textContent=`${crits} critical`;
   document.getElementById('warnCount').textContent=`${warns} warnings`;
   document.getElementById('infoCount').textContent=`${infos} info`;
+  document.getElementById('findingsBadge').textContent=crits+warns+infos;
 }
 
-// ── EXCEL EXPORT ──────────────────────────────────────────────────────────────
+// ── EXCEL EXPORT ───────────────────────────────────────────────────────────────
 function exportFullXLSX(){
   if(!parsedData.length){alert('Run analysis first.');return;}
   const wb=XLSX.utils.book_new();
-
   // Sheet 1: Vendor Pivot
   const vm={};
-  parsedData.forEach(r=>{
-    if(!vm[r.vendor])vm[r.vendor]={net:0,debits:0,credits:0,count:0,negCount:0};
-    vm[r.vendor].net+=r.amount;vm[r.vendor].count++;
-    if(r.amount>=0)vm[r.vendor].debits+=r.amount;else{vm[r.vendor].credits+=r.amount;vm[r.vendor].negCount++;}
-  });
-  const grandNet=parsedData.reduce((s,r)=>s+r.amount,0);
-  const grandDr=parsedData.filter(r=>r.amount>=0).reduce((s,r)=>s+r.amount,0);
-  const grandCr=parsedData.filter(r=>r.amount<0).reduce((s,r)=>s+r.amount,0);
-  const vRows=[['#','Vendor Name','Net Amount','Gross Debits','Gross Credits','Txn Count','Credit Entries','Avg/Txn (Net)','% of Net Total','Cumulative %']];
+  parsedData.forEach(r=>{if(!vm[r.vendor])vm[r.vendor]={net:0,debits:0,credits:0,count:0,negCount:0};vm[r.vendor].net+=r.amount;vm[r.vendor].count++;if(r.amount>=0)vm[r.vendor].debits+=r.amount;else{vm[r.vendor].credits+=r.amount;vm[r.vendor].negCount++;}});
+  const gNet=parsedData.reduce((s,r)=>s+r.amount,0);
+  const gDr=parsedData.filter(r=>r.amount>=0).reduce((s,r)=>s+r.amount,0);
+  const gCr=parsedData.filter(r=>r.amount<0).reduce((s,r)=>s+r.amount,0);
+  const vRows=[['#','Vendor','Net Amount','Gross Debits','Gross Credits','Txns','Credit Entries','Avg/Txn','% of Gross Dr','Cumul %']];
   let cum=0;
-  Object.entries(vm).sort((a,b)=>Math.abs(b[1].net)-Math.abs(a[1].net)).forEach(([v,d],i)=>{
-    const pct=grandNet?d.net/grandNet*100:0;
-    const absPct=grandDr?d.debits/grandDr*100:0;
-    cum+=absPct;
+  Object.entries(vm).sort((a,b)=>b[1].debits-a[1].debits).forEach(([v,d],i)=>{
+    const pct=gDr?d.debits/gDr*100:0;cum+=pct;
     vRows.push([i+1,v,d.net,d.debits,d.credits,d.count,d.negCount,d.count?Math.round(d.net/d.count):0,pct.toFixed(2)+'%',cum.toFixed(2)+'%']);
   });
-  vRows.push(['','Grand Total',grandNet,grandDr,grandCr,parsedData.length,parsedData.filter(r=>r.amount<0).length,'','100%','']);
+  vRows.push(['','Grand Total',gNet,gDr,gCr,parsedData.length,parsedData.filter(r=>r.amount<0).length,'','100%','']);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(vRows),'Vendor Pivot');
-
   // Sheet 2: MoM
   const allPeriods=sortPeriods([...new Set(parsedData.map(r=>r.period).filter(Boolean))]);
-  const allVendors=Object.keys(vm).sort((a,b)=>Math.abs(b[1].net)-Math.abs(a[1].net));
-  const mat={};allVendors.forEach(v=>{mat[v]={};allPeriods.forEach(p=>{mat[v][p]=0;});});
+  const allV=Object.keys(vm).sort((a,b)=>vm[b].debits-vm[a].debits);
+  const mat={};allV.forEach(v=>{mat[v]={};allPeriods.forEach(p=>{mat[v][p]=0;});});
   parsedData.forEach(r=>{if(r.period&&mat[r.vendor])mat[r.vendor][r.period]+=r.amount;});
-  const pTot={};allPeriods.forEach(p=>{pTot[p]=allVendors.reduce((s,v)=>s+(mat[v][p]||0),0);});
-  const momRows=[['Vendor',...allPeriods,'Net Total','% of Grand Net']];
-  allVendors.forEach(v=>{const vt=allPeriods.reduce((s,p)=>s+(mat[v][p]||0),0);momRows.push([v,...allPeriods.map(p=>mat[v][p]||0),vt,grandNet?(vt/grandNet*100).toFixed(2)+'%':'']);});
-  momRows.push(['Period Total',...allPeriods.map(p=>pTot[p]),grandNet,'100%']);
+  const pTot={};allPeriods.forEach(p=>{pTot[p]=allV.reduce((s,v)=>s+(mat[v][p]||0),0);});
+  const momRows=[['Vendor',...allPeriods,'Net Total','% of Grand']];
+  allV.forEach(v=>{const vt=allPeriods.reduce((s,p)=>s+(mat[v][p]||0),0);momRows.push([v,...allPeriods.map(p=>mat[v][p]||0),vt,gNet?(vt/gNet*100).toFixed(2)+'%':'']);});
+  momRows.push(['Total',...allPeriods.map(p=>pTot[p]),gNet,'100%']);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(momRows),'Month-on-Month');
-
-  // Sheet 3: Nature of Expenses
+  // Sheet 3: Nature
   if(natureResults.length){
-    const nRows=[['#','Vendor','Net Amount','Gross Debits','% of Total','Txn Count','Booked Head','Summary (from GL descriptions)','Top Keywords']];
-    natureResults.forEach((r,i)=>nRows.push([i+1,r.vendor,r.net,r.total,r.pct.toFixed(2)+'%',r.count,r.heads,r.summary,(r.keywords||[]).join(', ')]));
+    const nRows=[['#','Vendor','Net','Gross Debits','% of Total','Txns','Head','Summary','Keywords','Flag']];
+    natureResults.forEach((r,i)=>nRows.push([i+1,r.vendor,r.net,r.total,r.pct.toFixed(2)+'%',r.count,r.heads,r.summary,(r.keywords||[]).join(', '),r.flag]));
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(nRows),'Nature of Expenses');
   }
-
   // Sheet 4: Sunday
-  const sunRows=[['Vendor','Sunday Aggregate','Sunday Txn Count','Sunday Dates','Largest Single Txn']];
-  sundayData.forEach(([v,d])=>sunRows.push([v,d.total,d.count,d.dates.join(', '),d.largest]));
-  const sunDetail=[['GL Posted Date','Day','Vendor','Doc No.','Amount','Description','Period']];
-  parsedData.filter(r=>r.dayOfWeek==='Sunday'&&sundayData.some(([v])=>v===r.vendor)).forEach(r=>sunDetail.push([r.postDate?r.postDate.toLocaleDateString('en-IN'):'',r.dayOfWeek,r.vendor,r.docno,r.amount,r.desc,r.period]));
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sunRows),'Sunday Transactions');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sunDetail),'Sunday Detail');
-
+  const sRows=[['Vendor','Sunday Aggregate','Sunday Txns','Dates','Largest Txn']];
+  sundayData.forEach(([v,d])=>sRows.push([v,d.total,d.count,d.dates.join(', '),d.largest]));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sRows),'Sunday Txns');
+  const sdRows=[['Posted Date','Vendor','Doc No','Amount','Description','Period']];
+  parsedData.filter(r=>r.dayOfWeek==='Sunday'&&sundayData.some(([v])=>v===r.vendor)).forEach(r=>sdRows.push([r.postDate?r.postDate.toLocaleDateString('en-IN'):'',r.vendor,r.docno,r.amount,r.desc,r.period]));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sdRows),'Sunday Detail');
   // Sheet 5: Findings
-  const fRows=[['Type','Finding','Detail','Tags']];
-  findings.forEach(f=>fRows.push([f.type.toUpperCase(),f.title,f.body,f.tags.join(', ')]));
+  const fRows=[['Severity','Finding','Detail','Bullets','Tags']];
+  findings.forEach(f=>fRows.push([f.type.toUpperCase(),f.title,f.body,(f.bullets||[]).join(' | '),f.tags.join(', ')]));
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(fRows),'Audit Findings');
-
-  // Sheet 6: Raw Data
-  const rawCols=['vendor','period','amount','dayOfWeek','head','desc','docno','journal'];
-  const rawRows=[rawCols];
-  parsedData.forEach(r=>rawRows.push(rawCols.map(c=>(r[c]instanceof Date?r[c].toLocaleDateString('en-IN'):r[c])||'')));
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rawRows),'Raw GL Data');
-
-  XLSX.writeFile(wb,`GL_OtherExpenses_Audit_${new Date().toISOString().slice(0,10)}.xlsx`);
+  // Sheet 6: Raw
+  const rCols=['vendor','period','amount','dayOfWeek','head','desc','docno','journal'];
+  const rRows=[rCols];
+  parsedData.forEach(r=>rRows.push(rCols.map(c=>(r[c] instanceof Date?r[c].toLocaleDateString('en-IN'):r[c])||'')));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rRows),'Raw GL Data');
+  XLSX.writeFile(wb,`GL_Audit_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
 function exportNatureCSV(){
-  if(!natureResults.length){alert('AI analysis not yet complete.');return;}
-  let csv='Vendor,Total,% of Total,Txn Count,Booked Head,AI Summary,Keywords,Verdict,Suggested Head\n';
-  natureResults.forEach(r=>{
-    csv+=`"${r.vendor}","${r.total}","${r.pct.toFixed(2)}%","${r.count}","${r.heads}","${(r.summary||'').replace(/"/g,"'")}","${(r.keywords||[]).join(', ')}","${r.verdict}","${r.suggestedHead||''}"\n`;
-  });
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='nature_of_expenses.csv';a.click();
+  if(!natureResults.length){alert('Run analysis first.');return;}
+  let csv='Vendor,Net,Gross Debits,% of Total,Txns,Head,Summary,Keywords,Flag\n';
+  natureResults.forEach(r=>{csv+=`"${r.vendor}","${r.net}","${r.total}","${r.pct.toFixed(2)}%","${r.count}","${r.heads}","${(r.summary||'').replace(/"/g,"'")}","${(r.keywords||[]).join(', ')}","${(r.flag||'').replace(/"/g,"'")}"\n`;});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='nature_expenses.csv';a.click();
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 function exportCSV(tableId,filename){
   const tbl=document.getElementById(tableId);if(!tbl)return;
   let csv='';
@@ -1161,35 +1038,22 @@ function parseDate(val){
   if(m)return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
   const d=new Date(s);return isNaN(d)?null:d;
 }
-
 function isAdj(p){return p&&p.toString().toUpperCase().includes('ADJ');}
-
 function sortPeriods(keys){
-  // ADJ first, then fiscal Apr-Mar
   return keys.slice().sort((a,b)=>{
     const aA=isAdj(a),bA=isAdj(b);
     if(aA&&!bA)return-1;if(!aA&&bA)return 1;
-    // Try to parse Oracle period name like "Apr-25" or "Apr-2025"
-    const parse=s=>{
-      const m=s.match(/([A-Za-z]{3})[-\s]?(\d{2,4})/);
-      if(!m)return{y:9999,f:99};
-      const yr=parseInt(m[2]);const y=yr<100?(yr<50?2000+yr:1900+yr):yr;
-      const f=FISCAL_ORDER[m[1].toLowerCase()]??99;
-      return{y,f};
-    };
-    const pa=parse(a),pb=parse(b);
-    return pa.y!==pb.y?pa.y-pb.y:pa.f-pb.f;
+    const parse=s=>{const m=s.match(/([A-Za-z]{3})[-\s]?(\d{2,4})/);if(!m)return{y:9999,f:99};const yr=parseInt(m[2]);const y=yr<100?(yr<50?2000+yr:1900+yr):yr;return{y,f:FISCAL_ORDER[m[1].toLowerCase()]??99};};
+    const pa=parse(a),pb=parse(b);return pa.y!==pb.y?pa.y-pb.y:pa.f-pb.f;
   });
 }
-
 function switchTab(id,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
   ['vendorTab','momTab','natureTab','sundayTab','findingsTab'].forEach(t=>document.getElementById(t).classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
 }
-
 function fmt(n){if(n===null||n===undefined)return'—';return new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(n);}
-function fmtShort(n){if(Math.abs(n)>=1e7)return(n/1e7).toFixed(2)+' Cr';if(Math.abs(n)>=1e5)return(n/1e5).toFixed(2)+' L';return fmt(n);}
+function fmtShort(n){if(!n&&n!==0)return'—';const a=Math.abs(n);if(a>=1e7)return(n/1e7).toFixed(2)+' Cr';if(a>=1e5)return(n/1e5).toFixed(2)+' L';return fmt(n);}
 function esc(s){const d=document.createElement('div');d.textContent=String(s??'');return d.innerHTML;}
 function showError(msg){const b=document.getElementById('errorBox');b.textContent=msg;b.classList.remove('hidden');}
 function hideError(){document.getElementById('errorBox').classList.add('hidden');}
@@ -1201,6 +1065,7 @@ function clearAll(){
   ['gl-badge','gl-sheet-row','gl-col-map','gl-preview','progressWrap','errorBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   document.getElementById('results').classList.add('hidden');
   document.getElementById('emptyState').classList.remove('hidden');
+  document.getElementById('reconBanner').style.display='none';
   document.getElementById('analyzeBtn').disabled=true;
   document.getElementById('sundayDetailCard').style.display='none';
   hideError();setStatus('');
