@@ -336,6 +336,7 @@ tr.sunday-row:hover td{background:rgba(251, 191, 36, 0.1)!important;}
     <div class="tab" onclick="switchTab('natureTab',this)">③ Nature of Expenses</div>
     <div class="tab" onclick="switchTab('sundayTab',this)">④ Sunday Txns</div>
     <div class="tab" onclick="switchTab('findingsTab',this)">⑤ Audit Findings <span id="findingsBadge" style="background:var(--red-lt);color:var(--red);font-size:10px;padding:1px 6px;border-radius:99px;font-weight:700;margin-left:4px"></span></div>
+    <div class="tab" onclick="switchTab('chatTab',this)">⑥ Ask AI Copilot</div>
   </div>
 
   <!-- TAB 1 VENDOR -->
@@ -413,6 +414,63 @@ tr.sunday-row:hover td{background:rgba(251, 191, 36, 0.1)!important;}
       <button class="btn-export" style="margin-left:auto" onclick="exportFullXLSX()">⬇ Export Full Workings (Excel)</button>
     </div>
     <div id="findingsContainer"></div>
+  </div>
+
+  <!-- TAB 6 CHAT / Q&A -->
+  <div id="chatTab" class="hidden">
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--ink)">🤖 AI Copilot Chat</h3>
+          <p style="font-size:12px;color:var(--mid);margin-top:2px">Ask questions about your GL dataset, vendor behaviors, or audit findings.</p>
+        </div>
+        <button class="export-btn" onclick="toggleApiPanel()" style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 10px;">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Configure AI Settings
+        </button>
+      </div>
+
+      <!-- API Key Panel -->
+      <div id="apiPanel" class="hidden" style="background:rgba(15, 23, 42, 0.5);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Gemini API Key (Runs locally in browser)</label>
+        <div style="display:flex;gap:10px;">
+          <input type="password" id="geminiApiKey" placeholder="Paste your Gemini API Key here (AIzaSy...)" style="flex:1;background:rgba(4,8,21,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 12px;color:var(--ink);font-size:12.5px;font-family:inherit;">
+          <button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="saveApiKey()">Save Key</button>
+        </div>
+        <small style="font-size:10.5px;color:var(--muted);display:block;margin-top:6px;line-height:1.4;">
+          Your API key is saved locally in your browser's local storage and is never uploaded. Get a free key at <a href="https://aistudio.google.com/" target="_blank" style="color:var(--accent);text-decoration:none;">Google AI Studio</a>. If no key is entered, a fast rule-based local search engine will handle your queries.
+        </small>
+      </div>
+
+      <!-- Chat Interface -->
+      <div id="chatHistory" style="height:380px;overflow-y:auto;border:1px solid rgba(255,255,255,0.06);border-radius:10px;background:rgba(4,8,21,0.5);padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:12px;">
+        <div style="max-width:85%;align-self:flex-start;background:rgba(15,23,42,0.6);border:1px solid rgba(56,189,248,0.15);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--ink);">
+          👋 Hello! I am your AI Auditor Copilot. I've analyzed your GL dump. 
+          <br><br>
+          Ask me questions like:
+          <ul style="margin-left:16px;margin-top:6px;line-height:1.6;">
+            <li><em>"Summarize key findings of this audit"</em></li>
+            <li><em>"Tell me about Vendor X"</em> (replace with a real vendor name)</li>
+            <li><em>"Which transactions are suspicious?"</em></li>
+            <li><em>"Show Sunday postings for top vendors"</em></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Suggestion Chips -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;" id="chatSuggestions">
+        <span class="kw" style="cursor:pointer;" onclick="askSuggestion('Summarize key findings')">📋 Summarize findings</span>
+        <span class="kw" style="cursor:pointer;" onclick="askSuggestion('Who are the top vendors by spend?')">📊 Top vendors</span>
+        <span class="kw" style="cursor:pointer;" onclick="askSuggestion('Show suspicious entries')">⚠️ Suspicious entries</span>
+        <span class="kw" style="cursor:pointer;" onclick="askSuggestion('Show Sunday transactions')">📅 Sunday postings</span>
+      </div>
+
+      <!-- Input Row -->
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input type="text" id="chatInput" placeholder="Ask about the GL data..." onkeydown="if(event.key==='Enter')sendChatMessage()" style="flex:1;background:rgba(10,18,38,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--ink);font-size:13px;font-family:inherit;">
+        <button class="btn-primary" style="padding:10px 20px;" onclick="sendChatMessage()">Send ⚡</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1421,8 +1479,14 @@ function sortPeriods(keys){
 }
 function switchTab(id,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
-  ['vendorTab','momTab','natureTab','sundayTab','findingsTab'].forEach(t=>document.getElementById(t).classList.add('hidden'));
+  ['vendorTab','momTab','natureTab','sundayTab','findingsTab','chatTab'].forEach(t=>document.getElementById(t).classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
+  if(id==='chatTab'){
+    setTimeout(()=>{
+      const h = document.getElementById('chatHistory');
+      if (h) h.scrollTop = h.scrollHeight;
+    }, 50);
+  }
 }
 function fmt(n){if(n===null||n===undefined)return'—';return new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(n);}
 function fmtShort(n){if(!n&&n!==0)return'—';const a=Math.abs(n);if(a>=1e7)return(n/1e7).toFixed(2)+' Cr';if(a>=1e5)return(n/1e5).toFixed(2)+' L';return fmt(n);}
@@ -1441,6 +1505,318 @@ function clearAll(){
   document.getElementById('analyzeBtn').disabled=true;
   document.getElementById('sundayDetailCard').style.display='none';
   hideError();setStatus('');
+  document.getElementById('chatHistory').innerHTML=`<div style="max-width:85%;align-self:flex-start;background:rgba(15,23,42,0.6);border:1px solid rgba(56,189,248,0.15);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--ink);">
+    👋 Hello! I am your AI Auditor Copilot. I've analyzed your GL dump. 
+    <br><br>
+    Ask me questions like:
+    <ul style="margin-left:16px;margin-top:6px;line-height:1.6;">
+      <li><em>"Summarize key findings of this audit"</em></li>
+      <li><em>"Tell me about Vendor X"</em> (replace with a real vendor name)</li>
+      <li><em>"Which transactions are suspicious?"</em></li>
+      <li><em>"Show Sunday postings for top vendors"</em></li>
+    </ul>
+  </div>`;
+}
+
+// ── AI COPILOT Q&A ENGINE ──────────────────────────────────────────────────────
+function toggleApiPanel(){
+  document.getElementById('apiPanel').classList.toggle('hidden');
+}
+function saveApiKey(){
+  const key = document.getElementById('geminiApiKey').value.trim();
+  localStorage.setItem('gemini_api_key', key);
+  alert(key ? 'Gemini API Key saved successfully!' : 'Gemini API Key cleared.');
+  document.getElementById('apiPanel').classList.add('hidden');
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  const key = localStorage.getItem('gemini_api_key');
+  if(key) {
+    const el = document.getElementById('geminiApiKey');
+    if (el) el.value = key;
+  }
+  const s = document.createElement('style');
+  s.textContent = '@keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1.05); } }';
+  document.head.appendChild(s);
+});
+function askSuggestion(text){
+  document.getElementById('chatInput').value = text;
+  sendChatMessage();
+}
+async function sendChatMessage(){
+  const input = document.getElementById('chatInput');
+  const query = input.value.trim();
+  if(!query) return;
+  
+  input.value = '';
+  const history = document.getElementById('chatHistory');
+  
+  // Append user bubble
+  const userDiv = document.createElement('div');
+  userDiv.style.cssText = 'max-width:85%;align-self:flex-end;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--ink);margin-left:auto;';
+  userDiv.textContent = query;
+  history.appendChild(userDiv);
+  history.scrollTop = history.scrollHeight;
+  
+  if(!parsedData || !parsedData.length){
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = 'max-width:85%;align-self:flex-start;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--red);';
+    errDiv.innerHTML = '⚠️ Please upload a GL Excel/CSV dump and run analysis first before asking questions.';
+    history.appendChild(errDiv);
+    history.scrollTop = history.scrollHeight;
+    return;
+  }
+
+  // Append typing loader
+  const loadDiv = document.createElement('div');
+  loadDiv.style.cssText = 'max-width:85%;align-self:flex-start;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--muted);display:flex;align-items:center;gap:6px;';
+  loadDiv.innerHTML = '<span class="vdot" style="background:var(--accent);animation:pulse 1.2s infinite alternate;"></span> Thinking...';
+  history.appendChild(loadDiv);
+  history.scrollTop = history.scrollHeight;
+  
+  // Process Q&A
+  const apiKey = localStorage.getItem('gemini_api_key');
+  let reply = '';
+  if(apiKey){
+    reply = await callGeminiQA(query, apiKey);
+  } else {
+    // Artificial small delay for premium SaaS feel
+    await new Promise(r => setTimeout(r, 600));
+    reply = localQA(query);
+  }
+  
+  // Remove loader and append response
+  if (history.contains(loadDiv)) history.removeChild(loadDiv);
+  const aiDiv = document.createElement('div');
+  aiDiv.style.cssText = 'max-width:85%;align-self:flex-start;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.6;color:var(--ink);';
+  aiDiv.innerHTML = reply;
+  history.appendChild(aiDiv);
+  history.scrollTop = history.scrollHeight;
+}
+
+function localQA(question) {
+  const q = question.toLowerCase().trim();
+  
+  // 1. Summarize findings / overview
+  if (/summar|findings|overview|report|observation/i.test(q)) {
+    const crits = findings.filter(f=>f.type==='flag').length;
+    const warns = findings.filter(f=>f.type==='warn').length;
+    const infos = findings.filter(f=>f.type==='info').length;
+    let text = `<strong>Summary of Audit Findings:</strong><br>`;
+    text += `We identified a total of <strong>${findings.length} findings</strong>: <br>`;
+    text += `• 🔴 Critical/Flags: <strong>${crits}</strong><br>`;
+    text += `• ⚠️ Warnings: <strong>${warns}</strong><br>`;
+    text += `• ℹ️ Info/Observations: <strong>${infos}</strong><br><br>`;
+    text += `Here are the top findings:<br>`;
+    findings.slice(0, 3).forEach((f, idx) => {
+      text += `${idx+1}. <strong>${f.title}</strong><br>${f.body.slice(0, 150)}...<br><br>`;
+    });
+    text += `Please check the <strong>Audit Findings</strong> tab for the complete list.`;
+    return text;
+  }
+  
+  // 2. Top vendors
+  if (/top.*vendor|highest.*spend|who.*spend.*most|vendor.*spend/i.test(q)) {
+    const vm = {};
+    parsedData.forEach(r => {
+      if (!vm[r.vendor]) vm[r.vendor] = 0;
+      if (r.amount > 0) vm[r.vendor] += r.amount;
+    });
+    const sorted = Object.entries(vm).sort((a,b)=>b[1]-a[1]).slice(0, 5);
+    const grandDr = parsedData.filter(r=>r.amount>0).reduce((s,r)=>s+r.amount,0);
+    
+    let text = `<strong>Top 5 Spenders / Vendors by Gross Debits:</strong><br><br>`;
+    sorted.forEach(([v, amt], i) => {
+      const pct = grandDr ? (amt / grandDr * 100).toFixed(2) : 0;
+      text += `<strong>#${i+1} ${v}</strong>: ₹${fmt(amt)} (${pct}% of gross spend)<br>`;
+    });
+    return text;
+  }
+  
+  // 3. Sunday postings
+  if (/sunday|weekend/i.test(q)) {
+    if (!sundayData.length) {
+      return `No Sunday transactions with vendor aggregates ≥ ₹5L were flagged.`;
+    }
+    let text = `<strong>Sunday Transaction Analysis:</strong><br>`;
+    text += `We flagged <strong>${sundayData.length} vendors</strong> with Sunday transactions aggregating ≥ ₹5L:<br><br>`;
+    sundayData.slice(0, 5).forEach(([v, d]) => {
+      text += `• <strong>${v}</strong>: ₹${fmt(d.total)} across ${d.count} transactions (Largest single: ₹${fmt(d.largest)})<br>`;
+    });
+    text += `<br>See the <strong>Sunday Txns</strong> tab for full details.`;
+    return text;
+  }
+  
+  // 4. Capital expenditure
+  if (/capital|capex|asset|purchase/i.test(q)) {
+    const capRows = parsedData.filter(r => {
+      const headCat = aiMatchHead(r.head);
+      return headCat && headCat.id !== 'capital' && r.desc &&
+        /purchase.?of|new.?(?:machine|computer|laptop|server|vehicle|furniture|\bac\b|air.?condition)|installation.?of|capital.?exp|capex|fixed.?asset/i.test(r.desc) && r.amount >= 50000;
+    });
+    if (!capRows.length) {
+      return `No clear capital expenditure items (e.g. computer/furniture/machinery purchases ≥ ₹50K) were flagged in revenue heads.`;
+    }
+    let text = `<strong>Capital Expenditure Booked as Revenue:</strong><br>`;
+    text += `We detected <strong>${capRows.length} potential capital items</strong> ≥ ₹50K booked under revenue heads:<br><br>`;
+    capRows.slice(0, 5).forEach((r, idx) => {
+      text += `${idx+1}. <strong>${r.vendor}</strong>: ₹${fmt(r.amount)} in "${r.head}"<br>   Narration: "${r.desc}" (${r.period})<br><br>`;
+    });
+    if (capRows.length > 5) text += `...and ${capRows.length - 5} more.`;
+    return text;
+  }
+
+  // 5. Suspicious / Non-business
+  if (/suspicious|personal|gift|party|fine|penalty/i.test(q)) {
+    const susp = [];
+    parsedData.forEach(r => {
+      if (r.desc) {
+        for (const sp of SUSPICIOUS_PATTERNS) {
+          if (sp.pattern.test(r.desc) && Math.abs(r.amount) >= 5000) {
+            susp.push({r, reason: sp.reason});
+            break;
+          }
+        }
+      }
+    });
+    if (!susp.length) {
+      return `No transactions matching suspicious keywords (e.g. gifts, clubs, personal use, penalties) were found.`;
+    }
+    let text = `<strong>Suspicious or Non-business Postings Detected:</strong><br>`;
+    text += `We flagged <strong>${susp.length} entries</strong> of concern:<br><br>`;
+    susp.slice(0, 6).forEach(({r, reason}, idx) => {
+      text += `${idx+1}. <strong>${r.vendor}</strong>: ₹${fmt(r.amount)} under "${r.head}"<br>   Reason: <em>${reason}</em><br>   Narration: "${r.desc}"<br><br>`;
+    });
+    if (susp.length > 6) text += `...and ${susp.length - 6} more.`;
+    return text;
+  }
+  
+  // 6. Reversals / Credit Entries
+  if (/reversal|credit|negative/i.test(q)) {
+    const negs = parsedData.filter(r => r.amount < 0);
+    if (!negs.length) {
+      return `No credit/reversal entries (negative amounts) were found in the dataset.`;
+    }
+    const totalNeg = Math.abs(negs.reduce((s,r)=>s+r.amount,0));
+    let text = `<strong>Credit / Reversal Entries Analysis:</strong><br>`;
+    text += `We found <strong>${negs.length} credit entries</strong> totaling <strong>₹${fmt(totalNeg)}</strong>:<br><br>`;
+    negs.slice(0, 5).forEach((r, idx) => {
+      text += `${idx+1}. <strong>${r.vendor}</strong>: -₹${fmt(Math.abs(r.amount))} (${r.period})<br>   Narration: "${r.desc || 'no desc'}"<br><br>`;
+    });
+    if (negs.length > 5) text += `...and ${negs.length - 5} more.`;
+    return text;
+  }
+  
+  // 7. Specific Vendor search
+  const vendorsList = [...new Set(parsedData.map(r => r.vendor))];
+  const matchedVendor = vendorsList.find(v => q.includes(v.toLowerCase()));
+  if (matchedVendor) {
+    const vRows = parsedData.filter(r => r.vendor === matchedVendor);
+    const gross = vRows.filter(r=>r.amount>0).reduce((s,r)=>s+r.amount,0);
+    const credits = vRows.filter(r=>r.amount<0).reduce((s,r)=>s+r.amount,0);
+    const heads = [...new Set(vRows.map(r=>r.head).filter(Boolean))];
+    const periods = [...new Set(vRows.map(r=>r.period).filter(Boolean))];
+    const sunRows = vRows.filter(r=>r.dayOfWeek==='Sunday');
+    
+    let text = `<strong>Vendor Profile: ${matchedVendor}</strong><br><br>`;
+    text += `• Total transactions: <strong>${vRows.length}</strong><br>`;
+    text += `• Gross Debits: <strong>₹${fmt(gross)}</strong><br>`;
+    if (credits < 0) text += `• Gross Credits: <strong>-₹${fmt(Math.abs(credits))}</strong><br>`;
+    text += `• Account Heads: <strong>${heads.join(', ') || 'N/A'}</strong><br>`;
+    text += `• Active Periods: <strong>${periods.join(', ') || 'N/A'}</strong><br>`;
+    if (sunRows.length) {
+      text += `• Sunday transactions: <strong>${sunRows.length}</strong> (Total ₹${fmt(sunRows.reduce((s,r)=>s+r.amount,0))})<br>`;
+    }
+    
+    const uniqueDescs = [...new Set(vRows.map(r=>r.desc).filter(Boolean))];
+    text += `<br><strong>Invoice Narration Samples:</strong><br>`;
+    uniqueDescs.slice(0, 4).forEach((d) => {
+      text += ` - "${d}"<br>`;
+    });
+    
+    return text;
+  }
+  
+  // Fallback / Help text
+  let text = `I am running in <strong>Local Q&A Mode</strong> (no API key entered).<br><br>`;
+  text += `I couldn't match a rule for your query. Ask me about:<br>`;
+  text += `• <strong>Findings summary</strong> (e.g. 'summarize findings')<br>`;
+  text += `• <strong>Top vendors</strong> (e.g. 'who are the top vendors by spend?')<br>`;
+  text += `• <strong>Suspicious postings</strong> (e.g. 'show suspicious entries')<br>`;
+  text += `• <strong>Sunday postings</strong> (e.g. 'show Sunday transactions')<br>`;
+  text += `• <strong>Capital vs Revenue</strong> (e.g. 'any capital expenditure?')<br>`;
+  text += `• <strong>Credit notes/reversals</strong> (e.g. 'any credit entries?')<br>`;
+  text += `• <strong>Specific vendors</strong> (e.g. 'tell me about WIPRO')<br><br>`;
+  text += `<em>Tip: Open settings in the top right to save a Gemini API Key for advanced natural language Q&A!</em>`;
+  return text;
+}
+
+async function callGeminiQA(question, apiKey) {
+  const grandNet = parsedData.reduce((s,r)=>s+r.amount,0);
+  const grossDr = parsedData.filter(r=>r.amount>0).reduce((s,r)=>s+r.amount,0);
+  const grossCr = parsedData.filter(r=>r.amount<0).reduce((s,r)=>s+r.amount,0);
+  const vendors = new Set(parsedData.map(r=>r.vendor));
+  
+  const vm = {};
+  parsedData.forEach(r => {
+    if (!vm[r.vendor]) vm[r.vendor] = 0;
+    vm[r.vendor] += r.amount;
+  });
+  const topVendors = Object.entries(vm)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0, 10)
+    .map(([v, amt]) => `${v}: Net ₹${fmt(amt)}`);
+
+  const findingsSummary = findings.map(f => `- [${f.type.toUpperCase()}] ${f.title}: ${f.body}`).join('\n');
+  const sunSamples = sundayData.slice(0, 5).map(([v, d]) => `- Sunday Flag: ${v} (Total ₹${fmt(d.total)}, ${d.count} txns)`);
+
+  const prompt = `You are a professional AI Auditor. You have analyzed an Oracle GL Dump (Other Expenses). Here is the context of the audit:
+
+Audit Context:
+- Net Total Spend: ₹${fmt(grandNet)} (Gross Dr: ₹${fmt(grossDr)}, Gross Cr: -₹${fmt(Math.abs(grossCr))})
+- Total Vendors: ${vendors.size}
+- Total Transactions: ${parsedData.length}
+
+Top 10 Spenders/Vendors:
+${topVendors.join('\n')}
+
+Sunday Flagged Transactions (Aggregate >= 5L):
+${sunSamples.join('\n') || 'None'}
+
+Key Audit Observations/Findings:
+${findingsSummary}
+
+User Question: "${question}"
+
+Provide a professional, concise response answering the user's question with respect to the audit findings and dataset details. Present formatting in clean HTML (e.g. use <strong>, <br>, <ul>, <li>, <em> tags) instead of Markdown. Do not include markdown code blocks like \`\`\`html. Keep your reply direct, readable, and under 350 words.`;
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }]
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+    
+    const resData = await response.json();
+    if (resData.candidates && resData.candidates[0] && resData.candidates[0].content && resData.candidates[0].content.parts[0]) {
+      return resData.candidates[0].content.parts[0].text;
+    } else {
+      throw new Error('Unexpected API response structure');
+    }
+  } catch (err) {
+    return `<span style="color:var(--red);">Failed to call Gemini API: ${err.message}. Showing local search results instead:</span><br><br>${localQA(question)}`;
+  }
 }
 </script>
 </body>
