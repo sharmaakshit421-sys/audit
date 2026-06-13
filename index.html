@@ -278,6 +278,223 @@ const MO_IDX={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10
 let glWB=null,glRows=[],parsedData=[],colMap={};
 let natureResults=[],sundayData=[],findings=[];
 
+// ── AI GL SCRUTINY ENGINE ──────────────────────────────────────────────────────
+const EXPENSE_TAXONOMY=[
+  {id:'employee',label:'Employee Benefits / Staff Cost',
+    head:/employee|salary|salaries|staff.?cost|manpower|payroll|personnel/i,
+    desc:/salary|salaries|wages|bonus|incentive|gratuity|provident.?fund|pension|pf.?contri|esi[c\s]|staff.?welfare|employee.?benefit|payroll|remuneration|stipend|honorarium|leave.?encash|workmen.?comp|contract.?labour|manpower.?supply/i},
+  {id:'power_fuel',label:'Power & Fuel',
+    head:/power.?(?:and|&|$)|fuel|electricity|energy/i,
+    desc:/electric|power.?bill|fuel.?charge|diesel|petrol|gasoline|gas.?bill|generator|dg.?set|energy.?charge|\blpg\b|\bpng\b|\bcng\b|coal|furnace/i},
+  {id:'rent',label:'Rent',
+    head:/\brent\b|lease.?rent|tenancy/i,
+    desc:/\brent\b|lease.?rent|tenancy|license.?fee|premises|office.?space|godown.?rent|warehouse.?rent|shop.?rent/i},
+  {id:'repair',label:'Repairs & Maintenance',
+    head:/repair|maintenance|\bamc\b/i,
+    desc:/repair|maintenance|\bamc\b|annual.?maint|plumbing|painting|renovation|overhauling|spare.?part|upkeep|whitewash|waterproof/i},
+  {id:'insurance',label:'Insurance',
+    head:/insurance/i,
+    desc:/insurance|premium.?(?:paid|renew|charge)|keyman|fire.?ins|marine.?ins|vehicle.?ins|mediclaim|health.?ins|group.?ins|fidelity|burglary.?ins/i},
+  {id:'legal',label:'Legal & Professional Fees',
+    head:/legal|professional|consultancy|audit.?fee/i,
+    desc:/\blegal\b|advocate|lawyer|solicitor|consultant|professional.?fee|audit.?fee|statutory.?audit|tax.?audit|internal.?audit|retainer|advisory|valuation.?fee|certification|arbitration|litigation/i},
+  {id:'travel',label:'Travelling & Conveyance',
+    head:/travel|conveyance|tour/i,
+    desc:/travel|hotel.?(?:bill|charge|book|stay)|flight|air.?ticket|cab.?charge|taxi|conveyance|lodging|boarding|air.?fare|train.?fare|bus.?fare|\btoll\b|uber|\bola\b|outstation|per.?diem|halt.?charge/i},
+  {id:'communication',label:'Communication / Telephone',
+    head:/telephone|communication|mobile|internet/i,
+    desc:/telephone|mobile.?bill|internet|broadband|postage|courier|speed.?post|telecom|airtel|\bjio\b|vodafone|\bbsnl\b|leased.?line|\bwifi\b/i},
+  {id:'printing',label:'Printing & Stationery',
+    head:/printing|stationery|office.?supplies/i,
+    desc:/printing|stationery|paper|cartridge|toner|photocopy|xerox|letterhead|envelope|visiting.?card|office.?supplies|rubber.?stamp/i},
+  {id:'advertisement',label:'Advertisement & Marketing',
+    head:/advertis|marketing|publicity|promotion/i,
+    desc:/advertis|publicity|marketing|promotion|branding|campaign|hoarding|newspaper.?ad|digital.?market|social.?media|sponsorship|exhibition|trade.?fair|\bseo\b/i},
+  {id:'depreciation',label:'Depreciation / Amortisation',
+    head:/depreciation|amortis/i,
+    desc:/depreciation|amortis|impairment|\bwdv\b|written.?down/i},
+  {id:'finance',label:'Finance Costs / Bank Charges',
+    head:/interest|finance.?cost|bank.?charge|borrowing/i,
+    desc:/\binterest\b|bank.?charge|processing.?fee|forex|exchange.?(?:loss|gain|diff)|finance.?charge|borrowing|loan.?charge|overdraft|lc.?charge|bg.?charge|guarantee.?comm/i},
+  {id:'freight',label:'Freight & Transport',
+    head:/freight|transport|logistics|shipping|carriage/i,
+    desc:/freight|transport|shipping|logistics|carrier|delivery.?charge|carriage|cartage|handling.?charge|clearing.?forward/i},
+  {id:'security',label:'Security Expenses',
+    head:/security/i,
+    desc:/security.?(?:charge|guard|service|agency)|watchman|surveillance|\bcctv\b|armed.?guard|bouncer/i},
+  {id:'housekeeping',label:'Housekeeping & Cleaning',
+    head:/housekeep|cleaning|sanitation/i,
+    desc:/housekeep|cleaning|sanitation|pest.?control|garbage|waste.?manage|fumigation|pantry.?charge|water.?supply/i},
+  {id:'subscription',label:'Subscription & Software',
+    head:/subscription|membership|license|software/i,
+    desc:/subscription|membership|license.?fee|renewal|software|\bsaas\b|cloud.?(?:service|charge)|\baws\b|azure|microsoft.?(?:365|office)|oracle|\berp\b|domain|hosting/i},
+  {id:'donation',label:'Donation & CSR',
+    head:/donation|\bcsr\b|charity|contribution/i,
+    desc:/donation|charity|\bcsr\b|social.?responsibility|\btrust\b|\bngo\b|foundation|welfare.?fund/i},
+  {id:'penalty',label:'Penalties & Fines',
+    head:/penalty|\bfine\b|penal/i,
+    desc:/penalty|\bfine\b|late.?fee|interest.?on.?(?:delay|default)|demand.?notice|prosecution|compounding.?fee|liquidated.?damage/i},
+  {id:'capital',label:'Capital Expenditure (not an expense)',
+    head:/capital|\basset\b|\bcwip\b/i,
+    desc:/purchase.?of.?(?:asset|equipment|machine|computer|laptop|server|vehicle|furniture|fixture|\bac\b|air.?condition)|installation.?of|capex|capital.?exp|fixed.?asset/i},
+  {id:'rates_taxes',label:'Rates & Taxes',
+    head:/rates|\btaxes\b|\bduty\b|\bcess\b|\blevy\b/i,
+    desc:/property.?tax|municipal|water.?tax|professional.?tax|stamp.?duty|registration.?fee|\bcess\b|road.?tax|entry.?tax/i},
+  {id:'vehicle',label:'Vehicle Running & Maintenance',
+    head:/vehicle|motor.?car|automobile|car.?expense/i,
+    desc:/vehicle.?(?:maint|running|repair)|car.?(?:maint|servic|wash)|\btyre\b|tire|\brto\b|fitness.?cert|pollution.?cert|car.?insurance/i},
+];
+
+const SUSPICIOUS_PATTERNS=[
+  {pattern:/\b(personal|private|self|own.?use)\b/i, reason:'Personal/private expense indicator'},
+  {pattern:/\b(gift|gifting|present|hamper|bouquet|flower|memento|trophy)\b/i, reason:'Gift/gratification — verify business purpose'},
+  {pattern:/\b(birthday|anniversary|farewell|welcome.?party|celebration|festival|diwali|christmas|holi|\beid\b|puja|navratri|onam)\b/i, reason:'Celebration/festival expense — verify business necessity'},
+  {pattern:/\b(donation|charitable|temple|church|mosque|gurudwara|religious)\b/i, reason:'Donation/religious — may need separate disclosure or disallowance u/s 37'},
+  {pattern:/\b(club|\bgym\b|\bspa\b|salon|resort.?stay|holiday|vacation|leisure)\b/i, reason:'Lifestyle/leisure expense — likely non-business, disallowable'},
+  {pattern:/\b(penalty|\bfine\b|prosecution|late.?fee|penal.?interest|demand.?notice|show.?cause)\b/i, reason:'Penalty/fine — separate disclosure required, not deductible u/s 37'},
+  {pattern:/\b(political|election|\bmla\b|\bmp\b|minister|govt.?official|bribe|gratification|commission.?paid)\b/i, reason:'Political/improper payment indicator — CRITICAL — Sec 37(2B) / PMLA risk'},
+  {pattern:/\b(cash.?payment|petty.?cash|out.?of.?pocket|reimburse.*personal)\b/i, reason:'Cash/reimbursement — verify documentation, Sec 40A(3) for >₹10K cash'},
+  {pattern:/\b(abroad|foreign|overseas|international.*travel|foreign.?currency)\b/i, reason:'Foreign expense — verify FEMA compliance, TDS u/s 195 on foreign payments'},
+  {pattern:/\b(related.?party|director|promoter|shareholder|subsidiary|holding.?co|associate|group.?company|sister.?concern)\b/i, reason:'Related party indicator — requires Ind AS 24 / AS-18 disclosure'},
+];
+
+function aiMatchHead(head){
+  if(!head)return null;
+  for(const cat of EXPENSE_TAXONOMY){if(cat.head.test(head))return cat;}
+  return null;
+}
+function aiClassifyDesc(desc){
+  if(!desc||desc.trim().length<4)return[];
+  return EXPENSE_TAXONOMY.filter(cat=>cat.desc.test(desc));
+}
+
+function buildAIScrutiny(data){
+  const misclassified=[],suspicious=[],capitalInRevenue=[],vagueHighValue=[],withinHeadOutliers=[];
+  const headDescMap={};
+
+  data.forEach(r=>{
+    const headCat=aiMatchHead(r.head);
+    const descCats=aiClassifyDesc(r.desc);
+
+    // ① Misclassification: description suggests a different head than what it's booked under
+    if(headCat&&descCats.length>0){
+      const matchesHead=descCats.some(c=>c.id===headCat.id);
+      if(!matchesHead){
+        misclassified.push({vendor:r.vendor,amount:r.amount,period:r.period,desc:r.desc,
+          head:r.head,bookedAs:headCat.label,shouldBe:descCats[0].label,docno:r.docno});
+      }
+    }
+
+    // ② Suspicious keywords — personal, gifts, celebrations, political, cash, related party
+    if(r.desc){
+      for(const sp of SUSPICIOUS_PATTERNS){
+        if(sp.pattern.test(r.desc)&&Math.abs(r.amount)>=5000){
+          suspicious.push({vendor:r.vendor,amount:r.amount,period:r.period,desc:r.desc,
+            head:r.head,reason:sp.reason,docno:r.docno});
+          break;
+        }
+      }
+    }
+
+    // ③ Capital expenditure booked as revenue expense
+    if(headCat&&headCat.id!=='capital'&&r.desc&&
+      /purchase.?of|new.?(?:machine|computer|laptop|server|vehicle|furniture|\bac\b|air.?condition)|installation.?of|capital.?exp|capex|fixed.?asset/i.test(r.desc)&&r.amount>=50000){
+      capitalInRevenue.push({vendor:r.vendor,amount:r.amount,period:r.period,desc:r.desc,head:r.head,docno:r.docno});
+    }
+
+    // ④ Vague/generic description on high-value entries
+    if(r.amount>=100000&&r.desc){
+      const clean=r.desc.replace(/[^a-zA-Z\s]/g,'').trim().toLowerCase();
+      const words=clean.split(/\s+/).filter(w=>w.length>2);
+      if(words.length<=1||/^(expense|payment|charges|amount|bill|invoice|entry|misc|miscellaneous|sundry|others|various|general|service|services|being|towards)$/.test(words.join(' ').trim())){
+        vagueHighValue.push({vendor:r.vendor,amount:r.amount,period:r.period,desc:r.desc,head:r.head,docno:r.docno});
+      }
+    }
+    // Also catch completely empty desc on high-value
+    if(r.amount>=100000&&(!r.desc||r.desc.trim().length<3)){
+      vagueHighValue.push({vendor:r.vendor,amount:r.amount,period:r.period,desc:r.desc||'(empty)',head:r.head,docno:r.docno});
+    }
+
+    // ⑤ Build per-head description words for within-head outlier detection
+    if(r.head&&r.desc&&r.desc.trim().length>4){
+      if(!headDescMap[r.head])headDescMap[r.head]={words:{},rows:[],descsClean:[]};
+      const dclean=r.desc.toLowerCase().replace(/[^a-z\s]/g,'').trim();
+      headDescMap[r.head].descsClean.push(dclean);
+      headDescMap[r.head].rows.push(r);
+      dclean.split(/\s+/).forEach(w=>{if(w.length>3)headDescMap[r.head].words[w]=(headDescMap[r.head].words[w]||0)+1;});
+    }
+  });
+
+  // ⑤ continued — find descriptions that share zero common words with their head peers
+  Object.entries(headDescMap).forEach(([head,{words,rows,descsClean}])=>{
+    if(descsClean.length<5)return;
+    const total=descsClean.length;
+    const commonWords=new Set(Object.entries(words).filter(([,cnt])=>cnt/total>0.25).map(([w])=>w));
+    if(commonWords.size<2)return;
+    rows.forEach((r,i)=>{
+      const rWords=new Set(descsClean[i].split(/\s+/).filter(w=>w.length>3));
+      const overlap=[...rWords].filter(w=>commonWords.has(w)).length;
+      if(overlap===0&&Math.abs(r.amount)>=50000){
+        withinHeadOutliers.push({vendor:r.vendor,amount:r.amount,period:r.period,desc:r.desc,
+          head,docno:r.docno,commonTerms:[...commonWords].slice(0,5).join(', ')});
+      }
+    });
+  });
+
+  // Deduplicate vagueHighValue
+  const vagueUnique=[];const vagueKeys=new Set();
+  vagueHighValue.forEach(r=>{const k=r.vendor+'|'+r.amount+'|'+r.period;if(!vagueKeys.has(k)){vagueKeys.add(k);vagueUnique.push(r);}});
+
+  // ── Generate findings ──
+  if(misclassified.length){
+    const byHead={};
+    misclassified.forEach(r=>{if(!byHead[r.head])byHead[r.head]=[];byHead[r.head].push(r);});
+    const bullets=[];
+    Object.entries(byHead).forEach(([head,rows])=>{
+      bullets.push(`── Head: "${head}" (${rows.length} issue${rows.length>1?'s':''}) ──`);
+      rows.slice(0,4).forEach(r=>bullets.push(`${r.vendor}: ₹${fmt(r.amount)} — "${r.desc}" → Booked as ${r.bookedAs}, likely belongs to ${r.shouldBe}`));
+      if(rows.length>4)bullets.push(`   ...and ${rows.length-4} more under this head`);
+    });
+    findings.push({type:'flag',
+      title:`🤖 AI Scrutiny: ${misclassified.length} potential misclassification(s) — expenses booked under wrong GL head`,
+      body:`The AI scrutiny engine compared each transaction's description against its GL head classification and found mismatches. These entries appear to be booked under the wrong expense head based on their narration. This directly impacts financial statement presentation under Ind AS / Schedule III. Review and reclassify as needed.`,
+      bullets:bullets.slice(0,30),
+      tags:['AI scrutiny','misclassification','wrong GL head','reclassification','Schedule III']});
+  }
+
+  if(suspicious.length){
+    findings.push({type:'flag',
+      title:`🤖 AI Scrutiny: ${suspicious.length} suspicious / non-business expense(s) detected`,
+      body:`These entries contain keywords indicating personal, lifestyle, celebration, political, religious, or other potentially non-business expenses. Under Sec 37(1) of the IT Act, only expenses "wholly and exclusively for purpose of business" are deductible. Each entry should be verified for legitimate business purpose and potential disallowance.`,
+      bullets:suspicious.slice(0,15).map(r=>`${r.vendor}: ₹${fmt(r.amount)} in "${r.head}" — "${r.desc}" ⟶ [${r.reason}]`).concat(suspicious.length>15?[`...and ${suspicious.length-15} more`]:[]),
+      tags:['AI scrutiny','suspicious expense','non-business','IT Act Sec 37','disallowance risk']});
+  }
+
+  if(capitalInRevenue.length){
+    findings.push({type:'flag',
+      title:`🤖 AI Scrutiny: ${capitalInRevenue.length} capital expenditure(s) booked as revenue expense`,
+      body:`These entries describe purchase or installation of assets/equipment but are booked in revenue expense heads instead of being capitalised. Under Ind AS 16, items meeting the asset recognition criteria must be capitalised and depreciated — not expensed immediately. This understates both profits and fixed assets on the balance sheet.`,
+      bullets:capitalInRevenue.slice(0,10).map(r=>`${r.vendor}: ₹${fmt(r.amount)} in "${r.head}" — "${r.desc}"`).concat(capitalInRevenue.length>10?[`...and ${capitalInRevenue.length-10} more`]:[]),
+      tags:['AI scrutiny','capital vs revenue','Ind AS 16','capitalisation','asset understatement']});
+  }
+
+  if(vagueUnique.length){
+    findings.push({type:'warn',
+      title:`🤖 AI Scrutiny: ${vagueUnique.length} high-value entries (≥₹1L) with vague or missing descriptions`,
+      body:`These high-value transactions have descriptions that are too short, generic (e.g. "expense", "payment", "misc"), or completely empty. Without meaningful narration, the nature of expenditure cannot be determined or verified during audit. Request detailed descriptions and supporting invoices from the client.`,
+      bullets:vagueUnique.slice(0,10).map(r=>`${r.vendor}: ₹${fmt(r.amount)} in "${r.head||'(no head)'}" — desc: "${r.desc||'(empty)'}" (${r.period})`).concat(vagueUnique.length>10?[`...and ${vagueUnique.length-10} more`]:[]),
+      tags:['AI scrutiny','vague description','GL hygiene','missing narration','verification needed']});
+  }
+
+  if(withinHeadOutliers.length){
+    findings.push({type:'warn',
+      title:`🤖 AI Scrutiny: ${withinHeadOutliers.length} within-head outlier(s) — description doesn't match peer transactions`,
+      body:`Within each GL head, most transactions share common descriptive patterns. These entries have descriptions completely different from their peers under the same head — they may be misposted, incorrectly classified, or represent unusual one-off items that warrant verification.`,
+      bullets:withinHeadOutliers.slice(0,10).map(r=>`"${r.head}" — ${r.vendor}: ₹${fmt(r.amount)} — "${r.desc}" (peers usually contain: ${r.commonTerms})`).concat(withinHeadOutliers.length>10?[`...and ${withinHeadOutliers.length-10} more`]:[]),
+      tags:['AI scrutiny','outlier description','mispost risk','within-head anomaly']});
+  }
+}
+
 document.getElementById('ts').textContent=new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
 const dz=document.getElementById('dropZone');
@@ -939,6 +1156,9 @@ function buildFindings(data){
       bullets:[...new Set(manualJournals.map(r=>r.journal))].map(j=>{const rows=manualJournals.filter(r=>r.journal===j);return`Source "${j}": ${rows.length} entries, ₹${fmtShort(rows.reduce((s,r)=>s+Math.abs(r.amount),0))}`;}),
       tags:['manual journal','journal entry risk','approval required']});
   }
+
+  // ── AI GL SCRUTINY (auto-detect misclassifications, suspicious entries, capital-in-revenue, etc.) ──
+  buildAIScrutiny(data);
 
   // Render
   const c=document.getElementById('findingsContainer');c.innerHTML='';
